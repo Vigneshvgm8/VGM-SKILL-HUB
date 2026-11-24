@@ -1,5 +1,5 @@
 {
-  "counter": 4,
+  "counter": 5,
   "enrolments": [
     {
       "id": "VGM-2026-0001",
@@ -195,6 +195,48 @@
       "id": "VGM-2026-0004",
       "createdAt": "2026-11-24T11:17:18.942Z",
       "updatedAt": "2026-11-24T11:17:22.322Z"
+    },
+    {
+      "courseId": "ai-mobile-app",
+      "courseTitle": "AI-Powered Mobile App Development Internship",
+      "planId": "builder",
+      "planName": "Builder",
+      "batchId": "nov-morning",
+      "batchLabel": "November 2026 Batch — Morning (9:00 AM – 12:30 PM IST)",
+      "student": {
+        "fullName": "mathankumar",
+        "email": "mathanvgm8@gmail.com",
+        "mobile": "8056898458",
+        "dob": "2001-01-13",
+        "city": "Coimbatore",
+        "college": "vgm",
+        "degreeStream": "bsc",
+        "yearOfStudy": "3rd Year Undergraduate",
+        "languages": [
+          "Python"
+        ],
+        "referralSource": "College Notice / Placement Cell"
+      },
+      "assessment": {
+        "score": 0,
+        "total": 5,
+        "answers": {},
+        "completedAt": "2026-11-24T11:20:18.990Z"
+      },
+      "pricing": {
+        "baseAmount": 9999,
+        "discountAmount": 0,
+        "couponCode": null,
+        "finalAmount": 9999,
+        "currency": "INR"
+      },
+      "payment": {
+        "status": "pending",
+        "orderId": "order_U3zfzDU7TSvZe4"
+      },
+      "id": "VGM-2026-0005",
+      "createdAt": "2026-11-24T11:20:18.990Z",
+      "updatedAt": "2026-11-24T11:20:19.226Z"
     }
   ],
   "coupons": [
