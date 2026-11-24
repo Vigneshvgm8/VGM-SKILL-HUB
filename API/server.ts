@@ -96,14 +96,26 @@ export async function startServer() {
       res.redirect('http://localhost:3001');
     });
   } else if (fs.existsSync(adminDistPath)) {
-    console.log('[SERVER] Serving Adminweb production static bundle from /adminweb...');
+    console.log('[SERVER] Serving Adminweb production static bundle from /adminweb and adminskillhub.* host...');
     // Serve hashed Adminweb assets with immutable cache and no HTML fallthrough
-    app.use('/adminweb/assets', express.static(path.join(adminDistPath, 'assets'), {
-      maxAge: '1y',
-      immutable: true,
-      fallthrough: false
-    }));
+    app.use(['/adminweb/assets', '/assets'], (req, res, next) => {
+      const host = (req.headers.host || req.hostname || '').toLowerCase();
+      const isAdminHost = host.startsWith('adminskillhub') || host.startsWith('admin.');
+      
+      // If request is on adminskillhub or explicitly /adminweb/assets
+      if (req.baseUrl === '/adminweb/assets' || isAdminHost) {
+        express.static(path.join(adminDistPath, 'assets'), {
+          maxAge: '1y',
+          immutable: true,
+          fallthrough: true
+        })(req, res, next);
+      } else {
+        next();
+      }
+    });
+
     app.use('/adminweb', express.static(adminDistPath, {
+      index: false,
       setHeaders: (res, filePath) => {
         if (filePath.endsWith('.html')) {
           res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -112,6 +124,7 @@ export async function startServer() {
         }
       }
     }));
+
     app.get(['/adminweb', '/adminweb/*'], (_req, res) => {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
@@ -165,7 +178,9 @@ export async function startServer() {
       immutable: true,
       fallthrough: false
     }));
+
     app.use(express.static(distPath, {
+      index: false,
       setHeaders: (res, filePath) => {
         if (filePath.endsWith('.html')) {
           res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -174,10 +189,23 @@ export async function startServer() {
         }
       }
     }));
-    app.get('*', (_req, res) => {
+
+    app.get('*', (req, res, next) => {
+      if (req.originalUrl.startsWith('/api') || req.originalUrl === '/health') {
+        return next();
+      }
+
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
+
+      // Check if domain is Admin custom domain (adminskillhub.vgmsofttech.com or admin.*)
+      const host = (req.headers.host || req.hostname || '').toLowerCase();
+      if ((host.startsWith('adminskillhub') || host.startsWith('admin.')) && fs.existsSync(path.join(adminDistPath, 'index.html'))) {
+        return res.sendFile(path.join(adminDistPath, 'index.html'));
+      }
+
+      // Default: Serve Frontend SPA index.html
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }

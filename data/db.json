@@ -2,158 +2,50 @@
   "counter": 5,
   "enrolments": [
     {
-      "id": "VGM-2026-0001",
+      "id": "VGM-2026-0005",
+      "courseId": "ai-mobile-app",
+      "courseTitle": "AI-Powered Mobile App Development Internship",
       "planId": "builder",
-      "planName": "Builder (2 Months)",
+      "planName": "Builder",
       "batchId": "nov-morning",
       "batchLabel": "November 2026 Batch — Morning (9:00 AM – 12:30 PM IST)",
       "student": {
-        "fullName": "Kavitha Ramasamy",
-        "email": "kavitha.r@psgtech.ac.in",
-        "mobile": "9876543210",
-        "dob": "2003-08-14",
+        "fullName": "mathankumar",
+        "email": "mathanvgm8@gmail.com",
+        "mobile": "8056898458",
+        "dob": "2001-01-13",
         "city": "Coimbatore",
-        "college": "PSG College of Technology",
-        "degreeStream": "B.E Computer Science and Engineering",
-        "yearOfStudy": "3rd Year",
+        "college": "vgm",
+        "degreeStream": "bsc",
+        "yearOfStudy": "3rd Year Undergraduate",
         "languages": [
-          "Dart",
-          "JavaScript",
           "Python"
         ],
-        "referralSource": "College Circular"
-      },
-      "assessment": {
-        "score": 5,
-        "total": 5,
-        "answers": {
-          "1": 1,
-          "2": 1,
-          "3": 2,
-          "4": 0,
-          "5": 1
-        },
-        "completedAt": "2026-10-22T12:46:45.847Z"
-      },
-      "pricing": {
-        "baseAmount": 9999,
-        "discountAmount": 1000,
-        "couponCode": "EARLYBIRD",
-        "finalAmount": 8999,
-        "currency": "INR"
-      },
-      "payment": {
-        "status": "paid",
-        "orderId": "order_test_demo_001",
-        "paymentId": "pay_test_demo_001",
-        "paidAt": "2026-10-22T12:46:45.848Z"
-      },
-      "createdAt": "2026-10-22T12:46:45.848Z",
-      "updatedAt": "2026-11-20T06:13:19.761Z",
-      "completedWeeks": [
-        1,
-        2,
-        3
-      ],
-      "projectSubmission": {
-        "githubUrl": "https://github.com/vgm-student/ai-mobile-app",
-        "liveUrl": "https://vgm-student-app.web.app",
-        "notes": "Sprint 3 complete with Gemini integration",
-        "submittedAt": "2026-11-03T10:40:48.154Z",
-        "status": "approved",
-        "reviewerFeedback": "Outstanding architecture and live testing on Android and iOS.",
-        "score": 95,
-        "reviewedBy": "Lead Academic Architect",
-        "reviewedAt": "2026-11-20T06:13:19.761Z"
-      }
-    },
-    {
-      "planId": "builder",
-      "planName": "Builder (2 Months)",
-      "batchId": "nov-morning",
-      "batchLabel": "November 2026 Batch — Morning",
-      "student": {
-        "fullName": "Praveen Kumar",
-        "email": "praveen@example.com",
-        "mobile": "9876543210",
-        "dob": "",
-        "city": "Coimbatore",
-        "college": "PSG Tech",
-        "degreeStream": "B.E CSE",
-        "yearOfStudy": "3rd Year",
-        "languages": [
-          "Dart",
-          "Python"
-        ],
-        "referralSource": "Direct"
-      },
-      "assessment": {
-        "score": 4,
-        "total": 5,
-        "answers": {},
-        "completedAt": "2026-10-24T12:47:27.946Z"
-      },
-      "pricing": {
-        "baseAmount": 9999,
-        "discountAmount": 1000,
-        "couponCode": "EARLYBIRD",
-        "finalAmount": 8999,
-        "currency": "INR"
-      },
-      "payment": {
-        "status": "paid",
-        "orderId": "order_test_1792846047947_h0l6q",
-        "paymentId": "pay_test_test002",
-        "signature": "mock_sig_valid",
-        "paidAt": "2026-10-24T12:47:37.005Z"
-      },
-      "id": "VGM-2026-0002",
-      "createdAt": "2026-10-24T12:47:27.947Z",
-      "updatedAt": "2026-10-24T12:47:37.005Z"
-    },
-    {
-      "planId": "professional",
-      "planName": "Professional (3 Months)",
-      "batchId": "nov-morning",
-      "batchLabel": "November 2026 Batch — Morning",
-      "student": {
-        "fullName": "Siddharth Raman",
-        "email": "siddharth@example.com",
-        "mobile": "9876543210",
-        "dob": "",
-        "city": "Coimbatore",
-        "college": "CIT Coimbatore",
-        "degreeStream": "B.Tech IT",
-        "yearOfStudy": "Final Year",
-        "languages": [
-          "Dart",
-          "JavaScript"
-        ],
-        "referralSource": "Direct"
+        "referralSource": "College Notice / Placement Cell"
       },
       "assessment": {
         "score": 0,
         "total": 5,
         "answers": {},
-        "completedAt": "2026-10-24T12:59:06.207Z"
+        "completedAt": "2026-11-24T11:20:18.99+00:00"
       },
       "pricing": {
-        "baseAmount": 14999,
+        "baseAmount": 9999,
         "discountAmount": 0,
         "couponCode": null,
-        "finalAmount": 14999,
+        "finalAmount": 9999,
         "currency": "INR"
       },
       "payment": {
-        "status": "paid",
-        "orderId": "order_test_1792846746207_d4v9m",
-        "paidAt": "2026-11-20T06:10:29.188Z"
+        "status": "pending",
+        "orderId": "pending_init"
       },
-      "id": "VGM-2026-0003",
-      "createdAt": "2026-10-24T12:59:06.207Z",
-      "updatedAt": "2026-11-20T06:13:19.778Z"
+      "completedWeeks": [],
+      "createdAt": "2026-11-24T11:20:18.99+00:00",
+      "updatedAt": "2026-11-24T11:20:18.99+00:00"
     },
     {
+      "id": "VGM-2026-0004",
       "courseId": "ai-mobile-app",
       "courseTitle": "AI-Powered Mobile App Development Internship",
       "planId": "builder",
@@ -179,7 +71,7 @@
         "score": 0,
         "total": 5,
         "answers": {},
-        "completedAt": "2026-11-24T11:17:18.941Z"
+        "completedAt": "2026-11-24T11:17:18.941+00:00"
       },
       "pricing": {
         "baseAmount": 9999,
@@ -192,51 +84,9 @@
         "status": "pending",
         "orderId": "order_U3zcs790LCej22"
       },
-      "id": "VGM-2026-0004",
-      "createdAt": "2026-11-24T11:17:18.942Z",
-      "updatedAt": "2026-11-24T11:17:22.322Z"
-    },
-    {
-      "courseId": "ai-mobile-app",
-      "courseTitle": "AI-Powered Mobile App Development Internship",
-      "planId": "builder",
-      "planName": "Builder",
-      "batchId": "nov-morning",
-      "batchLabel": "November 2026 Batch — Morning (9:00 AM – 12:30 PM IST)",
-      "student": {
-        "fullName": "mathankumar",
-        "email": "mathanvgm8@gmail.com",
-        "mobile": "8056898458",
-        "dob": "2001-01-13",
-        "city": "Coimbatore",
-        "college": "vgm",
-        "degreeStream": "bsc",
-        "yearOfStudy": "3rd Year Undergraduate",
-        "languages": [
-          "Python"
-        ],
-        "referralSource": "College Notice / Placement Cell"
-      },
-      "assessment": {
-        "score": 0,
-        "total": 5,
-        "answers": {},
-        "completedAt": "2026-11-24T11:20:18.990Z"
-      },
-      "pricing": {
-        "baseAmount": 9999,
-        "discountAmount": 0,
-        "couponCode": null,
-        "finalAmount": 9999,
-        "currency": "INR"
-      },
-      "payment": {
-        "status": "pending",
-        "orderId": "order_U3zfzDU7TSvZe4"
-      },
-      "id": "VGM-2026-0005",
-      "createdAt": "2026-11-24T11:20:18.990Z",
-      "updatedAt": "2026-11-24T11:20:19.226Z"
+      "completedWeeks": [],
+      "createdAt": "2026-11-24T11:17:18.942+00:00",
+      "updatedAt": "2026-11-24T11:17:22.324+00:00"
     }
   ],
   "coupons": [
