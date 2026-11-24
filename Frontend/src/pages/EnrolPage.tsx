@@ -75,6 +75,7 @@ export const EnrolPage: React.FC = () => {
   const initialCourseSlug = searchParams.get('course') || 'ai-mobile-app';
   const [coursesList, setCoursesList] = useState<CourseItem[]>(COURSES_CATALOG);
   const [selectedCourseSlug, setSelectedCourseSlug] = useState<string>(initialCourseSlug);
+  const [livePlans, setLivePlans] = useState<Record<string, PlanInfo>>(PROGRAM_PLANS);
 
   useEffect(() => {
     fetch('/api/courses')
@@ -85,12 +86,23 @@ export const EnrolPage: React.FC = () => {
         }
       })
       .catch(() => {});
+
+    fetch('/api/plans')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.plans) {
+          setLivePlans(data.plans);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const selectedCourse: CourseItem = coursesList.find(c => c.slug === selectedCourseSlug) || coursesList[0] || COURSES_CATALOG[0];
 
   // Course-specific plans
-  const coursePlans = selectedCourse.plans || PROGRAM_PLANS;
+  const coursePlans = (selectedCourse.id === 'ai-mobile-app' || selectedCourse.slug === 'ai-mobile-app')
+    ? livePlans
+    : (selectedCourse.plans || livePlans);
   const planKeys = Object.keys(coursePlans);
 
   // Step 1: Plan selection & Coupon

@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   AlertCircle,
   BookOpen,
+  CreditCard,
   Menu
 } from 'lucide-react';
 import { BATCH_OPTIONS } from '../config/programData.js';
@@ -70,8 +71,25 @@ export const AdminDashboard: React.FC = () => {
   const [filterBatch, setFilterBatch] = useState<string>('all');
 
   // Active Tab & Sidebar Navigation State
-  const [activeTab, setActiveTab] = useState<'enrolments' | 'courses' | 'certificates' | 'projects' | 'coupons'>('enrolments');
+  const [activeTab, setActiveTab] = useState<'enrolments' | 'courses' | 'plans' | 'certificates' | 'projects' | 'coupons'>('enrolments');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+
+  // Plans Management State
+  const [plansList, setPlansList] = useState<Record<string, any>>({});
+  const [showPlanModal, setShowPlanModal] = useState<boolean>(false);
+  const [editingPlanId, setEditingPlanId] = useState<string | null>(null);
+  const [planFormData, setPlanFormData] = useState({
+    name: '',
+    duration: '',
+    durationMonths: 1,
+    weeksTotal: 4,
+    fee: 5999,
+    recommended: false,
+    outcome: '',
+    certificateType: '',
+    liveProjectRole: '',
+    featuresInput: ''
+  });
 
   // Detail Modal
   const [selectedEnrolment, setSelectedEnrolment] = useState<Enrolment | null>(null);
@@ -213,6 +231,13 @@ export const AdminDashboard: React.FC = () => {
       const coursesRes = await fetch('/api/courses');
       const coursesData = await coursesRes.json();
       setCoursesList(coursesData.courses || []);
+
+      // Fetch Plans & Tuition
+      const plansRes = await fetch('/api/admin/plans', { headers });
+      if (plansRes.ok) {
+        const plansData = await plansRes.json();
+        setPlansList(plansData.plans || {});
+      }
 
       // Fetch Certificates
       const certRes = await fetch('/api/admin/certificates', { headers });
@@ -603,6 +628,71 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  // Plan Handlers
+  const openEditPlanModal = (planId: string) => {
+    const p = plansList[planId];
+    if (!p) return;
+    setEditingPlanId(planId);
+    setPlanFormData({
+      name: p.name || '',
+      duration: p.duration || '',
+      durationMonths: p.durationMonths || 1,
+      weeksTotal: p.weeksTotal || 4,
+      fee: p.fee || 5999,
+      recommended: Boolean(p.recommended),
+      outcome: p.outcome || '',
+      certificateType: p.certificateType || '',
+      liveProjectRole: p.liveProjectRole || '',
+      featuresInput: (p.features || []).join('\n')
+    });
+    setShowPlanModal(true);
+  };
+
+  const handleSavePlan = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingPlanId || !token) return;
+
+    try {
+      const features = planFormData.featuresInput
+        .split('\n')
+        .map(f => f.trim())
+        .filter(Boolean);
+
+      const feeNum = Number(planFormData.fee) || 0;
+      const payload = {
+        name: planFormData.name,
+        duration: planFormData.duration,
+        durationMonths: Number(planFormData.durationMonths) || 1,
+        weeksTotal: Number(planFormData.weeksTotal) || 4,
+        fee: feeNum,
+        feeFormatted: `₹${feeNum.toLocaleString('en-IN')}`,
+        recommended: planFormData.recommended,
+        outcome: planFormData.outcome,
+        certificateType: planFormData.certificateType,
+        liveProjectRole: planFormData.liveProjectRole,
+        features
+      };
+
+      const res = await fetch(`/api/admin/plans/${editingPlanId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setShowPlanModal(false);
+        fetchDashboardData();
+      } else {
+        alert(data.error || 'Failed to save plan');
+      }
+    } catch (err) {
+      alert('Network error saving plan');
+    }
+  };
+
   // LOGIN SCREEN
   if (!token) {
     return (
@@ -777,6 +867,27 @@ export const AdminDashboard: React.FC = () => {
             </span>
           </button>
 
+          {/* Tuition & Plans Item */}
+          <button
+            type="button"
+            onClick={() => { setActiveTab('plans'); setSidebarOpen(false); }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer ${
+              activeTab === 'plans'
+                ? 'bg-[#1E9E54] text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <CreditCard className="w-4 h-4" />
+              <span>Tuition & Plans</span>
+            </div>
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-full ${
+              activeTab === 'plans' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+            }`}>
+              {Object.keys(plansList).length || 3}
+            </span>
+          </button>
+
           {/* Certificates Item */}
           <button
             type="button"
@@ -938,6 +1049,7 @@ export const AdminDashboard: React.FC = () => {
             <h1 className="text-2xl sm:text-3xl font-heading font-bold text-slate-900 mt-1 capitalize">
               {activeTab === 'enrolments' && 'Student Enrolments & Admissions'}
               {activeTab === 'courses' && 'Curriculum Tracks & Course Catalogue'}
+              {activeTab === 'plans' && 'Tuition & Internship Plans Management'}
               {activeTab === 'certificates' && 'Academic Credential Verification'}
               {activeTab === 'projects' && 'Capstone Engineering Project Submissions'}
               {activeTab === 'coupons' && 'Promotional Discount Coupons'}
@@ -1305,6 +1417,129 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* TAB: TUITION & PLANS MANAGEMENT */}
+      {activeTab === 'plans' && (
+        <div className="space-y-6">
+          <div className="bg-emerald-50/60 border border-[#1E9E54]/20 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#1E9E54] animate-pulse" />
+                <h3 className="font-heading font-bold text-sm text-slate-900">
+                  Live Tuition &amp; Plan Synchronization
+                </h3>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed max-w-2xl">
+                Any changes made to tuition fees, duration, descriptions, or deliverables here immediately update across the entire frontend (<strong>/plans</strong>, <strong>/enrol</strong>, and live Razorpay checkout orders).
+              </p>
+            </div>
+            <Link
+              to="/plans"
+              target="_blank"
+              className="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center gap-2 shadow-2xs transition-colors shrink-0"
+            >
+              <span>View Live /plans</span>
+              <ExternalLink className="w-3.5 h-3.5 text-[#1E9E54]" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+            {['explorer', 'builder', 'professional'].map((planKey) => {
+              const plan = plansList[planKey] || {
+                id: planKey,
+                name: planKey.charAt(0).toUpperCase() + planKey.slice(1),
+                fee: planKey === 'explorer' ? 5999 : planKey === 'builder' ? 9999 : 14999,
+                feeFormatted: planKey === 'explorer' ? '₹5,999' : planKey === 'builder' ? '₹9,999' : '₹14,999',
+                duration: planKey === 'explorer' ? '1 Month' : planKey === 'builder' ? '2 Months' : '3 Months',
+                weeksTotal: planKey === 'explorer' ? 4 : planKey === 'builder' ? 8 : 12,
+                recommended: planKey === 'builder',
+                outcome: '',
+                features: []
+              };
+
+              return (
+                <div
+                  key={planKey}
+                  className={`bg-white rounded-2xl border transition-all flex flex-col justify-between p-6 relative ${
+                    plan.recommended
+                      ? 'border-[#1E9E54] shadow-md ring-1 ring-[#1E9E54]/20'
+                      : 'border-slate-200 shadow-xs'
+                  }`}
+                >
+                  {plan.recommended && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1E9E54] text-white text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-0.5 rounded-full shadow-xs">
+                      MOST POPULAR
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                        {plan.duration || `${plan.weeksTotal} Weeks`}
+                      </span>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold uppercase">
+                        {planKey}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="text-xl font-heading font-black text-slate-900">
+                        {plan.name}
+                      </h3>
+                      <div className="mt-2 flex items-baseline gap-1.5">
+                        <span className="text-3xl font-heading font-black text-slate-900 font-mono">
+                          {plan.feeFormatted || `₹${Number(plan.fee).toLocaleString('en-IN')}`}
+                        </span>
+                        <span className="text-xs text-slate-400">all-inclusive</span>
+                      </div>
+                      <p className="text-xs text-slate-600 mt-2 font-light leading-relaxed">
+                        {plan.outcome || 'Comprehensive curriculum with hands-on live project training.'}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 space-y-2 text-xs">
+                      <div className="flex items-center justify-between text-slate-500 text-[11px]">
+                        <span>Certificate:</span>
+                        <span className="font-semibold text-slate-800 truncate max-w-[170px]" title={plan.certificateType}>
+                          {plan.certificateType || 'Certificate of Completion'}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-slate-500 text-[11px]">
+                        <span>Curriculum Weeks:</span>
+                        <span className="font-semibold text-slate-800">{plan.weeksTotal || 4} Weeks</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 space-y-2">
+                      <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">
+                        INCLUDED DELIVERABLES ({(plan.features || []).length})
+                      </p>
+                      <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                        {(plan.features || []).map((feat: string, i: number) => (
+                          <div key={i} className="flex items-start gap-2 text-xs text-slate-600">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#1E9E54] shrink-0 mt-0.5" />
+                            <span className="leading-tight">{feat}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-5 mt-6 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => openEditPlanModal(planKey)}
+                      className="w-full py-2.5 px-4 bg-slate-900 hover:bg-[#1E9E54] text-white text-xs font-heading font-bold rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                    >
+                      <span>Edit Plan &amp; Tuition</span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -2376,6 +2611,179 @@ export const AdminDashboard: React.FC = () => {
                     Save Review
                   </button>
                 </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* PLAN EDIT MODAL */}
+      {showPlanModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs overflow-y-auto">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl my-8">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+              <div>
+                <h2 className="font-heading font-bold text-lg text-slate-900">
+                  Edit Plan &amp; Tuition: {editingPlanId?.toUpperCase()}
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Updates reflect instantly across /plans, /enrol, and live Razorpay orders.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPlanModal(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSavePlan} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Plan Display Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={planFormData.name}
+                    onChange={(e) => setPlanFormData({ ...planFormData, name: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Tuition Fee (₹ INR) *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={0}
+                    value={planFormData.fee}
+                    onChange={(e) => setPlanFormData({ ...planFormData, fee: Number(e.target.value) })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-bold"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Duration Label *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 2 Months"
+                    value={planFormData.duration}
+                    onChange={(e) => setPlanFormData({ ...planFormData, duration: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Curriculum Weeks Total *
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    min={1}
+                    max={52}
+                    value={planFormData.weeksTotal}
+                    onChange={(e) => setPlanFormData({ ...planFormData, weeksTotal: Number(e.target.value) })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer select-none py-1">
+                  <input
+                    type="checkbox"
+                    checked={planFormData.recommended}
+                    onChange={(e) => setPlanFormData({ ...planFormData, recommended: e.target.checked })}
+                    className="w-4 h-4 text-[#1E9E54] rounded border-slate-300 focus:ring-[#1E9E54]"
+                  />
+                  <span className="text-xs font-bold text-slate-800">
+                    Mark as "Most Popular / Recommended" (Shows badge and highlight on /plans)
+                  </span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                  Expected Outcome / Short Description *
+                </label>
+                <textarea
+                  rows={2}
+                  required
+                  value={planFormData.outcome}
+                  onChange={(e) => setPlanFormData({ ...planFormData, outcome: e.target.value })}
+                  placeholder="e.g. Build a complete app with a backend and smarter AI features."
+                  className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                  Certificate Title / Qualification Type *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={planFormData.certificateType}
+                  onChange={(e) => setPlanFormData({ ...planFormData, certificateType: e.target.value })}
+                  placeholder="e.g. Certificate of Completion"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                  Live Project Deliverables / Team Role
+                </label>
+                <textarea
+                  rows={2}
+                  value={planFormData.liveProjectRole}
+                  onChange={(e) => setPlanFormData({ ...planFormData, liveProjectRole: e.target.value })}
+                  placeholder="e.g. Own assigned feature modules and work through Git branches with mentor code review."
+                  className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">
+                  Included Features &amp; Deliverables (One per line) *
+                </label>
+                <textarea
+                  rows={6}
+                  required
+                  value={planFormData.featuresInput}
+                  onChange={(e) => setPlanFormData({ ...planFormData, featuresInput: e.target.value })}
+                  placeholder="App development fundamentals&#10;Firebase backend and sign-in&#10;AI-assisted testing and debugging&#10;Working capstone project on GitHub"
+                  className="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Each line appears as a separate verified feature point with a checkmark on the pricing cards.
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowPlanModal(false)}
+                  className="px-4 py-2 border border-slate-300 text-slate-700 font-semibold rounded-lg text-xs hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold rounded-lg text-xs transition-colors shadow-xs cursor-pointer"
+                >
+                  Save Plan Changes
+                </button>
               </div>
             </form>
           </div>

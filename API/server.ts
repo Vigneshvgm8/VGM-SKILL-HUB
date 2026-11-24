@@ -217,7 +217,7 @@ export async function startServer() {
   // 7. Central API error handler (no stack trace or path leakage to clients)
   app.use(apiErrorHandler);
 
-  app.listen(PORT, '0.0.0.0', () => {
+  app.listen(PORT, () => {
     console.log(`================================================`);
     console.log(` VGM SKILL HUB FULL-STACK SERVER READY`);
     console.log(` Mode: ${isProduction ? 'Production' : 'Development'} (Port: ${PORT})`);

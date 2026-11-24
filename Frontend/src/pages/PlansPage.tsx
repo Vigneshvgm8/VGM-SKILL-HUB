@@ -14,6 +14,23 @@ const sectionAnim = {
 };
 
 export const PlansPage: React.FC = () => {
+  const [plans, setPlans] = React.useState<Record<string, any>>(PROGRAM_PLANS);
+
+  React.useEffect(() => {
+    fetch('/api/plans')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.plans) {
+          setPlans(data.plans);
+        }
+      })
+      .catch(err => console.warn('Using local fallback plans:', err));
+  }, []);
+
+  const explorer = plans.explorer || PROGRAM_PLANS.explorer;
+  const builder = plans.builder || PROGRAM_PLANS.builder;
+  const professional = plans.professional || PROGRAM_PLANS.professional;
+
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] space-y-24 pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 font-body">
       
@@ -51,21 +68,21 @@ export const PlansPage: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs uppercase font-mono font-bold text-[#777777] tracking-[0.15em]">
-                    1 MONTH
+                    {explorer.duration ? explorer.duration.toUpperCase() : '1 MONTH'}
                   </span>
                   <span className="text-xs text-[#888888] font-mono">one-time fee</span>
                 </div>
                 <h2 className="text-3xl font-black text-[#111111] mt-2 font-heading">
-                  Explorer
+                  {explorer.name || 'Explorer'}
                 </h2>
                 <div className="mt-4 flex items-baseline gap-2">
                   <span className="text-4xl font-black text-[#111111] tabular-nums font-mono">
-                    ₹5,999
+                    {explorer.feeFormatted || `₹${Number(explorer.fee).toLocaleString('en-IN')}`}
                   </span>
                   <span className="text-xs text-[#777777]">all-inclusive</span>
                 </div>
                 <p className="text-xs text-[#666666] mt-2 font-light">
-                  Understand the basics and build one working AI-powered mini app.
+                  {explorer.outcome || 'Understand the basics and build one working AI-powered mini app.'}
                 </p>
 
                 <hr className="my-6 border-black/10" />
@@ -74,7 +91,7 @@ export const PlansPage: React.FC = () => {
                   <p className="text-xs font-mono font-bold text-[#888888] uppercase tracking-[0.15em]">
                     WHAT IS INCLUDED
                   </p>
-                  {PROGRAM_PLANS.explorer.features.map((f, i) => (
+                  {(explorer.features || []).map((f: string, i: number) => (
                     <div key={i} className="flex items-start gap-2.5">
                       <Check className="w-4 h-4 text-[#1E9E54] mt-0.5 shrink-0" />
                       <span>{f}</span>
@@ -88,36 +105,38 @@ export const PlansPage: React.FC = () => {
                   to="/enrol?plan=explorer"
                   className="w-full text-center py-3.5 px-4 bg-[#111111] hover:bg-[#1E9E54] text-white font-bold rounded-full transition-all block text-xs uppercase tracking-wider"
                 >
-                  Enrol in Explorer (₹5,999)
+                  Enrol in {explorer.name || 'Explorer'} ({explorer.feeFormatted || `₹${explorer.fee}`})
                 </Link>
               </div>
             </div>
           </CinematicCard>
 
           {/* Plan 2: Builder (Recommended / Most Popular) */}
-          <CinematicCard highlight className="h-full">
+          <CinematicCard highlight={Boolean(builder.recommended)} className="h-full">
             <div className="flex flex-col justify-between relative h-full">
-              <div className="absolute -top-11 left-1/2 -translate-x-1/2 bg-[#1E9E54] text-white text-xs font-mono font-bold uppercase tracking-[0.15em] px-4 py-1 rounded-full shadow-sm">
-                MOST POPULAR
-              </div>
+              {builder.recommended && (
+                <div className="absolute -top-11 left-1/2 -translate-x-1/2 bg-[#1E9E54] text-white text-xs font-mono font-bold uppercase tracking-[0.15em] px-4 py-1 rounded-full shadow-sm">
+                  MOST POPULAR
+                </div>
+              )}
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs uppercase font-mono font-bold text-[#1E9E54] tracking-[0.15em]">
-                    2 MONTHS
+                    {builder.duration ? builder.duration.toUpperCase() : '2 MONTHS'}
                   </span>
                   <span className="text-xs text-[#777777] font-mono">one-time fee</span>
                 </div>
                 <h2 className="text-3xl font-black text-[#111111] mt-2 font-heading">
-                  Builder
+                  {builder.name || 'Builder'}
                 </h2>
                 <div className="mt-4 flex items-baseline gap-2">
                   <span className="text-4xl font-black text-[#111111] tabular-nums font-mono">
-                    ₹9,999
+                    {builder.feeFormatted || `₹${Number(builder.fee).toLocaleString('en-IN')}`}
                   </span>
                   <span className="text-xs text-[#777777]">all-inclusive</span>
                 </div>
                 <p className="text-xs text-[#666666] mt-2 font-light">
-                  Build a complete app with a backend and smarter AI features.
+                  {builder.outcome || 'Build a complete app with a backend and smarter AI features.'}
                 </p>
 
                 <hr className="my-6 border-black/10" />
@@ -126,7 +145,7 @@ export const PlansPage: React.FC = () => {
                   <p className="text-xs font-mono font-bold text-[#1E9E54] uppercase tracking-[0.15em]">
                     WHAT IS INCLUDED
                   </p>
-                  {PROGRAM_PLANS.builder.features.map((f, i) => (
+                  {(builder.features || []).map((f: string, i: number) => (
                     <div key={i} className="flex items-start gap-2.5">
                       <Check className="w-4 h-4 text-[#1E9E54] mt-0.5 shrink-0" />
                       <span>{f}</span>
@@ -140,7 +159,7 @@ export const PlansPage: React.FC = () => {
                   to="/enrol?plan=builder"
                   className="w-full text-center py-3.5 px-4 bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold rounded-full transition-all block text-xs uppercase tracking-wider shadow-sm"
                 >
-                  Enrol in Builder (₹9,999)
+                  Enrol in {builder.name || 'Builder'} ({builder.feeFormatted || `₹${builder.fee}`})
                 </Link>
               </div>
             </div>
@@ -152,21 +171,21 @@ export const PlansPage: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between">
                   <span className="text-xs uppercase font-mono font-bold text-[#777777] tracking-[0.15em]">
-                    3 MONTHS
+                    {professional.duration ? professional.duration.toUpperCase() : '3 MONTHS'}
                   </span>
                   <span className="text-xs text-[#888888] font-mono">one-time fee</span>
                 </div>
                 <h2 className="text-3xl font-black text-[#111111] mt-2 font-heading">
-                  Professional
+                  {professional.name || 'Professional'}
                 </h2>
                 <div className="mt-4 flex items-baseline gap-2">
                   <span className="text-4xl font-black text-[#111111] tabular-nums font-mono">
-                    ₹14,999
+                    {professional.feeFormatted || `₹${Number(professional.fee).toLocaleString('en-IN')}`}
                   </span>
                   <span className="text-xs text-[#777777]">all-inclusive</span>
                 </div>
                 <p className="text-xs text-[#666666] mt-2 font-light">
-                  Become job-ready with a published app, live feature ownership, and a strong portfolio.
+                  {professional.outcome || 'Become job-ready with a published app, live feature ownership, and a strong portfolio.'}
                 </p>
 
                 <hr className="my-6 border-black/10" />
@@ -175,7 +194,7 @@ export const PlansPage: React.FC = () => {
                   <p className="text-xs font-mono font-bold text-[#888888] uppercase tracking-[0.15em]">
                     WHAT IS INCLUDED
                   </p>
-                  {PROGRAM_PLANS.professional.features.map((f, i) => (
+                  {(professional.features || []).map((f: string, i: number) => (
                     <div key={i} className="flex items-start gap-2.5">
                       <Check className="w-4 h-4 text-[#1E9E54] mt-0.5 shrink-0" />
                       <span>{f}</span>
@@ -189,7 +208,7 @@ export const PlansPage: React.FC = () => {
                   to="/enrol?plan=professional"
                   className="w-full text-center py-3.5 px-4 bg-[#111111] hover:bg-[#1E9E54] text-white font-bold rounded-full transition-all block text-xs uppercase tracking-wider"
                 >
-                  Enrol in Professional (₹14,999)
+                  Enrol in {professional.name || 'Professional'} ({professional.feeFormatted || `₹${professional.fee}`})
                 </Link>
               </div>
             </div>

@@ -121,6 +121,18 @@ export const AdminAPI = {
     });
   },
 
+  // Plans Management
+  async getPlans() {
+    return request<{ success: boolean; plans: Record<string, any> }>('/api/admin/plans');
+  },
+
+  async updatePlan(id: string, planData: any) {
+    return request<{ success: boolean; plan: any }>(`/api/admin/plans/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(planData),
+    });
+  },
+
   // Coupons
   async getCoupons() {
     return request<{ success: boolean; coupons: any[] }>('/api/admin/coupons');

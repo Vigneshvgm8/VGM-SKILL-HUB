@@ -1247,8 +1247,8 @@
       "learnersEnrolled": 840,
       "liveProjectsCount": 3,
       "nextBatch": "10th November 2026",
-      "startingFee": 6000,
-      "startingFeeFormatted": "₹6,000",
+      "startingFee": 5999,
+      "startingFeeFormatted": "₹5,999",
       "status": "enrolling",
       "featured": true,
       "thumbnail": "/assets/courses/ai-mobile-app.svg",
@@ -1383,6 +1383,7 @@
             "Project templates and code access"
           ],
           "weeksTotal": 4,
+          "recommended": false,
           "feeFormatted": "₹5,999",
           "durationMonths": 1,
           "certificateType": "Certificate of Participation",
@@ -1517,5 +1518,76 @@
       "createdAt": "2026-11-24T10:09:42.075371+00:00",
       "updatedAt": "2026-11-24T10:09:42.075371+00:00"
     }
-  ]
+  ],
+  "plans": {
+    "explorer": {
+      "id": "explorer",
+      "name": "Explorer",
+      "duration": "1 Month",
+      "durationMonths": 1,
+      "weeksTotal": 4,
+      "fee": 5999,
+      "feeFormatted": "₹5,999",
+      "recommended": false,
+      "outcome": "Understand the basics and build one working AI-powered mini app.",
+      "certificateType": "Certificate of Participation",
+      "liveProjectRole": "Shadow the team and complete small guided tasks such as UI fixes and screen changes.",
+      "features": [
+        "App development fundamentals",
+        "AI assistants for coding and learning",
+        "Add an AI feature using an API",
+        "Build one AI-powered mini app",
+        "Shadow the team on a live project",
+        "Certificate of participation",
+        "Mentor guidance and doubt clearing",
+        "Project templates and code access"
+      ]
+    },
+    "builder": {
+      "id": "builder",
+      "name": "Builder",
+      "duration": "2 Months",
+      "durationMonths": 2,
+      "weeksTotal": 8,
+      "fee": 9999,
+      "feeFormatted": "₹9,999",
+      "recommended": true,
+      "outcome": "Build a complete app with a backend and smarter AI features.",
+      "certificateType": "Certificate of Completion",
+      "liveProjectRole": "Own assigned feature modules and work through Git branches with mentor code review.",
+      "features": [
+        "Everything in Explorer",
+        "Firebase backend and sign-in",
+        "Speech and image AI features",
+        "AI-assisted testing and debugging",
+        "Own feature modules on a live project",
+        "Certificate of completion",
+        "Mid-term review & individual code review",
+        "Working capstone project on GitHub"
+      ]
+    },
+    "professional": {
+      "id": "professional",
+      "name": "Professional",
+      "duration": "3 Months",
+      "durationMonths": 3,
+      "weeksTotal": 12,
+      "fee": 14999,
+      "feeFormatted": "₹14,999",
+      "recommended": false,
+      "outcome": "Become job-ready with a published app, live feature ownership, and a strong portfolio.",
+      "certificateType": "Certificate of Completion + Experience Letter",
+      "liveProjectRole": "Take full ownership of a feature from planning to release, with regular reviews. An experience letter is issued on completion.",
+      "features": [
+        "Everything in Builder",
+        "App architecture and performance",
+        "Secure, responsible use of AI & API costs",
+        "Publish on Google Play Store",
+        "Full ownership of a live feature",
+        "Resume, portfolio & mock technical interviews",
+        "Official Experience Letter on completion",
+        "Priority recommendation for openings at VGM Soft Tech"
+      ]
+    }
+  }
 }

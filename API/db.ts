@@ -72,6 +72,93 @@ export interface Certificate {
   updatedAt: string;
 }
 
+export interface PlanItem {
+  id: string; // 'explorer' | 'builder' | 'professional'
+  name: string;
+  duration: string;
+  durationMonths: number;
+  weeksTotal: number;
+  fee: number;
+  feeFormatted: string;
+  recommended?: boolean;
+  outcome: string;
+  certificateType: string;
+  liveProjectRole: string;
+  features: string[];
+}
+
+export const INITIAL_PLANS: Record<string, PlanItem> = {
+  explorer: {
+    id: 'explorer',
+    name: 'Explorer',
+    duration: '1 Month',
+    durationMonths: 1,
+    weeksTotal: 4,
+    fee: 5999,
+    feeFormatted: '₹5,999',
+    recommended: false,
+    outcome: 'Understand the basics and build one working AI-powered mini app.',
+    certificateType: 'Certificate of Participation',
+    liveProjectRole: 'Shadow the team and complete small guided tasks such as UI fixes and screen changes.',
+    features: [
+      'App development fundamentals',
+      'AI assistants for coding and learning',
+      'Add an AI feature using an API',
+      'Build one AI-powered mini app',
+      'Shadow the team on a live project',
+      'Certificate of participation',
+      'Mentor guidance and doubt clearing',
+      'Project templates and code access'
+    ]
+  },
+  builder: {
+    id: 'builder',
+    name: 'Builder',
+    duration: '2 Months',
+    durationMonths: 2,
+    weeksTotal: 8,
+    fee: 9999,
+    feeFormatted: '₹9,999',
+    recommended: true,
+    outcome: 'Build a complete app with a backend and smarter AI features.',
+    certificateType: 'Certificate of Completion',
+    liveProjectRole: 'Own assigned feature modules and work through Git branches with mentor code review.',
+    features: [
+      'Everything in Explorer',
+      'Firebase backend and sign-in',
+      'Speech and image AI features',
+      'AI-assisted testing and debugging',
+      'Own feature modules on a live project',
+      'Certificate of completion',
+      'Mid-term review & individual code review',
+      'Working capstone project on GitHub'
+    ]
+  },
+  professional: {
+    id: 'professional',
+    name: 'Professional',
+    duration: '3 Months',
+    durationMonths: 3,
+    weeksTotal: 12,
+    fee: 14999,
+    feeFormatted: '₹14,999',
+    recommended: false,
+    outcome: 'Become job-ready with a published app, live feature ownership, and a strong portfolio.',
+    certificateType: 'Certificate of Completion + Experience Letter',
+    liveProjectRole: 'Take full ownership of a feature from planning to release, with regular reviews. An experience letter is issued on completion.',
+    features: [
+      'Everything in Builder',
+      'App architecture and performance',
+      'Secure, responsible use of AI & API costs',
+      'Publish on Google Play Store',
+      'Full ownership of a live feature',
+      'Resume, portfolio & mock technical interviews',
+      'Official Experience Letter on completion',
+      'Priority recommendation for openings at VGM Soft Tech'
+    ]
+  }
+};
+
 export interface Enrolment {
   id: string; // e.g. VGM-2026-0001 or VGM-2026-0001-02
   enrollmentNumber?: string; // unique master enrollment number for the student e.g. VGM-2026-0001
@@ -109,6 +196,7 @@ interface DatabaseSchema {
   enrolments: Enrolment[];
   coupons: Coupon[];
   certificates: Certificate[];
+  plans?: Record<string, PlanItem>;
   processedWebhooks: { id: string; processedAt: string; eventType: string }[];
 }
 
@@ -242,6 +330,10 @@ function initDB(): DatabaseSchema {
         parsed.certificates = INITIAL_CERTIFICATES;
         changed = true;
       }
+      if (!parsed.plans || Object.keys(parsed.plans).length === 0) {
+        parsed.plans = INITIAL_PLANS;
+        changed = true;
+      }
       if (changed) {
         fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), 'utf-8');
       }
@@ -255,6 +347,7 @@ function initDB(): DatabaseSchema {
     counter: 1,
     courses: INITIAL_COURSES,
     certificates: INITIAL_CERTIFICATES,
+    plans: INITIAL_PLANS,
     enrolments: [
       {
         id: 'VGM-2026-0001',
@@ -701,6 +794,62 @@ export const DB = {
       return true;
     }
     return false;
+  },
+
+  // --- Dynamic Plan Management ---
+  getPlans(): Record<string, PlanItem> {
+    if (!db.plans || Object.keys(db.plans).length === 0) {
+      db.plans = { ...INITIAL_PLANS };
+      saveDB();
+    }
+    return db.plans;
+  },
+
+  getPlanById(id: string): PlanItem | undefined {
+    const plans = this.getPlans();
+    return plans[id.toLowerCase().trim()];
+  },
+
+  updatePlan(id: string, updates: Partial<PlanItem>): PlanItem | null {
+    const cleanId = id.toLowerCase().trim();
+    if (!db.plans) db.plans = { ...INITIAL_PLANS };
+    if (!db.plans[cleanId]) return null;
+
+    const existing = db.plans[cleanId];
+    const newFee = typeof updates.fee === 'number' && updates.fee >= 0 ? updates.fee : existing.fee;
+    const feeFormatted = updates.feeFormatted || `₹${newFee.toLocaleString('en-IN')}`;
+
+    db.plans[cleanId] = {
+      ...existing,
+      ...updates,
+      id: cleanId,
+      fee: newFee,
+      feeFormatted
+    };
+
+    // Also synchronize to the flagship ai-mobile-app course in db.courses
+    if (db.courses) {
+      const mobileCourse = db.courses.find(c => c.id === 'ai-mobile-app');
+      if (mobileCourse) {
+        if (!mobileCourse.plans) mobileCourse.plans = {};
+        mobileCourse.plans[cleanId] = {
+          ...mobileCourse.plans[cleanId],
+          ...db.plans[cleanId]
+        };
+        if (cleanId === 'explorer' && typeof updates.fee === 'number') {
+          mobileCourse.startingFee = updates.fee;
+          mobileCourse.startingFeeFormatted = feeFormatted;
+        }
+        if (SupabaseService.isAvailable()) {
+          SupabaseService.upsertCourses([mobileCourse]).catch(e =>
+            console.error('[SUPABASE ASYNC ERROR] sync plan to course:', e?.message || e)
+          );
+        }
+      }
+    }
+
+    saveDB();
+    return db.plans[cleanId];
   },
 
   // --- Student Portal Methods ---

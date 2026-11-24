@@ -46,8 +46,16 @@ apiRouter.get('/config', publicRateLimiter, (_req, res) => {
     razorpayKeyId: RazorpayService.getKeyId(),
     isLive: RazorpayService.isLive(),
     isConfigured: RazorpayService.isConfigured(),
-    planPrices: PLAN_PRICES,
+    planPrices: DB.getPlans(),
     databaseEngine: SupabaseService.isAvailable() ? 'supabase_postgresql' : 'local_json_resilient'
+  });
+});
+
+// 1.5. GET /api/plans - Public retrieval of current active plans & tuition
+apiRouter.get('/plans', publicRateLimiter, (_req, res) => {
+  res.json({
+    success: true,
+    plans: DB.getPlans()
   });
 });
 
@@ -120,7 +128,8 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
       couponCode
     } = req.body;
 
-    const plan = PLAN_PRICES[planId];
+    const currentPlans = DB.getPlans();
+    const plan = currentPlans[planId];
     const resolvedPlanName = customPlanName || plan?.name || 'Explorer';
     const baseAmount = typeof customFee === 'number' && customFee > 0 ? customFee : (plan ? plan.fee : 5999);
 
@@ -612,6 +621,26 @@ apiRouter.delete('/admin/courses/:id', requireAdmin, (req, res) => {
     res.json({ success: true });
   } catch (err: any) {
     res.status(500).json({ error: 'Error deleting course' });
+  }
+});
+
+// 13.5. Dynamic Plan & Tuition Management Routes
+apiRouter.get('/admin/plans', requireAdmin, (_req, res) => {
+  res.json({
+    success: true,
+    plans: DB.getPlans()
+  });
+});
+
+apiRouter.put('/admin/plans/:id', requireAdmin, (req, res) => {
+  try {
+    const updated = DB.updatePlan(req.params.id, req.body);
+    if (!updated) {
+      return res.status(404).json({ success: false, error: 'Plan not found.' });
+    }
+    res.json({ success: true, plan: updated });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err?.message || 'Error updating plan' });
   }
 });
 
