@@ -7,7 +7,7 @@ services:
   - type: web
     name: vgm-skill-hub
     runtime: node
-    plan: starter
+    plan: free
     region: singapore # Closest to India (Coimbatore) for ultra-low latency (< 40ms)
     buildCommand: npm install --legacy-peer-deps && npm run build
     startCommand: node server.js
