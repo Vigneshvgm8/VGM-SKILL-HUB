@@ -24,7 +24,9 @@ import {
   ShieldCheck,
   FileCode,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  BookOpen,
+  Menu
 } from 'lucide-react';
 import { BATCH_OPTIONS } from '../config/programData.js';
 import { ASSESSMENT_QUESTIONS } from '../config/assessmentQuestions.js';
@@ -65,8 +67,9 @@ export const AdminDashboard: React.FC = () => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [filterBatch, setFilterBatch] = useState<string>('all');
 
-  // Active Tab
+  // Active Tab & Sidebar Navigation State
   const [activeTab, setActiveTab] = useState<'enrolments' | 'courses' | 'certificates' | 'projects' | 'coupons'>('enrolments');
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   // Detail Modal
   const [selectedEnrolment, setSelectedEnrolment] = useState<Enrolment | null>(null);
@@ -643,218 +646,393 @@ export const AdminDashboard: React.FC = () => {
     );
   }
 
-  // AUTHENTICATED DASHBOARD
+  // AUTHENTICATED DASHBOARD - ENTERPRISE SIDEBAR LAYOUT
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8">
-      
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-        <div>
-          <span className="text-xs font-heading font-bold uppercase tracking-wider text-[#1E7A46]">
-            STAFF MANAGEMENT CONSOLE
-          </span>
-          <h1 className="text-3xl font-heading font-bold text-slate-900 mt-0.5">
-            VGM Skill Hub Admissions
-          </h1>
+    <div className="min-h-screen bg-[#F8F9FA] flex flex-col md:flex-row text-[#111111]">
+      {/* Mobile Top Header */}
+      <div className="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-[#1E9E54]/15 text-[#1E9E54] flex items-center justify-center font-bold">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h1 className="font-heading font-bold text-sm text-slate-900 leading-tight">VGM Staff Console</h1>
+            <p className="text-[10px] text-slate-500 font-mono">Academic Admissions</p>
+          </div>
         </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={fetchDashboardData}
-            className="p-2 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs flex items-center gap-1.5"
-            title="Refresh data"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loadingData ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">Refresh</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleExportCSV}
-            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="p-2 text-slate-500 hover:text-red-600 border border-slate-200 hover:border-red-200 rounded-lg text-xs flex items-center gap-1"
-            title="Log out"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg cursor-pointer"
+        >
+          {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
 
-      {/* KPI Summary Cards */}
-      {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-              <span className="font-heading font-bold uppercase tracking-wider">Total Enrolments</span>
-              <Users className="w-4 h-4 text-slate-400" />
+      {/* Desktop & Mobile Sidebar Navigation */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-slate-200 flex flex-col transition-transform duration-200 ease-in-out md:static md:translate-x-0 md:h-screen md:sticky md:top-0
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        {/* Brand Header */}
+        <div className="p-5 border-b border-slate-200 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#1E9E54]/15 border border-[#1E9E54]/30 text-[#1E9E54] flex items-center justify-center font-bold shadow-xs">
+              <ShieldCheck className="w-6 h-6" />
             </div>
-            <p className="text-3xl font-heading font-bold text-slate-900 tabular-nums">
-              {stats.totalEnrolments}
-            </p>
-            <span className="text-[11px] text-slate-400">
-              {stats.paidCount} Paid · {stats.pendingCount} Pending
-            </span>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-              <span className="font-heading font-bold uppercase tracking-wider">Total Revenue</span>
-              <DollarSign className="w-4 h-4 text-[#1E7A46]" />
-            </div>
-            <p className="text-3xl font-heading font-bold text-[#1E7A46] tabular-nums">
-              ₹{stats.totalRevenue.toLocaleString('en-IN')}
-            </p>
-            <span className="text-[11px] text-slate-400">
-              Verified Razorpay Collections
-            </span>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-              <span className="font-heading font-bold uppercase tracking-wider">Plan Distribution</span>
-              <Layers className="w-4 h-4 text-slate-400" />
-            </div>
-            <div className="text-xs space-y-0.5 mt-2">
-              <p className="flex justify-between">
-                <span>Explorer (1 Mo):</span>
-                <strong className="font-mono">{stats.planBreakdown.explorer || 0}</strong>
-              </p>
-              <p className="flex justify-between">
-                <span>Builder (2 Mo):</span>
-                <strong className="font-mono">{stats.planBreakdown.builder || 0}</strong>
-              </p>
-              <p className="flex justify-between">
-                <span>Professional (3 Mo):</span>
-                <strong className="font-mono">{stats.planBreakdown.professional || 0}</strong>
-              </p>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-heading font-black text-sm text-slate-900 tracking-tight">VGM SKILL HUB</span>
+                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-[#1E9E54]/10 text-[#1E7A46] font-bold">STAFF</span>
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium">Academic Admissions Console</p>
             </div>
           </div>
-
-          <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
-            <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
-              <span className="font-heading font-bold uppercase tracking-wider">Payment Health</span>
-              <CheckCircle className="w-4 h-4 text-[#43C170]" />
-            </div>
-            <p className="text-2xl font-heading font-bold text-slate-900 tabular-nums mt-1">
-              {stats.totalEnrolments > 0
-                ? `${Math.round((stats.paidCount / stats.totalEnrolments) * 100)}%`
-                : '100%'}
-            </p>
-            <span className="text-[11px] text-slate-400">
-              Conversion rate to Paid status
-            </span>
-          </div>
-
-        </div>
-      )}
-
-      {/* Tabs: Enrolments vs Courses vs Certificates vs Projects vs Coupons */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 gap-3">
-        <div className="flex flex-wrap gap-2 sm:gap-4">
           <button
             type="button"
-            onClick={() => setActiveTab('enrolments')}
-            className={`pb-3 text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer ${
+            onClick={() => setSidebarOpen(false)}
+            className="md:hidden p-1.5 text-slate-400 hover:text-slate-700 cursor-pointer"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Sidebar Navigation Items */}
+        <div className="flex-1 px-3 py-4 space-y-1.5 overflow-y-auto">
+          <div className="px-3 pb-2 text-[10px] font-heading font-bold text-slate-400 uppercase tracking-wider">
+            Management & Registry
+          </div>
+
+          {/* Enrolments Item */}
+          <button
+            type="button"
+            onClick={() => { setActiveTab('enrolments'); setSidebarOpen(false); }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer ${
               activeTab === 'enrolments'
-                ? 'border-[#1E9E54] text-[#1E7A46]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'bg-[#1E9E54] text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
             }`}
           >
-            Enrolments ({enrolments.length})
+            <div className="flex items-center gap-2.5">
+              <Users className="w-4 h-4" />
+              <span>Enrolments</span>
+            </div>
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-full ${
+              activeTab === 'enrolments' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+            }`}>
+              {enrolments.length}
+            </span>
           </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('courses')}
-            className={`pb-3 text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'courses'
-                ? 'border-[#1E9E54] text-[#1E7A46]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Courses ({coursesList.length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('certificates')}
-            className={`pb-3 text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'certificates'
-                ? 'border-[#1E9E54] text-[#1E7A46]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <Award className="w-3.5 h-3.5" />
-            <span>Certificates ({certificates.length})</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('projects')}
-            className={`pb-3 text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
-              activeTab === 'projects'
-                ? 'border-[#1E9E54] text-[#1E7A46]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            <FileCode className="w-3.5 h-3.5" />
-            <span>Project Analysis ({projects.length})</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('coupons')}
-            className={`pb-3 text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border-b-2 transition-colors cursor-pointer ${
-              activeTab === 'coupons'
-                ? 'border-[#1E9E54] text-[#1E7A46]'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Coupons ({coupons.length})
-          </button>
-        </div>
 
-        <div className="flex items-center gap-2 pb-2">
-          {activeTab === 'courses' && (
+          {/* Courses Item */}
+          <button
+            type="button"
+            onClick={() => { setActiveTab('courses'); setSidebarOpen(false); }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer ${
+              activeTab === 'courses'
+                ? 'bg-[#1E9E54] text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <BookOpen className="w-4 h-4" />
+              <span>Courses & Tracks</span>
+            </div>
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-full ${
+              activeTab === 'courses' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+            }`}>
+              {coursesList.length}
+            </span>
+          </button>
+
+          {/* Certificates Item */}
+          <button
+            type="button"
+            onClick={() => { setActiveTab('certificates'); setSidebarOpen(false); }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer ${
+              activeTab === 'certificates'
+                ? 'bg-[#1E9E54] text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Award className="w-4 h-4" />
+              <span>Certificates</span>
+            </div>
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-full ${
+              activeTab === 'certificates' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+            }`}>
+              {certificates.length}
+            </span>
+          </button>
+
+          {/* Project Analysis Item */}
+          <button
+            type="button"
+            onClick={() => { setActiveTab('projects'); setSidebarOpen(false); }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer ${
+              activeTab === 'projects'
+                ? 'bg-[#1E9E54] text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <FileCode className="w-4 h-4" />
+              <span>Project Analysis</span>
+            </div>
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-full ${
+              activeTab === 'projects' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+            }`}>
+              {projects.length}
+            </span>
+          </button>
+
+          {/* Coupons Item */}
+          <button
+            type="button"
+            onClick={() => { setActiveTab('coupons'); setSidebarOpen(false); }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer ${
+              activeTab === 'coupons'
+                ? 'bg-[#1E9E54] text-white shadow-xs'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <Tag className="w-4 h-4" />
+              <span>Discount Coupons</span>
+            </div>
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-full ${
+              activeTab === 'coupons' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+            }`}>
+              {coupons.length}
+            </span>
+          </button>
+
+          {/* Quick Actions in Sidebar */}
+          <div className="pt-5 px-1 space-y-2">
+            <div className="px-2 text-[10px] font-heading font-bold text-slate-400 uppercase tracking-wider">
+              Quick Actions
+            </div>
             <button
               type="button"
               onClick={openNewCourseModal}
-              className="px-3.5 py-1.5 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              className="w-full py-2 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Add Course / Track</span>
+              <Plus className="w-3.5 h-3.5 text-[#1E9E54]" />
+              <span>Add New Course</span>
             </button>
-          )}
-
-          {activeTab === 'certificates' && (
             <button
               type="button"
               onClick={openNewCertModal}
-              className="px-3.5 py-1.5 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              className="w-full py-2 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-3.5 h-3.5 text-[#1E9E54]" />
               <span>Issue Certificate</span>
             </button>
-          )}
-
-          {activeTab === 'coupons' && (
             <button
               type="button"
               onClick={() => setShowNewCouponModal(true)}
-              className="px-3 py-1.5 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-semibold rounded-lg flex items-center gap-1 shadow-2xs cursor-pointer"
+              className="w-full py-2 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-3.5 h-3.5 text-[#1E9E54]" />
               <span>Create Coupon</span>
             </button>
-          )}
+          </div>
         </div>
-      </div>
+
+        {/* Sidebar Footer with Live Status & Logout */}
+        <div className="p-4 border-t border-slate-200 bg-slate-50/50 space-y-3">
+          <div className="space-y-1.5 text-[11px] font-mono">
+            <div className="flex items-center justify-between text-slate-600">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Database</span>
+              </span>
+              <span className="font-semibold text-emerald-700">Supabase Live</span>
+            </div>
+            <div className="flex items-center justify-between text-slate-600">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Razorpay</span>
+              </span>
+              <span className="font-semibold text-emerald-700">Live Mode</span>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-bold font-mono">
+                A
+              </div>
+              <div>
+                <p className="text-xs font-bold text-slate-900 leading-tight">Admin Staff</p>
+                <p className="text-[10px] text-slate-400">vgmsofttech.com</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+              title="Log out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Mobile Backdrop */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/40 z-30 md:hidden backdrop-blur-xs"
+        />
+      )}
+
+      {/* Main Content Area */}
+      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 space-y-6 overflow-y-auto">
+        {/* Top Header Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-heading font-bold uppercase tracking-wider text-[#1E7A46]">
+                MANAGEMENT CONSOLE
+              </span>
+              <span className="text-slate-300">/</span>
+              <span className="text-xs font-heading font-bold uppercase tracking-wider text-slate-500">
+                {activeTab}
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-slate-900 mt-1 capitalize">
+              {activeTab === 'enrolments' && 'Student Enrolments & Admissions'}
+              {activeTab === 'courses' && 'Curriculum Tracks & Course Catalogue'}
+              {activeTab === 'certificates' && 'Academic Credential Verification'}
+              {activeTab === 'projects' && 'Capstone Engineering Project Submissions'}
+              {activeTab === 'coupons' && 'Promotional Discount Coupons'}
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <button
+              type="button"
+              onClick={fetchDashboardData}
+              className="px-3 py-2 border border-slate-300 text-slate-700 hover:bg-white bg-slate-50 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              title="Refresh data from live database"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingData ? 'animate-spin' : ''}`} />
+              <span>Refresh</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleExportCSV}
+              className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export CSV</span>
+            </button>
+
+            {activeTab === 'courses' && (
+              <button
+                type="button"
+                onClick={openNewCourseModal}
+                className="px-3.5 py-2 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Course</span>
+              </button>
+            )}
+
+            {activeTab === 'certificates' && (
+              <button
+                type="button"
+                onClick={openNewCertModal}
+                className="px-3.5 py-2 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Issue Certificate</span>
+              </button>
+            )}
+
+            {activeTab === 'coupons' && (
+              <button
+                type="button"
+                onClick={() => setShowNewCouponModal(true)}
+                className="px-3.5 py-2 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Create Coupon</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* KPI Summary Cards */}
+        {stats && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+                <span className="font-heading font-bold uppercase tracking-wider">Total Enrolments</span>
+                <Users className="w-4 h-4 text-slate-400" />
+              </div>
+              <p className="text-3xl font-heading font-bold text-slate-900 tabular-nums">
+                {stats.totalEnrolments}
+              </p>
+              <span className="text-[11px] text-slate-400">
+                {stats.paidCount} Paid · {stats.pendingCount} Pending
+              </span>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+                <span className="font-heading font-bold uppercase tracking-wider">Total Revenue</span>
+                <DollarSign className="w-4 h-4 text-[#1E7A46]" />
+              </div>
+              <p className="text-3xl font-heading font-bold text-[#1E7A46] tabular-nums">
+                ₹{stats.totalRevenue.toLocaleString('en-IN')}
+              </p>
+              <span className="text-[11px] text-slate-400">
+                Verified Razorpay Collections
+              </span>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+                <span className="font-heading font-bold uppercase tracking-wider">Plan Distribution</span>
+                <Layers className="w-4 h-4 text-slate-400" />
+              </div>
+              <div className="text-xs space-y-0.5 mt-2">
+                <p className="flex justify-between">
+                  <span>Explorer (1 Mo):</span>
+                  <strong className="font-mono">{stats.planBreakdown.explorer || 0}</strong>
+                </p>
+                <p className="flex justify-between">
+                  <span>Builder (2 Mo):</span>
+                  <strong className="font-mono">{stats.planBreakdown.builder || 0}</strong>
+                </p>
+                <p className="flex justify-between">
+                  <span>Professional (3 Mo):</span>
+                  <strong className="font-mono">{stats.planBreakdown.professional || 0}</strong>
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
+              <div className="flex items-center justify-between text-slate-500 text-xs mb-1">
+                <span className="font-heading font-bold uppercase tracking-wider">Payment Health</span>
+                <CheckCircle className="w-4 h-4 text-[#43C170]" />
+              </div>
+              <p className="text-2xl font-heading font-bold text-slate-900 tabular-nums mt-1">
+                {stats.totalEnrolments > 0
+                  ? `${Math.round((stats.paidCount / stats.totalEnrolments) * 100)}%`
+                  : '100%'}
+              </p>
+              <span className="text-[11px] text-slate-400">
+                Conversion rate to Paid status
+              </span>
+            </div>
+          </div>
+        )}
 
       {/* TAB 1: ENROLMENTS TABLE */}
       {activeTab === 'enrolments' && (
@@ -2172,6 +2350,7 @@ export const AdminDashboard: React.FC = () => {
         </div>
       )}
 
+      </main>
     </div>
   );
 };
