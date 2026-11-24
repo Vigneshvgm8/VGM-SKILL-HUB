@@ -46,3 +46,4 @@ coverage/
 .temp/
 supabase/.temp/
 test-*.png
+*.zip
