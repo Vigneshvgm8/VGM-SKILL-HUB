@@ -36,7 +36,7 @@ export const ProgrammePage: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] space-y-24 py-8 md:py-16 pt-28">
+    <div className="min-h-screen bg-[#FFFFFF] space-y-24 pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24">
       
       {/* 1. Header Section */}
       <motion.section

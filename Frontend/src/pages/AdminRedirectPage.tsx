@@ -13,7 +13,7 @@ const apiUrl = `${API_BASE_URL}/api`;
 export const AdminRedirectPage: React.FC = () => {
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-16 bg-[#F8F9FA]">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 pt-28 sm:pt-32 md:pt-36 pb-16 bg-[#F8F9FA]">
       <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-black/10 shadow-xl text-center space-y-6">
         <div className="w-16 h-16 rounded-2xl bg-[#1E9E54]/10 border border-[#1E9E54]/20 flex items-center justify-center mx-auto text-[#1E9E54]">
           <Shield className="w-8 h-8" />

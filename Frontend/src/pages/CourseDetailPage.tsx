@@ -45,7 +45,7 @@ export const CourseDetailPage: React.FC = () => {
 
   if (loading && !course) {
     return (
-      <div className="min-h-screen bg-[#FFFFFF] py-24 px-4 max-w-3xl mx-auto text-center space-y-4">
+      <div className="min-h-screen bg-[#FFFFFF] pt-28 sm:pt-32 pb-24 px-4 max-w-3xl mx-auto text-center space-y-4">
         <div className="w-10 h-10 border-4 border-[#1E9E54] border-t-transparent rounded-full animate-spin mx-auto" />
         <p className="text-[#666666] text-sm">Loading course details...</p>
       </div>
@@ -54,7 +54,7 @@ export const CourseDetailPage: React.FC = () => {
 
   if (!course) {
     return (
-      <div className="min-h-screen bg-[#FFFFFF] py-24 px-4 max-w-3xl mx-auto text-center space-y-6">
+      <div className="min-h-screen bg-[#FFFFFF] pt-28 sm:pt-32 pb-24 px-4 max-w-3xl mx-auto text-center space-y-6">
         <h1 className="text-3xl font-black text-[#111111]">Course Not Found</h1>
         <p className="text-[#666666]">The requested course track does not exist or has been updated.</p>
         <Link
@@ -71,10 +71,10 @@ export const CourseDetailPage: React.FC = () => {
   const planKeys = Object.keys(course.plans || {});
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] pb-24 font-body">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] pb-24 font-body pt-24 sm:pt-28 md:pt-32">
       
       {/* 1. Breadcrumbs */}
-      <div className="bg-[#F7F8FA] border-b border-black/5 text-[#777777] text-xs py-3 px-4 sm:px-6 lg:px-8 mt-20">
+      <div className="bg-[#F7F8FA] border-b border-black/5 text-[#777777] text-xs py-3 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex items-center gap-2">
           <Link to="/" className="hover:text-[#111111] transition-colors">Home</Link>
           <ChevronRight className="w-3.5 h-3.5 text-black/20" />

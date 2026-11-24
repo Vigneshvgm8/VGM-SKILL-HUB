@@ -11,7 +11,7 @@ export const PaymentFailedPage: React.FC = () => {
   const reason = searchParams.get('reason') || 'Transaction was cancelled or declined by your bank/UPI app.';
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center py-16 px-4">
+    <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center pt-28 sm:pt-32 md:pt-36 pb-16 px-4">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

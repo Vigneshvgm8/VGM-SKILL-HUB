@@ -51,14 +51,14 @@ export const PaymentSuccessPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center pt-28 sm:pt-32 pb-16">
         <p className="text-sm text-[#555555]">Retrieving official enrolment record...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] py-10 md:py-16">
+    <div className="min-h-screen bg-[#FFFFFF] pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24">
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
 
         {/* On-screen Confirmation Banner (Hidden in Print) */}

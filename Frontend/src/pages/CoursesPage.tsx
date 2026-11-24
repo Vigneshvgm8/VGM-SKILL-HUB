@@ -98,7 +98,7 @@ export const CoursesPage: React.FC = () => {
   }, [activeModalCourse, filteredCourses]);
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] selection:bg-[#43C170]/30 selection:text-[#111111] pt-24 pb-28 relative overflow-x-hidden font-body">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] selection:bg-[#43C170]/30 selection:text-[#111111] pt-28 sm:pt-32 md:pt-36 pb-28 relative overflow-x-hidden font-body">
       
       {/* Subtle Ambient Atmosphere */}
       <div className="pointer-events-none fixed inset-0 z-0 opacity-40 bg-[radial-gradient(#0000000d_1px,transparent_1px)] [background-size:24px_24px]" />

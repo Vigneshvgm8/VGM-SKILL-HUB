@@ -37,7 +37,7 @@ export const PlacementsPage: React.FC = () => {
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] pb-24 font-body">
       
       {/* 1. Placement Hero Banner */}
-      <section className="bg-[#FFFFFF] text-[#111111] py-16 md:py-24 relative overflow-hidden pt-28">
+      <section className="bg-[#FFFFFF] text-[#111111] pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 relative overflow-hidden">
         {/* Subtle mesh orb */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#1E9E54]/5 blur-[120px] pointer-events-none animate-orb" />
         
