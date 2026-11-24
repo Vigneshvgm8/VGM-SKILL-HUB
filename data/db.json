@@ -1,5 +1,5 @@
 {
-  "counter": 3,
+  "counter": 4,
   "enrolments": [
     {
       "id": "VGM-2026-0001",
@@ -152,6 +152,49 @@
       "id": "VGM-2026-0003",
       "createdAt": "2026-10-24T12:59:06.207Z",
       "updatedAt": "2026-11-20T06:13:19.778Z"
+    },
+    {
+      "courseId": "ai-mobile-app",
+      "courseTitle": "AI-Powered Mobile App Development Internship",
+      "planId": "builder",
+      "planName": "Builder (2 Months)",
+      "batchId": "batch-nov-morning",
+      "batchLabel": "10th Nov 2026 - Morning",
+      "student": {
+        "fullName": "Test User",
+        "email": "test.student@example.com",
+        "mobile": "9876543210",
+        "dob": "2002-05-15",
+        "city": "Coimbatore",
+        "college": "PSG College of Technology",
+        "degreeStream": "B.E. Computer Science",
+        "yearOfStudy": "Final Year (4th Year)",
+        "languages": [
+          "JavaScript",
+          "Python"
+        ],
+        "referralSource": "Instagram"
+      },
+      "assessment": {
+        "score": 0,
+        "total": 5,
+        "answers": {},
+        "completedAt": "2026-11-24T11:17:18.941Z"
+      },
+      "pricing": {
+        "baseAmount": 9999,
+        "discountAmount": 0,
+        "couponCode": null,
+        "finalAmount": 9999,
+        "currency": "INR"
+      },
+      "payment": {
+        "status": "pending",
+        "orderId": "order_U3zcs790LCej22"
+      },
+      "id": "VGM-2026-0004",
+      "createdAt": "2026-11-24T11:17:18.942Z",
+      "updatedAt": "2026-11-24T11:17:22.322Z"
     }
   ],
   "coupons": [
@@ -213,6 +256,7 @@
       "startingFeeFormatted": "₹5,999",
       "status": "enrolling",
       "featured": true,
+      "thumbnail": "/assets/courses/ai-mobile-app.svg",
       "tools": [
         "Flutter",
         "Dart",
@@ -245,10 +289,7 @@
       ],
       "curriculum": [
         {
-          "moduleNumber": 1,
           "title": "Foundations & Modern AI Developer Toolchain",
-          "duration": "Week 1 - 2",
-          "description": "Set up Flutter, React Native, Git/GitHub, and configure developer copilots (Cursor, Gemini CLI, Claude) for rapid scaffold development.",
           "topics": [
             "Mobile architecture",
             "Dart/JS modern syntax",
@@ -256,13 +297,13 @@
             "AI-assisted debugging",
             "State management"
           ],
+          "duration": "Week 1 - 2",
+          "description": "Set up Flutter, React Native, Git/GitHub, and configure developer copilots (Cursor, Gemini CLI, Claude) for rapid scaffold development.",
+          "moduleNumber": 1,
           "handsOnProject": "Responsive Portfolio & Utility Mini App with local state persistence"
         },
         {
-          "moduleNumber": 2,
           "title": "Generative AI APIs, Speech & Vision Integration",
-          "duration": "Week 3 - 5",
-          "description": "Connect REST and WebSocket endpoints, implement Gemini 1.5 Flash streaming, speech-to-text, and image classification directly in the mobile UI.",
           "topics": [
             "API security & secret management",
             "Streaming responses",
@@ -270,13 +311,13 @@
             "Camera & photo picker",
             "Offline caching"
           ],
+          "duration": "Week 3 - 5",
+          "description": "Connect REST and WebSocket endpoints, implement Gemini 1.5 Flash streaming, speech-to-text, and image classification directly in the mobile UI.",
+          "moduleNumber": 2,
           "handsOnProject": "AI Smart Study & Voice Notes Assistant with offline sync"
         },
         {
-          "moduleNumber": 3,
           "title": "Cloud Backend, Auth & Real-Time Sync",
-          "duration": "Week 6 - 8",
-          "description": "Architect a serverless backend using Firebase Auth, Cloud Firestore, Cloud Functions, and push notifications.",
           "topics": [
             "Firebase Authentication",
             "Security rules & RBAC",
@@ -284,13 +325,13 @@
             "NoSQL schema design",
             "Background tasks"
           ],
+          "duration": "Week 6 - 8",
+          "description": "Architect a serverless backend using Firebase Auth, Cloud Firestore, Cloud Functions, and push notifications.",
+          "moduleNumber": 3,
           "handsOnProject": "Full-stack Collaborative Task & AI Team Workspace App"
         },
         {
-          "moduleNumber": 4,
           "title": "Live Client Project, Optimization & Play Store Release",
-          "duration": "Week 9 - 12",
-          "description": "Join a live VGM Soft Tech sprint, adhere to Git PR workflows, optimize app bundle size, run automated UI tests, and release to Google Play.",
           "topics": [
             "Git branching & code review",
             "App profiling & memory leaks",
@@ -298,44 +339,19 @@
             "Google Play Console compliance",
             "Mock interviews & resume polishing"
           ],
+          "duration": "Week 9 - 12",
+          "description": "Join a live VGM Soft Tech sprint, adhere to Git PR workflows, optimize app bundle size, run automated UI tests, and release to Google Play.",
+          "moduleNumber": 4,
           "handsOnProject": "Production-ready Capstone App deployed to Google Play with full documentation"
         }
       ],
       "plans": {
-        "explorer": {
-          "id": "explorer",
-          "name": "Explorer",
-          "duration": "1 Month",
-          "durationMonths": 1,
-          "weeksTotal": 4,
-          "fee": 5999,
-          "feeFormatted": "₹5,999",
-          "outcome": "Understand the basics and build one working AI-powered mini app.",
-          "certificateType": "Certificate of Participation",
-          "liveProjectRole": "Shadow the team and complete small guided tasks such as UI fixes and screen changes.",
-          "features": [
-            "App development fundamentals",
-            "AI assistants for coding and learning",
-            "Add an AI feature using an API",
-            "Build one AI-powered mini app",
-            "Shadow the team on a live project",
-            "Certificate of participation",
-            "Mentor guidance and doubt clearing",
-            "Project templates and code access"
-          ]
-        },
         "builder": {
           "id": "builder",
-          "name": "Builder",
-          "duration": "2 Months",
-          "durationMonths": 2,
-          "weeksTotal": 8,
           "fee": 9999,
-          "feeFormatted": "₹9,999",
-          "recommended": true,
+          "name": "Builder",
           "outcome": "Build a complete app with a backend and smarter AI features.",
-          "certificateType": "Certificate of Completion",
-          "liveProjectRole": "Own assigned feature modules and work through Git branches with mentor code review.",
+          "duration": "2 Months",
           "features": [
             "Everything in Explorer",
             "Firebase backend and sign-in",
@@ -345,19 +361,42 @@
             "Certificate of completion",
             "Mid-term review & individual code review",
             "Working capstone project on GitHub"
-          ]
+          ],
+          "weeksTotal": 8,
+          "recommended": true,
+          "feeFormatted": "₹9,999",
+          "durationMonths": 2,
+          "certificateType": "Certificate of Completion",
+          "liveProjectRole": "Own assigned feature modules and work through Git branches with mentor code review."
+        },
+        "explorer": {
+          "id": "explorer",
+          "fee": 5999,
+          "name": "Explorer",
+          "outcome": "Understand the basics and build one working AI-powered mini app.",
+          "duration": "1 Month",
+          "features": [
+            "App development fundamentals",
+            "AI assistants for coding and learning",
+            "Add an AI feature using an API",
+            "Build one AI-powered mini app",
+            "Shadow the team on a live project",
+            "Certificate of participation",
+            "Mentor guidance and doubt clearing",
+            "Project templates and code access"
+          ],
+          "weeksTotal": 4,
+          "feeFormatted": "₹5,999",
+          "durationMonths": 1,
+          "certificateType": "Certificate of Participation",
+          "liveProjectRole": "Shadow the team and complete small guided tasks such as UI fixes and screen changes."
         },
         "professional": {
           "id": "professional",
-          "name": "Professional",
-          "duration": "3 Months",
-          "durationMonths": 3,
-          "weeksTotal": 12,
           "fee": 14999,
-          "feeFormatted": "₹14,999",
+          "name": "Professional",
           "outcome": "Become job-ready with a published app and a strong portfolio.",
-          "certificateType": "Certificate of Completion + Experience Letter",
-          "liveProjectRole": "Take full ownership of a feature from planning to release, with regular reviews. An experience letter is issued on completion.",
+          "duration": "3 Months",
           "features": [
             "Everything in Builder",
             "App architecture and performance",
@@ -367,20 +406,24 @@
             "Resume, portfolio & mock technical interviews",
             "Official Experience Letter on completion",
             "Priority recommendation for openings at VGM Soft Tech"
-          ]
+          ],
+          "weeksTotal": 12,
+          "feeFormatted": "₹14,999",
+          "durationMonths": 3,
+          "certificateType": "Certificate of Completion + Experience Letter",
+          "liveProjectRole": "Take full ownership of a feature from planning to release, with regular reviews. An experience letter is issued on completion."
         }
       },
       "faqs": [
         {
-          "question": "Can college students attend while attending regular college classes?",
-          "answer": "Yes! We offer morning (9:00 AM – 12:30 PM), evening (5:00 PM – 8:30 PM), and intensive weekend batches. Sessions are also recorded in our student portal."
+          "answer": "Yes! We offer morning (9:00 AM – 12:30 PM), evening (5:00 PM – 8:30 PM), and intensive weekend batches. Sessions are also recorded in our student portal.",
+          "question": "Can college students attend while attending regular college classes?"
         },
         {
-          "question": "Will I receive an official Experience Letter for college submission?",
-          "answer": "Yes. Students enrolled in the Builder (2-Month) and Professional (3-Month) tracks receive an official VGM Soft Tech Experience Letter, stamped project completion certificate, and a verifiable digital credential."
+          "answer": "Yes. Students enrolled in the Builder (2-Month) and Professional (3-Month) tracks receive an official VGM Soft Tech Experience Letter, stamped project completion certificate, and a verifiable digital credential.",
+          "question": "Will I receive an official Experience Letter for college submission?"
         }
-      ],
-      "thumbnail": "/assets/courses/ai-mobile-app.svg"
+      ]
     },
     {
       "id": "fullstack-ai-web",
@@ -404,6 +447,7 @@
       "startingFeeFormatted": "₹7,999",
       "status": "enrolling",
       "featured": true,
+      "thumbnail": "/assets/courses/fullstack-ai-web.svg",
       "tools": [
         "React 19",
         "Next.js",
@@ -437,10 +481,7 @@
       ],
       "curriculum": [
         {
-          "moduleNumber": 1,
           "title": "Modern Frontend Architecture & TypeScript",
-          "duration": "Weeks 1 - 4",
-          "description": "Deep dive into HTML5 semantic standards, modern Tailwind CSS, JavaScript ES2024, TypeScript strict typing, and React 19 hooks.",
           "topics": [
             "TypeScript interfaces & generics",
             "React state & effects",
@@ -448,13 +489,13 @@
             "Tailwind responsive layouts",
             "Performance profiling"
           ],
+          "duration": "Weeks 1 - 4",
+          "description": "Deep dive into HTML5 semantic standards, modern Tailwind CSS, JavaScript ES2024, TypeScript strict typing, and React 19 hooks.",
+          "moduleNumber": 1,
           "handsOnProject": "Interactive Enterprise Analytics Dashboard with real-time charts"
         },
         {
-          "moduleNumber": 2,
           "title": "Server-Side Next.js & Full-Stack Systems",
-          "duration": "Weeks 5 - 8",
-          "description": "Server Actions, React Server Components (RSC), App Router, dynamic routing, middleware, and NextAuth authentication.",
           "topics": [
             "Next.js 15 App Router",
             "Server-side rendering vs static gen",
@@ -462,13 +503,13 @@
             "SEO optimization",
             "Zod validation"
           ],
+          "duration": "Weeks 5 - 8",
+          "description": "Server Actions, React Server Components (RSC), App Router, dynamic routing, middleware, and NextAuth authentication.",
+          "moduleNumber": 2,
           "handsOnProject": "Multi-vendor E-Commerce Platform with Cart & Razorpay Checkout"
         },
         {
-          "moduleNumber": 3,
           "title": "Backend Scalability, Databases & Docker",
-          "duration": "Weeks 9 - 12",
-          "description": "Relational databases with PostgreSQL, Prisma ORM migrations, Redis caching, JWT security, Docker containers, and RESTful API standards.",
           "topics": [
             "PostgreSQL queries & indexes",
             "Prisma schema design",
@@ -476,13 +517,13 @@
             "Dockerization & Docker Compose",
             "API rate limiting"
           ],
+          "duration": "Weeks 9 - 12",
+          "description": "Relational databases with PostgreSQL, Prisma ORM migrations, Redis caching, JWT security, Docker containers, and RESTful API standards.",
+          "moduleNumber": 3,
           "handsOnProject": "High-throughput Social Community API with search and notifications"
         },
         {
-          "moduleNumber": 4,
           "title": "AI Integrations, Production CI/CD & Placement Camp",
-          "duration": "Weeks 13 - 16",
-          "description": "Build autonomous AI agents with LangChain & OpenAI/Gemini, set up GitHub Actions CI/CD to AWS/Vercel, and undergo 20+ mock interview rounds.",
           "topics": [
             "LangChain agentic workflows",
             "Vector search with pgvector",
@@ -490,42 +531,19 @@
             "Data structures & algorithms (DSA) prep",
             "Live placement drives"
           ],
+          "duration": "Weeks 13 - 16",
+          "description": "Build autonomous AI agents with LangChain & OpenAI/Gemini, set up GitHub Actions CI/CD to AWS/Vercel, and undergo 20+ mock interview rounds.",
+          "moduleNumber": 4,
           "handsOnProject": "AI Document Intelligence & Copilot SaaS with subscription billing"
         }
       ],
       "plans": {
-        "standard": {
-          "id": "explorer",
-          "name": "Standard Foundation",
-          "duration": "2 Months",
-          "durationMonths": 2,
-          "weeksTotal": 8,
-          "fee": 7999,
-          "feeFormatted": "₹7,999",
-          "outcome": "Master frontend, backend fundamentals, and complete 2 verified web projects.",
-          "certificateType": "Certificate of Full-Stack Competency",
-          "liveProjectRole": "Contribute to frontend UI and REST API modules under mentor supervision.",
-          "features": [
-            "Frontend React 19 & Tailwind CSS",
-            "Node.js & Express REST APIs",
-            "Database design with PostgreSQL",
-            "2 Guided web projects",
-            "Weekly mentor Q&A sessions",
-            "Digital certificate & GitHub portfolio review"
-          ]
-        },
         "pro": {
           "id": "builder",
-          "name": "Professional Full-Stack",
-          "duration": "3 Months",
-          "durationMonths": 3,
-          "weeksTotal": 12,
           "fee": 12999,
-          "feeFormatted": "₹12,999",
-          "recommended": true,
+          "name": "Professional Full-Stack",
           "outcome": "Build complete production apps with Next.js, Docker, and cloud databases.",
-          "certificateType": "Advanced Full-Stack Engineering Diploma",
-          "liveProjectRole": "Develop full feature vertical from schema to deployment with code reviews.",
+          "duration": "3 Months",
           "features": [
             "Everything in Standard",
             "Next.js 15 App Router & Server Actions",
@@ -533,19 +551,20 @@
             "Docker containerization",
             "3 Full-stack projects on GitHub",
             "Resume building & LinkedIn optimization"
-          ]
+          ],
+          "weeksTotal": 12,
+          "recommended": true,
+          "feeFormatted": "₹12,999",
+          "durationMonths": 3,
+          "certificateType": "Advanced Full-Stack Engineering Diploma",
+          "liveProjectRole": "Develop full feature vertical from schema to deployment with code reviews."
         },
         "career": {
           "id": "professional",
-          "name": "Career & Placement Track",
-          "duration": "4 Months",
-          "durationMonths": 4,
-          "weeksTotal": 16,
           "fee": 18999,
-          "feeFormatted": "₹18,999",
+          "name": "Career & Placement Track",
           "outcome": "Job-ready engineer with AI integration expertise, DSA preparation, and direct placement drives.",
-          "certificateType": "Industry Experience Letter + Placement Guarantee Support",
-          "liveProjectRole": "Lead architecture of an enterprise module, participate in sprint demos, and receive interview referrals.",
+          "duration": "4 Months",
           "features": [
             "Everything in Professional",
             "Autonomous AI agents & LangChain integration",
@@ -553,16 +572,40 @@
             "100% Placement assistance & company interview pipeline",
             "1-on-1 technical mock interviews with tech leads",
             "Official VGM Soft Tech Experience Letter"
-          ]
+          ],
+          "weeksTotal": 16,
+          "feeFormatted": "₹18,999",
+          "durationMonths": 4,
+          "certificateType": "Industry Experience Letter + Placement Guarantee Support",
+          "liveProjectRole": "Lead architecture of an enterprise module, participate in sprint demos, and receive interview referrals."
+        },
+        "standard": {
+          "id": "explorer",
+          "fee": 7999,
+          "name": "Standard Foundation",
+          "outcome": "Master frontend, backend fundamentals, and complete 2 verified web projects.",
+          "duration": "2 Months",
+          "features": [
+            "Frontend React 19 & Tailwind CSS",
+            "Node.js & Express REST APIs",
+            "Database design with PostgreSQL",
+            "2 Guided web projects",
+            "Weekly mentor Q&A sessions",
+            "Digital certificate & GitHub portfolio review"
+          ],
+          "weeksTotal": 8,
+          "feeFormatted": "₹7,999",
+          "durationMonths": 2,
+          "certificateType": "Certificate of Full-Stack Competency",
+          "liveProjectRole": "Contribute to frontend UI and REST API modules under mentor supervision."
         }
       },
       "faqs": [
         {
-          "question": "I come from a Mechanical/Civil/Commerce background. Can I succeed in this course?",
-          "answer": "Over 45% of our successful alumni come from non-computer science streams. Our curriculum begins from fundamental logic building and step-by-step programming. With our daily lab practice and mentor guidance, non-IT graduates transition smoothly into IT careers."
+          "answer": "Over 45% of our successful alumni come from non-computer science streams. Our curriculum begins from fundamental logic building and step-by-step programming. With our daily lab practice and mentor guidance, non-IT graduates transition smoothly into IT careers.",
+          "question": "I come from a Mechanical/Civil/Commerce background. Can I succeed in this course?"
         }
-      ],
-      "thumbnail": "/assets/courses/fullstack-ai-web.svg"
+      ]
     },
     {
       "id": "data-science-ai",
@@ -586,6 +629,7 @@
       "startingFeeFormatted": "₹7,999",
       "status": "enrolling",
       "featured": true,
+      "thumbnail": "/assets/courses/data-science-ai.svg",
       "tools": [
         "Python",
         "SQL",
@@ -620,10 +664,7 @@
       ],
       "curriculum": [
         {
-          "moduleNumber": 1,
           "title": "Python for Data Analysis & Advanced SQL",
-          "duration": "Weeks 1 - 3",
-          "description": "Python fundamentals, data structures, NumPy matrix computations, Pandas dataframe wrangling, and complex SQL joins, CTEs, and window functions.",
           "topics": [
             "NumPy vector operations",
             "Pandas data cleaning & transformation",
@@ -631,39 +672,39 @@
             "Data visualization with Seaborn",
             "Exploratory data analysis (EDA)"
           ],
+          "duration": "Weeks 1 - 3",
+          "description": "Python fundamentals, data structures, NumPy matrix computations, Pandas dataframe wrangling, and complex SQL joins, CTEs, and window functions.",
+          "moduleNumber": 1,
           "handsOnProject": "Financial Fraud & Customer Churn Analysis on 500,000+ transaction dataset"
         },
         {
-          "moduleNumber": 2,
           "title": "Business Intelligence & PowerBI Dashboards",
-          "duration": "Weeks 4 - 6",
-          "description": "Data modeling, DAX formulas, interactive drill-through dashboards, KPI tracking, and storytelling for business leaders.",
           "topics": [
             "Star schema design",
             "DAX measures & calculated columns",
             "PowerBI report publishing",
             "Executive presentation skills"
           ],
+          "duration": "Weeks 4 - 6",
+          "description": "Data modeling, DAX formulas, interactive drill-through dashboards, KPI tracking, and storytelling for business leaders.",
+          "moduleNumber": 2,
           "handsOnProject": "Live E-Commerce Sales & Supply Chain Executive BI Suite"
         },
         {
-          "moduleNumber": 3,
           "title": "Applied Machine Learning & Predictive Modeling",
-          "duration": "Weeks 7 - 10",
-          "description": "Supervised and unsupervised algorithms: Regression, Classification, Random Forests, XGBoost, Clustering, and model evaluation metrics.",
           "topics": [
             "Feature engineering & scaling",
             "Cross-validation & hyperparameter tuning",
             "Ensemble methods (XGBoost, LightGBM)",
             "Confusion matrix & ROC-AUC curves"
           ],
+          "duration": "Weeks 7 - 10",
+          "description": "Supervised and unsupervised algorithms: Regression, Classification, Random Forests, XGBoost, Clustering, and model evaluation metrics.",
+          "moduleNumber": 3,
           "handsOnProject": "Automated Loan Default Risk Prediction Engine with explainable AI (SHAP)"
         },
         {
-          "moduleNumber": 4,
           "title": "Deep Learning, LLMs & Agentic RAG Systems",
-          "duration": "Weeks 11 - 14",
-          "description": "Neural networks, PyTorch fundamentals, Hugging Face transformers, vector embeddings, semantic search, and building production AI agents.",
           "topics": [
             "PyTorch tensors & neural nets",
             "Fine-tuning & LoRA overview",
@@ -671,41 +712,19 @@
             "FastAPI deployment for ML",
             "Resume & portfolio defense"
           ],
+          "duration": "Weeks 11 - 14",
+          "description": "Neural networks, PyTorch fundamentals, Hugging Face transformers, vector embeddings, semantic search, and building production AI agents.",
+          "moduleNumber": 4,
           "handsOnProject": "Enterprise Multi-Modal RAG Knowledge Assistant with citation verification"
         }
       ],
       "plans": {
-        "explorer": {
-          "id": "explorer",
-          "name": "Data Analyst Track",
-          "duration": "6 Weeks",
-          "durationMonths": 1.5,
-          "weeksTotal": 6,
-          "fee": 7999,
-          "feeFormatted": "₹7,999",
-          "outcome": "Become a job-ready Data Analyst proficient in Python, SQL, and PowerBI dashboards.",
-          "certificateType": "Certificate in Data Analytics & BI",
-          "liveProjectRole": "Extract, clean, and visualize company dataset for analytical reporting.",
-          "features": [
-            "Python for Data Science (NumPy, Pandas)",
-            "Advanced SQL for analytics & queries",
-            "PowerBI interactive dashboards & DAX",
-            "2 Real-world analytics projects",
-            "Certificate of completion"
-          ]
-        },
         "builder": {
           "id": "builder",
-          "name": "Machine Learning Specialist",
-          "duration": "10 Weeks",
-          "durationMonths": 2.5,
-          "weeksTotal": 10,
           "fee": 12999,
-          "feeFormatted": "₹12,999",
-          "recommended": true,
+          "name": "Machine Learning Specialist",
           "outcome": "Build predictive machine learning pipelines, feature engineering, and model deployment.",
-          "certificateType": "Applied Machine Learning Certification",
-          "liveProjectRole": "Develop predictive models and integrate inference APIs into applications.",
+          "duration": "10 Weeks",
           "features": [
             "Everything in Data Analyst Track",
             "Supervised & Unsupervised ML algorithms",
@@ -713,19 +732,39 @@
             "FastAPI model serving",
             "3 Machine learning capstones on GitHub",
             "Mock technical interview sessions"
-          ]
+          ],
+          "weeksTotal": 10,
+          "recommended": true,
+          "feeFormatted": "₹12,999",
+          "durationMonths": 2.5,
+          "certificateType": "Applied Machine Learning Certification",
+          "liveProjectRole": "Develop predictive models and integrate inference APIs into applications."
+        },
+        "explorer": {
+          "id": "explorer",
+          "fee": 7999,
+          "name": "Data Analyst Track",
+          "outcome": "Become a job-ready Data Analyst proficient in Python, SQL, and PowerBI dashboards.",
+          "duration": "6 Weeks",
+          "features": [
+            "Python for Data Science (NumPy, Pandas)",
+            "Advanced SQL for analytics & queries",
+            "PowerBI interactive dashboards & DAX",
+            "2 Real-world analytics projects",
+            "Certificate of completion"
+          ],
+          "weeksTotal": 6,
+          "feeFormatted": "₹7,999",
+          "durationMonths": 1.5,
+          "certificateType": "Certificate in Data Analytics & BI",
+          "liveProjectRole": "Extract, clean, and visualize company dataset for analytical reporting."
         },
         "professional": {
           "id": "professional",
-          "name": "Full AI & Agentic Systems Track",
-          "duration": "14 Weeks",
-          "durationMonths": 3.5,
-          "weeksTotal": 14,
           "fee": 17999,
-          "feeFormatted": "₹17,999",
+          "name": "Full AI & Agentic Systems Track",
           "outcome": "Master Deep Learning, LLM embeddings, RAG pipelines, and secure placements in cutting-edge AI roles.",
-          "certificateType": "Experience Letter in AI & Data Science + Placement Support",
-          "liveProjectRole": "Architect and deploy an enterprise RAG agentic system on live cloud infrastructure.",
+          "duration": "14 Weeks",
           "features": [
             "Everything in ML Specialist",
             "Deep Learning with PyTorch",
@@ -733,16 +772,20 @@
             "Autonomous LLM agents & prompt engineering",
             "100% Placement assistance & referral network",
             "Official VGM Soft Tech Experience Letter"
-          ]
+          ],
+          "weeksTotal": 14,
+          "feeFormatted": "₹17,999",
+          "durationMonths": 3.5,
+          "certificateType": "Experience Letter in AI & Data Science + Placement Support",
+          "liveProjectRole": "Architect and deploy an enterprise RAG agentic system on live cloud infrastructure."
         }
       },
       "faqs": [
         {
-          "question": "Do I need heavy mathematical or statistical background?",
-          "answer": "We explain all concepts with intuitive visual demonstrations and practical Python libraries. If you understand basic percentages and averages, our mentors will guide you through the rest step-by-step."
+          "answer": "We explain all concepts with intuitive visual demonstrations and practical Python libraries. If you understand basic percentages and averages, our mentors will guide you through the rest step-by-step.",
+          "question": "Do I need heavy mathematical or statistical background?"
         }
-      ],
-      "thumbnail": "/assets/courses/data-science-ai.svg"
+      ]
     },
     {
       "id": "cloud-devops",
@@ -766,6 +809,7 @@
       "startingFeeFormatted": "₹7,999",
       "status": "enrolling",
       "featured": false,
+      "thumbnail": "/assets/courses/cloud-devops.svg",
       "tools": [
         "AWS (EC2, S3, EKS)",
         "Docker",
@@ -799,36 +843,33 @@
       ],
       "curriculum": [
         {
-          "moduleNumber": 1,
           "title": "Linux Administration, Networking & Shell Scripting",
-          "duration": "Weeks 1 - 3",
-          "description": "Master enterprise Linux file systems, user permissions, networking, systemd services, and Bash automation scripts.",
           "topics": [
             "Linux command-line mastery",
             "Shell scripting & cron automations",
             "Networking protocols & Nginx reverse proxy",
             "SSH keys & server hardening"
           ],
+          "duration": "Weeks 1 - 3",
+          "description": "Master enterprise Linux file systems, user permissions, networking, systemd services, and Bash automation scripts.",
+          "moduleNumber": 1,
           "handsOnProject": "High-Availability Nginx Web Cluster with automated SSL certificates"
         },
         {
-          "moduleNumber": 2,
           "title": "Docker Containers & Modern Microservices",
-          "duration": "Weeks 4 - 6",
-          "description": "Container architecture, Dockerfile multi-stage builds, container security, Docker Compose networking, and volume persistence.",
           "topics": [
             "Multi-stage Docker builds",
             "Layer caching & minimal images (Alpine)",
             "Docker Compose multi-service stacks",
             "Container health checks & logging"
           ],
+          "duration": "Weeks 4 - 6",
+          "description": "Container architecture, Dockerfile multi-stage builds, container security, Docker Compose networking, and volume persistence.",
+          "moduleNumber": 2,
           "handsOnProject": "Containerized Microservices Suite with database, Redis cache, and frontend"
         },
         {
-          "moduleNumber": 3,
           "title": "Kubernetes Orchestration & Production Clusters",
-          "duration": "Weeks 7 - 9",
-          "description": "Deploying Pods, Deployments, Services, ConfigMaps, Secrets, Ingress Controllers, Horizontal Pod Autoscaling (HPA), and Helm charts.",
           "topics": [
             "K8s architecture & control plane",
             "Declarative YAML manifests",
@@ -836,54 +877,32 @@
             "Helm package management",
             "Cluster backup & updates"
           ],
+          "duration": "Weeks 7 - 9",
+          "description": "Deploying Pods, Deployments, Services, ConfigMaps, Secrets, Ingress Controllers, Horizontal Pod Autoscaling (HPA), and Helm charts.",
+          "moduleNumber": 3,
           "handsOnProject": "Zero-Downtime Blue/Green Deployment Cluster on AWS EKS with autoscaling"
         },
         {
-          "moduleNumber": 4,
           "title": "Terraform IaC, CI/CD Automation & Observability",
-          "duration": "Weeks 10 - 12",
-          "description": "Provisioning AWS infrastructure with Terraform, building GitHub Actions CI/CD pipelines, and setting up Prometheus & Grafana monitoring dashboards.",
           "topics": [
             "Terraform state & modules",
             "GitHub Actions automated testing & staging",
             "Prometheus metrics & Grafana alerts",
             "Mock interviews & cloud portfolio defense"
           ],
+          "duration": "Weeks 10 - 12",
+          "description": "Provisioning AWS infrastructure with Terraform, building GitHub Actions CI/CD pipelines, and setting up Prometheus & Grafana monitoring dashboards.",
+          "moduleNumber": 4,
           "handsOnProject": "Fully-Automated GitOps Infrastructure Pipeline from commit to production"
         }
       ],
       "plans": {
-        "explorer": {
-          "id": "explorer",
-          "name": "Cloud & Docker Foundations",
-          "duration": "1 Month",
-          "durationMonths": 1,
-          "weeksTotal": 4,
-          "fee": 6999,
-          "feeFormatted": "₹6,999",
-          "outcome": "Master Linux administration, AWS essentials, and Docker containerization.",
-          "certificateType": "Certificate in Cloud Foundations",
-          "liveProjectRole": "Configure Linux servers and containerize internal microservice apps.",
-          "features": [
-            "Linux sysadmin & shell scripting",
-            "AWS core services (EC2, S3, VPC)",
-            "Docker container creation & Compose",
-            "1 Guided cloud deployment project",
-            "Certificate of completion"
-          ]
-        },
         "builder": {
           "id": "builder",
-          "name": "DevOps & CI/CD Specialist",
-          "duration": "2 Months",
-          "durationMonths": 2,
-          "weeksTotal": 8,
           "fee": 11999,
-          "feeFormatted": "₹11,999",
-          "recommended": true,
+          "name": "DevOps & CI/CD Specialist",
           "outcome": "Automate build pipelines with GitHub Actions, Terraform IaC, and Kubernetes basics.",
-          "certificateType": "DevOps & Automation Certification",
-          "liveProjectRole": "Build CI/CD pipelines and manage infrastructure code templates.",
+          "duration": "2 Months",
           "features": [
             "Everything in Cloud Foundations",
             "Terraform Infrastructure as Code (IaC)",
@@ -891,19 +910,39 @@
             "Kubernetes fundamentals & manifests",
             "2 Full cloud automation projects",
             "Resume building & interview guidance"
-          ]
+          ],
+          "weeksTotal": 8,
+          "recommended": true,
+          "feeFormatted": "₹11,999",
+          "durationMonths": 2,
+          "certificateType": "DevOps & Automation Certification",
+          "liveProjectRole": "Build CI/CD pipelines and manage infrastructure code templates."
+        },
+        "explorer": {
+          "id": "explorer",
+          "fee": 6999,
+          "name": "Cloud & Docker Foundations",
+          "outcome": "Master Linux administration, AWS essentials, and Docker containerization.",
+          "duration": "1 Month",
+          "features": [
+            "Linux sysadmin & shell scripting",
+            "AWS core services (EC2, S3, VPC)",
+            "Docker container creation & Compose",
+            "1 Guided cloud deployment project",
+            "Certificate of completion"
+          ],
+          "weeksTotal": 4,
+          "feeFormatted": "₹6,999",
+          "durationMonths": 1,
+          "certificateType": "Certificate in Cloud Foundations",
+          "liveProjectRole": "Configure Linux servers and containerize internal microservice apps."
         },
         "professional": {
           "id": "professional",
-          "name": "Enterprise Cloud & K8s Architect",
-          "duration": "3 Months",
-          "durationMonths": 3,
-          "weeksTotal": 12,
           "fee": 16999,
-          "feeFormatted": "₹16,999",
+          "name": "Enterprise Cloud & K8s Architect",
           "outcome": "Production Kubernetes management, Grafana observability, and direct job placement support.",
-          "certificateType": "Experience Letter in Cloud DevOps + Placement Support",
-          "liveProjectRole": "Lead cloud deployment pipeline for live VGM Soft Tech enterprise applications.",
+          "duration": "3 Months",
           "features": [
             "Everything in DevOps Specialist",
             "Production AWS EKS cluster deployment",
@@ -911,16 +950,20 @@
             "GitOps & disaster recovery drills",
             "100% Placement assistance & interview drives",
             "Official VGM Soft Tech Experience Letter"
-          ]
+          ],
+          "weeksTotal": 12,
+          "feeFormatted": "₹16,999",
+          "durationMonths": 3,
+          "certificateType": "Experience Letter in Cloud DevOps + Placement Support",
+          "liveProjectRole": "Lead cloud deployment pipeline for live VGM Soft Tech enterprise applications."
         }
       },
       "faqs": [
         {
-          "question": "Will I need to pay for AWS cloud resources during the training?",
-          "answer": "We provide structured sandbox accounts and teach you how to stay safely within AWS Free Tier limits and destroy resources cleanly with Terraform so you incur zero unwanted cloud bills."
+          "answer": "We provide structured sandbox accounts and teach you how to stay safely within AWS Free Tier limits and destroy resources cleanly with Terraform so you incur zero unwanted cloud bills.",
+          "question": "Will I need to pay for AWS cloud resources during the training?"
         }
-      ],
-      "thumbnail": "/assets/courses/cloud-devops.svg"
+      ]
     },
     {
       "id": "cybersecurity-defensive",
@@ -944,6 +987,7 @@
       "startingFeeFormatted": "₹7,999",
       "status": "enrolling",
       "featured": false,
+      "thumbnail": "/assets/courses/cybersecurity-defensive.svg",
       "tools": [
         "Kali Linux",
         "Wireshark",
@@ -976,90 +1020,65 @@
       ],
       "curriculum": [
         {
-          "moduleNumber": 1,
           "title": "Networking Protocols, Linux Hardening & Reconnaissance",
-          "duration": "Weeks 1 - 3",
-          "description": "Deep dive into OSI layers, TCP handshake, DNS, Wireshark packet capture, Linux file system security, and passive/active reconnaissance with Nmap.",
           "topics": [
             "Packet sniffing with Wireshark",
             "Port scanning & banner grabbing with Nmap",
             "Linux access controls & hardening",
             "Network defenses & firewalls"
           ],
+          "duration": "Weeks 1 - 3",
+          "description": "Deep dive into OSI layers, TCP handshake, DNS, Wireshark packet capture, Linux file system security, and passive/active reconnaissance with Nmap.",
+          "moduleNumber": 1,
           "handsOnProject": "Complete Network Vulnerability Audit & Threat Mapping of an Enterprise Subnet"
         },
         {
-          "moduleNumber": 2,
           "title": "Web Application Security & OWASP Top 10",
-          "duration": "Weeks 4 - 6",
-          "description": "Analyzing and mitigating common web flaws using Burp Suite proxy: SQL Injection, Cross-Site Scripting (XSS), Broken Object Level Authorization, and CSRF.",
           "topics": [
             "Burp Suite Community edition setup",
             "SQL injection detection & parameterized mitigation",
             "XSS reflected vs stored",
             "Authentication bypasses"
           ],
+          "duration": "Weeks 4 - 6",
+          "description": "Analyzing and mitigating common web flaws using Burp Suite proxy: SQL Injection, Cross-Site Scripting (XSS), Broken Object Level Authorization, and CSRF.",
+          "moduleNumber": 2,
           "handsOnProject": "Authorized Penetration Test Report on Vulnerable Web Application"
         },
         {
-          "moduleNumber": 3,
           "title": "SOC Operations, Log Analysis & SIEM (Wazuh)",
-          "duration": "Weeks 7 - 9",
-          "description": "Setting up Wazuh/Splunk SIEM, ingesting syslog and Windows event logs, writing custom detection rules, and handling incident response playbooks.",
           "topics": [
             "SIEM architecture & log agents",
             "MITRE ATT&CK framework mapping",
             "Detecting brute force & privilege escalation",
             "Incident triage & ticketing"
           ],
+          "duration": "Weeks 7 - 9",
+          "description": "Setting up Wazuh/Splunk SIEM, ingesting syslog and Windows event logs, writing custom detection rules, and handling incident response playbooks.",
+          "moduleNumber": 3,
           "handsOnProject": "SOC Investigation and Root Cause Analysis of a Simulated Ransomware Outbreak"
         },
         {
-          "moduleNumber": 4,
           "title": "Cloud Security, Compliance & Career Placement",
-          "duration": "Weeks 10 - 12",
-          "description": "AWS security best practices, IAM policy reviews, ISO 27001 / GDPR compliance essentials, and intensive mock interviews for SOC Analyst roles.",
           "topics": [
             "Cloud security baseline audits",
             "Compliance standards & data privacy",
             "Technical interview questions & triage challenges",
             "Placement interview coordination"
           ],
+          "duration": "Weeks 10 - 12",
+          "description": "AWS security best practices, IAM policy reviews, ISO 27001 / GDPR compliance essentials, and intensive mock interviews for SOC Analyst roles.",
+          "moduleNumber": 4,
           "handsOnProject": "Comprehensive Enterprise Security Architecture & Governance Blueprint"
         }
       ],
       "plans": {
-        "explorer": {
-          "id": "explorer",
-          "name": "Security Fundamentals",
-          "duration": "1 Month",
-          "durationMonths": 1,
-          "weeksTotal": 4,
-          "fee": 6999,
-          "feeFormatted": "₹6,999",
-          "outcome": "Understand networking security, vulnerability scans, and Linux defense basics.",
-          "certificateType": "Certificate in Information Security",
-          "liveProjectRole": "Conduct baseline vulnerability scans and assist in firewall policy checks.",
-          "features": [
-            "Networking protocols & packet analysis",
-            "Nmap & vulnerability scanners",
-            "Linux security hardening",
-            "1 Comprehensive security audit project",
-            "Certificate of completion"
-          ]
-        },
         "builder": {
           "id": "builder",
-          "name": "Web App Pentester & SOC Specialist",
-          "duration": "2 Months",
-          "durationMonths": 2,
-          "weeksTotal": 8,
           "fee": 11999,
-          "feeFormatted": "₹11,999",
-          "recommended": true,
+          "name": "Web App Pentester & SOC Specialist",
           "outcome": "Audit web applications with Burp Suite and investigate security alerts on Wazuh SIEM.",
-          "certificateType": "SOC Analyst & Ethical Hacking Diploma",
-          "liveProjectRole": "Review security logs and perform scheduled penetration assessments.",
+          "duration": "2 Months",
           "features": [
             "Everything in Security Fundamentals",
             "OWASP Top 10 penetration testing",
@@ -1067,19 +1086,39 @@
             "SIEM log analysis & MITRE ATT&CK",
             "2 In-depth lab reports on GitHub",
             "Resume & LinkedIn profile makeover"
-          ]
+          ],
+          "weeksTotal": 8,
+          "recommended": true,
+          "feeFormatted": "₹11,999",
+          "durationMonths": 2,
+          "certificateType": "SOC Analyst & Ethical Hacking Diploma",
+          "liveProjectRole": "Review security logs and perform scheduled penetration assessments."
+        },
+        "explorer": {
+          "id": "explorer",
+          "fee": 6999,
+          "name": "Security Fundamentals",
+          "outcome": "Understand networking security, vulnerability scans, and Linux defense basics.",
+          "duration": "1 Month",
+          "features": [
+            "Networking protocols & packet analysis",
+            "Nmap & vulnerability scanners",
+            "Linux security hardening",
+            "1 Comprehensive security audit project",
+            "Certificate of completion"
+          ],
+          "weeksTotal": 4,
+          "feeFormatted": "₹6,999",
+          "durationMonths": 1,
+          "certificateType": "Certificate in Information Security",
+          "liveProjectRole": "Conduct baseline vulnerability scans and assist in firewall policy checks."
         },
         "professional": {
           "id": "professional",
-          "name": "Enterprise Cyber Defense & Placement Track",
-          "duration": "3 Months",
-          "durationMonths": 3,
-          "weeksTotal": 12,
           "fee": 16999,
-          "feeFormatted": "₹16,999",
+          "name": "Enterprise Cyber Defense & Placement Track",
           "outcome": "Full SOC Analyst job readiness, cloud security governance, and direct placement drives.",
-          "certificateType": "Experience Letter in Cybersecurity + Placement Support",
-          "liveProjectRole": "Act as Junior Security Operations Analyst assisting live client compliance audits.",
+          "duration": "3 Months",
           "features": [
             "Everything in SOC Specialist",
             "Cloud security audits on AWS",
@@ -1087,16 +1126,20 @@
             "100% Placement assistance & partner drives",
             "1-on-1 interview drills with certified CISSPs",
             "Official VGM Soft Tech Experience Letter"
-          ]
+          ],
+          "weeksTotal": 12,
+          "feeFormatted": "₹16,999",
+          "durationMonths": 3,
+          "certificateType": "Experience Letter in Cybersecurity + Placement Support",
+          "liveProjectRole": "Act as Junior Security Operations Analyst assisting live client compliance audits."
         }
       },
       "faqs": [
         {
-          "question": "Do you teach strictly legal, authorized ethical hacking?",
-          "answer": "Yes, 100%. All hacking demonstrations and exercises take place on sandboxed local lab environments and authorized test beds under formal code of ethics."
+          "answer": "Yes, 100%. All hacking demonstrations and exercises take place on sandboxed local lab environments and authorized test beds under formal code of ethics.",
+          "question": "Do you teach strictly legal, authorized ethical hacking?"
         }
-      ],
-      "thumbnail": "/assets/courses/cybersecurity-defensive.svg"
+      ]
     },
     {
       "id": "uiux-product-design",
@@ -1120,6 +1163,7 @@
       "startingFeeFormatted": "₹5,999",
       "status": "enrolling",
       "featured": false,
+      "thumbnail": "/assets/courses/uiux-product-design.svg",
       "tools": [
         "Figma",
         "FigJam",
@@ -1152,77 +1196,52 @@
       ],
       "curriculum": [
         {
-          "moduleNumber": 1,
           "title": "Design Thinking, User Research & Information Architecture",
-          "duration": "Weeks 1 - 2",
-          "description": "Understand user problem framing, user personas, journey mapping, empathy interviews, card sorting, and wireframing in FigJam.",
           "topics": [
             "User interview methodologies",
             "Creating actionable user personas",
             "Information architecture & sitemaps",
             "Low-fidelity wireframing"
           ],
+          "duration": "Weeks 1 - 2",
+          "description": "Understand user problem framing, user personas, journey mapping, empathy interviews, card sorting, and wireframing in FigJam.",
+          "moduleNumber": 1,
           "handsOnProject": "Discovery & Wireframe Blueprint for a FinTech Micro-Savings Mobile App"
         },
         {
-          "moduleNumber": 2,
           "title": "Figma Mastery, Auto-Layout & Design Systems",
-          "duration": "Weeks 3 - 5",
-          "description": "Deep dive into Figma tools: frames, constraints, advanced auto-layout, typography hierarchies, accessible color contrast (WCAG), and component variants with properties.",
           "topics": [
             "Figma auto-layout & responsive grids",
             "Color theory & 8pt spatial grid",
             "Reusable component libraries & variants",
             "Interactive variables & prototyping"
           ],
+          "duration": "Weeks 3 - 5",
+          "description": "Deep dive into Figma tools: frames, constraints, advanced auto-layout, typography hierarchies, accessible color contrast (WCAG), and component variants with properties.",
+          "moduleNumber": 2,
           "handsOnProject": "Complete Scalable Design System for a Healthcare Patient Booking Platform"
         },
         {
-          "moduleNumber": 3,
           "title": "Micro-Interactions, Usability Testing & AI Tools",
-          "duration": "Weeks 6 - 8",
-          "description": "Smart animate transitions, interactive mobile gesture prototypes, conducting remote usability tests, and leveraging AI tools for UI generation and copywriting.",
           "topics": [
             "Smart animate & micro-interactions",
             "Conducting usability tests & synthesizing feedback",
             "Developer handoff tokens (Figma to CSS)",
             "Portfolio presentation & Behance case study"
           ],
+          "duration": "Weeks 6 - 8",
+          "description": "Smart animate transitions, interactive mobile gesture prototypes, conducting remote usability tests, and leveraging AI tools for UI generation and copywriting.",
+          "moduleNumber": 3,
           "handsOnProject": "End-to-End Published Behance Case Study with Interactive Prototype"
         }
       ],
       "plans": {
-        "explorer": {
-          "id": "explorer",
-          "name": "Design Essentials",
-          "duration": "1 Month",
-          "durationMonths": 1,
-          "weeksTotal": 4,
-          "fee": 5999,
-          "feeFormatted": "₹5,999",
-          "outcome": "Master Figma wireframing, typography, color, and design 1 complete mobile app UI.",
-          "certificateType": "Certificate in UI Design",
-          "liveProjectRole": "Create UI mockups and icon assets for internal VGM Soft Tech web pages.",
-          "features": [
-            "Figma interface & auto-layout basics",
-            "UI typography & color token systems",
-            "1 Mobile app UI design project",
-            "Design review by senior UI mentor",
-            "Certificate of completion"
-          ]
-        },
         "builder": {
           "id": "builder",
-          "name": "Product Design & Portfolio Track",
-          "duration": "2 Months",
-          "durationMonths": 2,
-          "weeksTotal": 8,
           "fee": 9999,
-          "feeFormatted": "₹9,999",
-          "recommended": true,
+          "name": "Product Design & Portfolio Track",
           "outcome": "Complete 3 case studies, interactive prototypes, design system, and job placement assistance.",
-          "certificateType": "Diploma in UI/UX Product Design + Placement Support",
-          "liveProjectRole": "Design user flows and interactive prototypes for active client software briefs.",
+          "duration": "2 Months",
           "features": [
             "Everything in Design Essentials",
             "Advanced Figma design systems & variables",
@@ -1230,16 +1249,40 @@
             "Smart animate micro-interactions",
             "3 Industry-ready portfolio case studies on Behance",
             "100% Placement assistance & UI design interview drills"
-          ]
+          ],
+          "weeksTotal": 8,
+          "recommended": true,
+          "feeFormatted": "₹9,999",
+          "durationMonths": 2,
+          "certificateType": "Diploma in UI/UX Product Design + Placement Support",
+          "liveProjectRole": "Design user flows and interactive prototypes for active client software briefs."
+        },
+        "explorer": {
+          "id": "explorer",
+          "fee": 5999,
+          "name": "Design Essentials",
+          "outcome": "Master Figma wireframing, typography, color, and design 1 complete mobile app UI.",
+          "duration": "1 Month",
+          "features": [
+            "Figma interface & auto-layout basics",
+            "UI typography & color token systems",
+            "1 Mobile app UI design project",
+            "Design review by senior UI mentor",
+            "Certificate of completion"
+          ],
+          "weeksTotal": 4,
+          "feeFormatted": "₹5,999",
+          "durationMonths": 1,
+          "certificateType": "Certificate in UI Design",
+          "liveProjectRole": "Create UI mockups and icon assets for internal VGM Soft Tech web pages."
         }
       },
       "faqs": [
         {
-          "question": "Do I need a Mac or high-end graphics computer for this?",
-          "answer": "No! Figma runs completely in the modern web browser (Chrome, Edge, Firefox) on standard Windows laptops, MacBooks, or even Chromebooks."
+          "answer": "No! Figma runs completely in the modern web browser (Chrome, Edge, Firefox) on standard Windows laptops, MacBooks, or even Chromebooks.",
+          "question": "Do I need a Mac or high-end graphics computer for this?"
         }
-      ],
-      "thumbnail": "/assets/courses/uiux-product-design.svg"
+      ]
     }
   ],
   "certificates": [

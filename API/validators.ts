@@ -3,32 +3,32 @@ import { Request, Response, NextFunction } from 'express';
 
 // ── 1. Create Order Schema ──
 export const createOrderSchema = z.object({
-  courseId: z.string().min(2).max(64).regex(/^[a-z0-9-]+$/i, 'Invalid courseId format'),
-  courseTitle: z.string().min(2).max(120),
-  planId: z.enum(['explorer', 'builder', 'professional']),
+  courseId: z.string().min(1).max(64),
+  courseTitle: z.string().min(1).max(120),
+  planId: z.string().min(1).max(64),
   planName: z.string().max(80).optional(),
-  batchId: z.string().min(2).max(64),
-  batchLabel: z.string().min(2).max(100),
-  fee: z.number().int().positive().max(500000).optional(),
-  couponCode: z.string().trim().max(30).regex(/^[A-Za-z0-9_-]*$/, 'Coupon must be alphanumeric').optional(),
+  batchId: z.string().min(1).max(64),
+  batchLabel: z.string().min(1).max(100),
+  fee: z.number().positive().max(500000).optional(),
+  couponCode: z.string().trim().max(30).regex(/^[A-Za-z0-9_-]*$/, 'Coupon must be alphanumeric').optional().nullable(),
   student: z.object({
     fullName: z.string().trim().min(2, 'Name must be at least 2 characters').max(80, 'Name cannot exceed 80 characters'),
     email: z.string().trim().email('Invalid email address format').max(120),
-    mobile: z.string().trim().min(10, 'Mobile must be at least 10 digits').max(15, 'Mobile cannot exceed 15 digits').regex(/^[0-9+\s-]{10,15}$/, 'Invalid mobile phone number'),
-    dob: z.string().max(30).optional().default(''),
-    city: z.string().trim().max(60).optional().default('Coimbatore'),
-    college: z.string().trim().max(120).optional().default('Institution'),
-    degreeStream: z.string().trim().max(100).optional().default('Engineering'),
-    yearOfStudy: z.string().trim().max(50).optional().default('Undergraduate'),
+    mobile: z.string().trim().min(7, 'Mobile must be at least 7 digits').max(20, 'Mobile cannot exceed 20 digits').regex(/^[0-9+\s()-]{7,20}$/, 'Invalid mobile phone number'),
+    dob: z.string().max(30).optional().nullable().default(''),
+    city: z.string().trim().max(60).optional().nullable().default('Coimbatore'),
+    college: z.string().trim().max(120).optional().nullable().default('Institution'),
+    degreeStream: z.string().trim().max(100).optional().nullable().default('Engineering'),
+    yearOfStudy: z.string().trim().max(50).optional().nullable().default('Undergraduate'),
     languages: z.array(z.string().max(40)).max(15).optional().default([]),
-    referralSource: z.string().trim().max(50).optional().default('Direct')
+    referralSource: z.string().trim().max(50).optional().nullable().default('Direct')
   }),
   assessment: z.object({
     score: z.number().min(0).max(100).optional().default(0),
-    total: z.number().min(1).max(100).optional().default(5),
+    total: z.number().min(0).max(100).optional().default(0),
     answers: z.record(z.string(), z.number()).optional().default({}),
-    completedAt: z.string().max(40).optional()
-  }).optional()
+    completedAt: z.string().max(60).optional().nullable().default('')
+  }).optional().nullable()
 });
 
 // ── 2. Verify Payment Schema ──

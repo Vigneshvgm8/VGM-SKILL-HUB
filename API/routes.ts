@@ -225,7 +225,7 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
     });
   } catch (err: any) {
     console.error('Error creating order:', err);
-    res.status(500).json({ success: false, error: 'Unable to initialize order. Please verify payment details.' });
+    res.status(500).json({ success: false, error: err?.message || 'Unable to initialize order. Please verify payment details.' });
   }
 });
 

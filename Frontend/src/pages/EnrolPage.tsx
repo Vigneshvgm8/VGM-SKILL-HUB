@@ -287,7 +287,7 @@ export const EnrolPage: React.FC = () => {
           answers: {},
           completedAt: ''
         },
-        couponCode: appliedCoupon ? appliedCoupon.code : null
+        couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
 
       const res = await fetch('/api/create-order', {
@@ -297,8 +297,11 @@ export const EnrolPage: React.FC = () => {
       });
 
       if (!res.ok) {
-        const errData = await res.json();
-        throw new Error(errData.error || 'Failed to initiate order');
+        const errData = await res.json().catch(() => ({}));
+        const detailedMsg = Array.isArray(errData.details) && errData.details.length > 0
+          ? errData.details.map((d: any) => `${d.field ? d.field + ': ' : ''}${d.message}`).join(' | ')
+          : (errData.error || 'Failed to initiate payment order. Please check your form details.');
+        throw new Error(detailedMsg);
       }
 
       const orderData = await res.json();
