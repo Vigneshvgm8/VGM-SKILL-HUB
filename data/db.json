@@ -144,8 +144,8 @@
       "learnersEnrolled": 840,
       "liveProjectsCount": 3,
       "nextBatch": "10th November 2026",
-      "startingFee": 5999,
-      "startingFeeFormatted": "₹5,999",
+      "startingFee": 6000,
+      "startingFeeFormatted": "₹6,000",
       "status": "enrolling",
       "featured": true,
       "thumbnail": "/assets/courses/ai-mobile-app.svg",
@@ -169,7 +169,9 @@
       "highestPackage": "₹11.5 LPA",
       "highlights": [
         "Real client project work on VGM Soft Tech enterprise codebases",
-        "Choose between 1-Month Explorer, 2-Month Builder, or 3-Month Professional plans",
+        "Choose between 1-Month Explorer",
+        "2-Month Builder",
+        "or 3-Month Professional plans",
         "Official Experience Letter & Certificate with online credential verification",
         "1-on-1 code reviews and technical mock interviews with Senior Staff Engineers"
       ],
@@ -315,7 +317,9 @@
           "answer": "Yes. Students enrolled in the Builder (2-Month) and Professional (3-Month) tracks receive an official VGM Soft Tech Experience Letter, stamped project completion certificate, and a verifiable digital credential.",
           "question": "Will I receive an official Experience Letter for college submission?"
         }
-      ]
+      ],
+      "toolsInput": "Flutter, Dart, React Native, Firebase, Gemini AI API, Google Play Console, GitHub, Figma",
+      "highlightsInput": "Real client project work on VGM Soft Tech enterprise codebases, Choose between 1-Month Explorer, 2-Month Builder, or 3-Month Professional plans, Official Experience Letter & Certificate with online credential verification, 1-on-1 code reviews and technical mock interviews with Senior Staff Engineers"
     },
     {
       "id": "fullstack-ai-web",

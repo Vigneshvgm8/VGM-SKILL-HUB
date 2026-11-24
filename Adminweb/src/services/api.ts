@@ -1,11 +1,10 @@
 // ====================================================================
 // ADMINWEB API CONFIGURATION
 // ====================================================================
-// --- LOCALHOST (Development - commented out) ---
-// const API_BASE = 'http://localhost:3000';
-
-// --- LIVE PRODUCTION (Active) ---
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://skillhub.vgmsofttech.com';
+// Relative path /api automatically connects to the server in all environments:
+// - Local Dev: localhost:3001 proxies /api to http://localhost:3000
+// - Production: localhost:3000/adminweb and adminskillhub.vgmsofttech.com
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
 export interface AdminStats {
   totalEnrolments: number;
