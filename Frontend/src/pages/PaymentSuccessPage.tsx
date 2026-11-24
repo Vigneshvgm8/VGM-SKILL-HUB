@@ -84,26 +84,33 @@ export const PaymentSuccessPage: React.FC = () => {
 
           {/* Action buttons */}
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                to={`/student-portal?enrolmentId=${enrolment?.enrollmentNumber || enrolment?.id || enrolmentId}`}
+                className="px-5 py-2.5 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(30,158,84,0.3)] flex items-center gap-2"
+              >
+                <span>Student Portal &amp; Certificates</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
               <button
                 type="button"
                 onClick={handlePrintReceipt}
                 className="px-5 py-2.5 bg-[#F0F2F4] hover:bg-[#E5E7EB] border border-black/10 text-[#111111] text-xs font-semibold rounded-xl transition-colors flex items-center gap-2"
               >
                 <Printer className="w-4 h-4" />
-                <span>Print / Download Receipt (PDF)</span>
+                <span>Print Receipt (PDF)</span>
               </button>
               <Link
                 to="/"
                 className="px-4 py-2.5 border border-black/10 text-[#555555] text-xs font-semibold rounded-xl hover:bg-[#F0F2F4] hover:text-[#111111] transition-colors flex items-center gap-1.5"
               >
                 <Home className="w-3.5 h-3.5" />
-                <span>Back to Home</span>
+                <span>Home</span>
               </Link>
             </div>
 
-            <span className="text-xs text-[#999999]">
-              Enrolment ID: <strong className="font-mono text-[#1E9E54]">{enrolment?.id || enrolmentId}</strong>
+            <span className="text-xs text-[#777777]">
+              Enrollment Number: <strong className="font-mono text-[#1E9E54] text-sm">{enrolment?.enrollmentNumber || enrolment?.id || enrolmentId}</strong>
             </span>
           </div>
         </motion.div>

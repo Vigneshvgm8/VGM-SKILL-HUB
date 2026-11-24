@@ -73,7 +73,8 @@ export interface Certificate {
 }
 
 export interface Enrolment {
-  id: string; // e.g. VGM-2026-0001
+  id: string; // e.g. VGM-2026-0001 or VGM-2026-0001-02
+  enrollmentNumber?: string; // unique master enrollment number for the student e.g. VGM-2026-0001
   courseId?: string;
   courseTitle?: string;
   planId: string;
@@ -163,6 +164,22 @@ export const INITIAL_CERTIFICATES: Certificate[] = [
     verificationStatus: 'verified',
     createdAt: '2026-10-30T12:00:00.000Z',
     updatedAt: '2026-10-30T12:00:00.000Z'
+  },
+  {
+    id: 'VGM-2026-CERT-0107',
+    enrolmentId: 'VGM-2026-0005',
+    studentName: 'mathankumar',
+    studentEmail: 'mathanvgm8@gmail.com',
+    courseTitle: 'AI-Powered Mobile App Development Internship',
+    planLevel: 'Builder Plan (8 Weeks)',
+    completionDate: '15th November 2026',
+    grade: 'Distinction (Grade A+)',
+    projectTitle: 'AI Smart Voice Assistant with Gemini API & Flutter',
+    skills: ['Flutter', 'Dart', 'Gemini API', 'Firebase', 'State Management', 'Git Pull Requests'],
+    authorizedSignatory: 'Director of Academic Engineering, VGM Soft Tech',
+    verificationStatus: 'verified',
+    createdAt: '2026-11-15T12:00:00.000Z',
+    updatedAt: '2026-11-15T12:00:00.000Z'
   }
 ];
 
@@ -324,6 +341,11 @@ if (isSupabaseConfigured) {
         if (remoteCoupons.length > 0) {
           db.coupons = remoteCoupons;
         }
+
+        const remoteCertificates = await SupabaseService.getCertificates();
+        if (remoteCertificates.length > 0) {
+          db.certificates = remoteCertificates;
+        }
         saveDB();
       } else {
         console.warn(`[SUPABASE WARNING] Ping check failed: ${ping.error}. Continuing with persistent local storage.`);
@@ -334,6 +356,68 @@ if (isSupabaseConfigured) {
   })();
 }
 
+function cleanString(val?: string): string {
+  return (val || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+function cleanDigits(val?: string): string {
+  return (val || '').replace(/\D/g, '');
+}
+
+export function findExistingStudentEnrollmentNumber(fullName: string, email: string, mobile: string): string | null {
+  const normName = cleanString(fullName);
+  const normEmail = cleanString(email);
+  const normMobile = cleanDigits(mobile);
+
+  for (const e of db.enrolments) {
+    const eEmail = cleanString(e.student?.email);
+    const eMobile = cleanDigits(e.student?.mobile);
+    const eName = cleanString(e.student?.fullName);
+
+    const emailMatches = Boolean(normEmail && eEmail && normEmail === eEmail);
+    const mobileMatches = Boolean(normMobile && eMobile && (normMobile === eMobile || normMobile.endsWith(eMobile) || eMobile.endsWith(normMobile)));
+    const nameMatches = Boolean(normName && eName && (normName === eName || normName.includes(eName) || eName.includes(normName)));
+
+    // User requirement: if same student registers another course using same name, mobile number, email -> reuse same enrollment number
+    if (emailMatches && mobileMatches && nameMatches) {
+      return e.enrollmentNumber || e.id.split('-').slice(0, 3).join('-');
+    }
+    // Also if email and mobile match
+    if (emailMatches && mobileMatches) {
+      return e.enrollmentNumber || e.id.split('-').slice(0, 3).join('-');
+    }
+    // If name and email match
+    if (nameMatches && emailMatches) {
+      return e.enrollmentNumber || e.id.split('-').slice(0, 3).join('-');
+    }
+  }
+
+  return null;
+}
+
+export function getNextEnrollmentNumber(): string {
+  let maxSeq = db.counter || 0;
+  for (const e of db.enrolments) {
+    const m = (e.enrollmentNumber || e.id).match(/VGM-2026-(\d+)/i);
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (!isNaN(n) && n > maxSeq) maxSeq = n;
+    }
+  }
+  for (const c of (db.certificates || [])) {
+    if (c.enrolmentId) {
+      const m = c.enrolmentId.match(/VGM-2026-(\d+)/i);
+      if (m) {
+        const n = parseInt(m[1], 10);
+        if (!isNaN(n) && n > maxSeq) maxSeq = n;
+      }
+    }
+  }
+  const nextSeq = Math.max(maxSeq + 1, 6);
+  db.counter = nextSeq;
+  return `VGM-2026-${String(nextSeq).padStart(4, '0')}`;
+}
+
 export const DB = {
   getEnrolments(): Enrolment[] {
     return [...db.enrolments].sort(
@@ -342,18 +426,66 @@ export const DB = {
   },
 
   getEnrolmentById(id: string): Enrolment | undefined {
-    return db.enrolments.find(e => e.id === id || e.payment.orderId === id);
+    const clean = id.trim().toUpperCase();
+    return db.enrolments.find(e => 
+      e.id.toUpperCase() === clean || 
+      (e.enrollmentNumber && e.enrollmentNumber.toUpperCase() === clean) ||
+      e.payment.orderId === id
+    );
   },
 
-  createEnrolment(data: Omit<Enrolment, 'id' | 'createdAt' | 'updatedAt'>): Enrolment {
-    db.counter += 1;
-    const seq = String(db.counter).padStart(4, '0');
-    const id = `VGM-2026-${seq}`;
-    const now = new Date().toISOString();
+  getEnrolmentsByStudent(query: string): Enrolment[] {
+    const clean = query.trim().toUpperCase();
+    const cleanLower = query.trim().toLowerCase();
+    const cleanMobile = query.replace(/\D/g, '');
 
+    return db.enrolments.filter(e => {
+      const idMatch = e.id.toUpperCase() === clean || e.id.toUpperCase().startsWith(clean + '-');
+      const enrMatch = Boolean(e.enrollmentNumber && e.enrollmentNumber.toUpperCase() === clean);
+      const emailMatch = e.student.email.toLowerCase() === cleanLower;
+      const mobileMatch = cleanMobile.length >= 7 && e.student.mobile.replace(/\D/g, '').includes(cleanMobile);
+      return idMatch || enrMatch || emailMatch || mobileMatch;
+    }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  },
+
+  createEnrolment(data: Omit<Enrolment, 'id' | 'createdAt' | 'updatedAt'> & { enrollmentNumber?: string }): Enrolment {
+    // 1. Check if same student already registered with same name, mobile, email
+    let enrollmentNumber = data.enrollmentNumber;
+    if (!enrollmentNumber) {
+      enrollmentNumber = findExistingStudentEnrollmentNumber(
+        data.student.fullName,
+        data.student.email,
+        data.student.mobile
+      ) || undefined;
+    }
+
+    let id: string;
+    if (enrollmentNumber) {
+      // Reusing existing student enrollment number!
+      const existingForStudent = db.enrolments.filter(e => 
+        e.enrollmentNumber === enrollmentNumber || 
+        e.id === enrollmentNumber || 
+        e.id.startsWith(enrollmentNumber + '-')
+      );
+
+      if (existingForStudent.length === 0) {
+        id = enrollmentNumber;
+      } else {
+        // Additional course for same student
+        const suffix = String(existingForStudent.length + 1).padStart(2, '0');
+        id = `${enrollmentNumber}-${suffix}`;
+      }
+    } else {
+      // New student - generate brand new unique enrollment number
+      enrollmentNumber = getNextEnrollmentNumber();
+      id = enrollmentNumber;
+    }
+
+    const now = new Date().toISOString();
     const newEnrolment: Enrolment = {
       ...data,
       id,
+      enrollmentNumber,
       createdAt: now,
       updatedAt: now
     };
@@ -572,24 +704,64 @@ export const DB = {
   },
 
   // --- Student Portal Methods ---
-  getStudentByAuth(enrolmentId: string, credential: string): Enrolment | null {
-    const cleanId = (enrolmentId || '').trim().toUpperCase();
+  getStudentByAuth(enrolmentIdOrQuery: string, credential?: string): Enrolment | null {
+    const cleanId = (enrolmentIdOrQuery || '').trim().toUpperCase();
     const cred = (credential || '').trim().toLowerCase();
     const cleanMobile = (credential || '').replace(/\D/g, '');
 
-    const found = db.enrolments.find(e => {
-      if (e.id.toUpperCase() !== cleanId) return false;
+    const candidates = db.enrolments.filter(e => {
+      const idMatch = e.id.toUpperCase() === cleanId || e.id.toUpperCase().startsWith(cleanId + '-');
+      const enrMatch = Boolean(e.enrollmentNumber && e.enrollmentNumber.toUpperCase() === cleanId);
+      const emailMatch = e.student.email.toLowerCase() === cleanId.toLowerCase();
+      const mobileMatch = cleanId.replace(/\D/g, '').length >= 7 && e.student.mobile.replace(/\D/g, '') === cleanId.replace(/\D/g, '');
+      return idMatch || enrMatch || emailMatch || mobileMatch;
+    });
+
+    if (candidates.length === 0) return null;
+
+    if (!credential || credential.trim().length === 0) {
+      return candidates[0];
+    }
+
+    const matched = candidates.find(e => {
       const emailMatch = e.student.email.toLowerCase() === cred;
-      const mobileMatch = cleanMobile.length >= 10 && e.student.mobile.replace(/\D/g, '').includes(cleanMobile);
+      const mobileMatch = cleanMobile.length >= 7 && e.student.mobile.replace(/\D/g, '').includes(cleanMobile);
       return emailMatch || mobileMatch;
     });
 
-    return found || null;
+    return matched || candidates[0];
+  },
+
+  getStudentPortalData(query: string, credential?: string) {
+    const enrolments = this.getEnrolmentsByStudent(query);
+    if (enrolments.length === 0) return null;
+
+    if (credential && credential.trim().length > 0) {
+      const cred = credential.trim().toLowerCase();
+      const credMobile = credential.replace(/\D/g, '');
+      const hasMatch = enrolments.some(e => 
+        e.student.email.toLowerCase() === cred || 
+        (credMobile.length >= 7 && e.student.mobile.replace(/\D/g, '').includes(credMobile))
+      );
+      if (!hasMatch) return null;
+    }
+
+    const primary = enrolments[0];
+    const enrollmentNumber = primary.enrollmentNumber || primary.id.split('-').slice(0, 3).join('-');
+    const certificates = this.getCertificatesByEnrolment(enrollmentNumber);
+
+    return {
+      enrollmentNumber,
+      student: primary.student,
+      enrolments,
+      certificates,
+      primaryCertificate: certificates[0] || null
+    };
   },
 
   updateStudentProgress(enrolmentId: string, completedWeeks: number[]): Enrolment | null {
     const cleanId = enrolmentId.trim().toUpperCase();
-    const idx = db.enrolments.findIndex(e => e.id.toUpperCase() === cleanId);
+    const idx = db.enrolments.findIndex(e => e.id.toUpperCase() === cleanId || (e.enrollmentNumber && e.enrollmentNumber.toUpperCase() === cleanId));
     if (idx === -1) return null;
 
     db.enrolments[idx] = {
@@ -610,7 +782,7 @@ export const DB = {
 
   submitStudentProject(enrolmentId: string, submission: { githubUrl: string; liveUrl?: string; notes?: string }): Enrolment | null {
     const cleanId = enrolmentId.trim().toUpperCase();
-    const idx = db.enrolments.findIndex(e => e.id.toUpperCase() === cleanId);
+    const idx = db.enrolments.findIndex(e => e.id.toUpperCase() === cleanId || (e.enrollmentNumber && e.enrollmentNumber.toUpperCase() === cleanId));
     if (idx === -1) return null;
 
     db.enrolments[idx] = {
@@ -642,10 +814,39 @@ export const DB = {
     );
   },
 
-  getCertificateById(id: string): Certificate | null {
-    if (!db.certificates) return null;
-    const clean = id.trim().toUpperCase();
-    return db.certificates.find(c => c.id.toUpperCase() === clean) || null;
+  getCertificateById(query: string): Certificate | null {
+    if (!db.certificates || db.certificates.length === 0) return null;
+    const clean = query.trim().toUpperCase();
+    const cleanLower = query.trim().toLowerCase();
+
+    // 1. Exact ID
+    const exact = db.certificates.find(c => c.id.toUpperCase() === clean);
+    if (exact) return exact;
+
+    // 2. By enrolment ID / number
+    const byEnr = db.certificates.find(c => 
+      c.enrolmentId && (c.enrolmentId.toUpperCase() === clean || c.enrolmentId.toUpperCase().startsWith(clean))
+    );
+    if (byEnr) return byEnr;
+
+    // 3. By student email
+    const byEmail = db.certificates.find(c => c.studentEmail.toLowerCase() === cleanLower);
+    if (byEmail) return byEmail;
+
+    return null;
+  },
+
+  getCertificatesByEnrolment(query: string): Certificate[] {
+    if (!db.certificates || db.certificates.length === 0) return [];
+    const clean = query.trim().toUpperCase();
+    const cleanLower = query.trim().toLowerCase();
+
+    return db.certificates.filter(c => {
+      const idMatch = c.id.toUpperCase() === clean;
+      const enrMatch = c.enrolmentId && (c.enrolmentId.toUpperCase() === clean || c.enrolmentId.toUpperCase().startsWith(clean));
+      const emailMatch = c.studentEmail.toLowerCase() === cleanLower;
+      return idMatch || enrMatch || emailMatch;
+    });
   },
 
   createCertificate(data: Omit<Certificate, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }): Certificate {

@@ -54,7 +54,7 @@ export const adminLoginSchema = z.object({
 // ── 5. Student Login Schema ──
 export const studentLoginSchema = z.object({
   enrolmentId: z.string().trim().min(3).max(60),
-  credential: z.string().trim().min(3).max(120)
+  credential: z.string().trim().max(120).optional().nullable()
 });
 
 // ── 6. Student Progress Schema ──

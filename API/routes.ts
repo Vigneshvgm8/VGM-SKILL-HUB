@@ -619,28 +619,79 @@ apiRouter.delete('/admin/courses/:id', requireAdmin, (req, res) => {
 apiRouter.post('/student/login', authRateLimiter, validateBody(studentLoginSchema), (req, res) => {
   const { enrolmentId, credential } = req.body;
 
-  const student = DB.getStudentByAuth(enrolmentId, credential);
-  if (!student) {
+  const portalData = DB.getStudentPortalData(enrolmentId, credential || undefined);
+  if (!portalData) {
     recordAuthFailure(req, enrolmentId);
-    return res.status(401).json({ error: 'No matching student record found. Please verify your Enrolment ID and registered credentials.' });
+    return res.status(401).json({ error: 'No matching student record found. Please verify your Enrollment Number or registered credentials.' });
   }
 
   recordAuthSuccess(req, enrolmentId);
-  const course = DB.getCourseBySlug(student.courseId || 'ai-mobile-app');
+  const primaryEnrolment = portalData.enrolments[0];
+  const course = DB.getCourseBySlug(primaryEnrolment?.courseId || 'ai-mobile-app');
   res.json({
     success: true,
-    enrolment: student,
+    enrolment: primaryEnrolment,
+    enrolments: portalData.enrolments,
+    enrollmentNumber: portalData.enrollmentNumber,
+    student: portalData.student,
+    certificates: portalData.certificates,
+    primaryCertificate: portalData.primaryCertificate,
     course
   });
 });
 
 apiRouter.get('/student/details/:id', apiRateLimiter, (req, res) => {
-  const student = DB.getEnrolmentById(req.params.id);
-  if (!student) {
-    return res.status(404).json({ error: 'Student record not found.' });
+  const portalData = DB.getStudentPortalData(req.params.id);
+  if (!portalData) {
+    const single = DB.getEnrolmentById(req.params.id);
+    if (!single) {
+      return res.status(404).json({ error: 'Student record not found.' });
+    }
+    const course = DB.getCourseBySlug(single.courseId || 'ai-mobile-app');
+    const certs = DB.getCertificatesByEnrolment(single.enrollmentNumber || single.id);
+    return res.json({
+      success: true,
+      enrolment: single,
+      enrolments: [single],
+      enrollmentNumber: single.enrollmentNumber || single.id,
+      student: single.student,
+      certificates: certs,
+      primaryCertificate: certs[0] || null,
+      course
+    });
   }
-  const course = DB.getCourseBySlug(student.courseId || 'ai-mobile-app');
-  res.json({ success: true, enrolment: student, course });
+
+  const primaryEnrolment = portalData.enrolments[0];
+  const course = DB.getCourseBySlug(primaryEnrolment?.courseId || 'ai-mobile-app');
+  res.json({
+    success: true,
+    enrolment: primaryEnrolment,
+    enrolments: portalData.enrolments,
+    enrollmentNumber: portalData.enrollmentNumber,
+    student: portalData.student,
+    certificates: portalData.certificates,
+    primaryCertificate: portalData.primaryCertificate,
+    course
+  });
+});
+
+apiRouter.get('/student/portal/:query', publicRateLimiter, (req, res) => {
+  const portalData = DB.getStudentPortalData(req.params.query);
+  if (!portalData) {
+    return res.status(404).json({ success: false, error: 'No student record found for this Enrollment Number.' });
+  }
+  const primaryEnrolment = portalData.enrolments[0];
+  const course = DB.getCourseBySlug(primaryEnrolment?.courseId || 'ai-mobile-app');
+  res.json({
+    success: true,
+    enrollmentNumber: portalData.enrollmentNumber,
+    student: portalData.student,
+    enrolments: portalData.enrolments,
+    enrolment: primaryEnrolment,
+    certificates: portalData.certificates,
+    primaryCertificate: portalData.primaryCertificate,
+    course
+  });
 });
 
 apiRouter.post('/student/progress', apiRateLimiter, validateBody(studentProgressSchema), (req, res) => {
@@ -678,12 +729,35 @@ apiRouter.patch('/admin/enrolments/:id/status', requireAdmin, validateBody(enrol
 });
 
 // 17. Certificate Routes (Public Verification + Admin Management)
-apiRouter.get('/certificates/:id', publicRateLimiter, (req, res) => {
-  const cert = DB.getCertificateById(req.params.id);
-  if (!cert) {
-    return res.status(404).json({ error: 'Certificate not found. Please verify the Certificate ID.' });
+apiRouter.get('/certificates/:id', publicRateLimiter, async (req, res) => {
+  const query = req.params.id;
+  let cert = DB.getCertificateById(query);
+  let allCerts = DB.getCertificatesByEnrolment(query);
+
+  if ((!cert || allCerts.length === 0) && SupabaseService.isAvailable()) {
+    try {
+      const remote = await SupabaseService.getCertificateById(query);
+      if (remote) {
+        if (!cert) cert = remote;
+        if (!allCerts.some(c => c.id === remote.id)) allCerts.push(remote);
+      }
+    } catch {}
   }
-  res.json({ success: true, certificate: cert });
+
+  const enrolments = DB.getEnrolmentsByStudent(query);
+
+  if (!cert && allCerts.length === 0) {
+    return res.status(404).json({ error: 'Certificate not found. Please verify the Certificate ID or Enrollment Number.' });
+  }
+
+  const primaryCert = cert || allCerts[0];
+  res.json({
+    success: true,
+    certificate: primaryCert,
+    certificates: allCerts.length > 0 ? allCerts : [primaryCert],
+    student: enrolments[0]?.student || { fullName: primaryCert.studentName, email: primaryCert.studentEmail },
+    enrolment: enrolments[0] || null
+  });
 });
 
 apiRouter.get('/admin/certificates', requireAdmin, (req, res) => {

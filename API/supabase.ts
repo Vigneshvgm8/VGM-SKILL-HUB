@@ -286,10 +286,12 @@ export const SupabaseService = {
 
   async getCertificateById(id: string): Promise<any | null> {
     if (!supabaseClient) return null;
+    const clean = id.trim().toUpperCase();
     const { data, error } = await supabaseClient
       .from('certificates')
       .select('*')
-      .eq('id', id.trim().toUpperCase())
+      .or(`id.eq.${clean},enrolment_id.eq.${clean},student_email.ilike.${id.trim()}`)
+      .limit(1)
       .maybeSingle();
 
     if (error) {
@@ -297,6 +299,21 @@ export const SupabaseService = {
       return null;
     }
     return data ? formatCertificateFromDb(data) : null;
+  },
+
+  async getCertificatesByEnrolment(enrolmentIdOrEmail: string): Promise<any[]> {
+    if (!supabaseClient) return [];
+    const clean = enrolmentIdOrEmail.trim().toUpperCase();
+    const { data, error } = await supabaseClient
+      .from('certificates')
+      .select('*')
+      .or(`id.eq.${clean},enrolment_id.eq.${clean},student_email.ilike.${enrolmentIdOrEmail.trim()}`);
+
+    if (error) {
+      console.error('[SUPABASE ERROR] getCertificatesByEnrolment:', error.message);
+      return [];
+    }
+    return (data || []).map(formatCertificateFromDb);
   },
 
   async upsertCertificates(certificates: any[]): Promise<void> {

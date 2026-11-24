@@ -32,9 +32,11 @@ interface VerifiedCert {
 }
 
 const SAMPLE_IDS = [
+  'VGM-2026-0005',
+  'VGM-2026-CERT-0107',
+  'VGM-2026-0001',
   'VGM-2026-CERT-0104',
-  'VGM-2026-CERT-0105',
-  'VGM-2026-CERT-0106'
+  'VGM-2026-CERT-0105'
 ];
 
 export const VerifyCertificatePage: React.FC = () => {
@@ -143,7 +145,7 @@ export const VerifyCertificatePage: React.FC = () => {
                 type="text"
                 value={certInput}
                 onChange={(e) => setCertInput(e.target.value)}
-                placeholder="Enter Certificate ID (e.g. VGM-2026-CERT-0104)"
+                placeholder="Enter Certificate ID or Enrollment Number (e.g. VGM-2026-0005 or VGM-2026-CERT-0107)"
                 className="w-full pl-11 pr-4 py-3 text-sm font-mono uppercase rounded-xl bg-white border border-black/10 text-[#111111] placeholder:text-[#999999] focus:border-[#1E9E54] focus:outline-none focus:ring-1 focus:ring-[#1E9E54]"
               />
             </div>

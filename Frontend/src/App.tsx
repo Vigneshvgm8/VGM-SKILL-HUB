@@ -77,6 +77,7 @@ export default function App() {
             {/* Student Learning Portal */}
             <Route path="/portal" element={<StudentPortalPage />} />
             <Route path="/student" element={<StudentPortalPage />} />
+            <Route path="/student-portal" element={<StudentPortalPage />} />
             
             {/* Dedicated Staff Admin Web Portal */}
             <Route path="/admin" element={<AdminRedirectPage />} />
