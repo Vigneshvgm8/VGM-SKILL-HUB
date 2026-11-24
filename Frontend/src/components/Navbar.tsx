@@ -57,7 +57,7 @@ export const Navbar: React.FC = () => {
   // Direct individual page links — strict single-line, no dropdowns, no word-wrap
   const navItems = [
     { label: 'Courses', path: '/courses' },
-    { label: 'AI Mobile', path: '/programme', liveDot: true },
+    // { label: 'AI Mobile', path: '/programme', liveDot: true },
     { label: 'Placements', path: '/placements', badge: '94.8%' },
     { label: 'Plans & Fees', path: '/plans' },
     { label: 'Student Hub', path: '/student-portal' },
@@ -234,7 +234,7 @@ export const Navbar: React.FC = () => {
               {[
                 { label: 'Home', path: '/' },
                 { label: 'Courses', path: '/courses' },
-                { label: 'AI Mobile App', path: '/programme', badge: 'Live' },
+                // { label: 'AI Mobile App', path: '/programme', badge: 'Live' },
                 { label: 'Placements', path: '/placements', badge: '94.8%' },
                 { label: 'Plans & Fees', path: '/plans' },
                 { label: 'Student Portal', path: '/student-portal' },
