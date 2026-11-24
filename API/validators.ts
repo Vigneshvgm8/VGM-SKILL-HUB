@@ -98,21 +98,24 @@ export const couponUpdateSchema = z.object({
 
 // ── 9. Course Create/Update Schemas ──
 export const courseCreateSchema = z.object({
-  id: z.string().min(2).max(64).regex(/^[a-z0-9-]+$/i),
+  id: z.string().min(2).max(64).regex(/^[a-z0-9-]+$/i).optional(),
   slug: z.string().min(2).max(64).regex(/^[a-z0-9-]+$/i),
   title: z.string().min(2).max(120),
-  headline: z.string().min(2).max(255),
-  shortDescription: z.string().min(10).max(500),
+  headline: z.string().min(2).max(255).optional(),
+  shortDescription: z.string().min(5).max(500),
   fullDescription: z.string().optional().default(''),
   category: z.string().min(2).max(64),
-  badge: z.string().min(2).max(64),
-  level: z.string().min(2).max(64),
-  duration: z.string().min(2).max(64),
+  badge: z.string().min(2).max(64).optional().default('Trending Track 2026'),
+  level: z.string().min(2).max(64).optional().default('Beginner to Advanced'),
+  duration: z.string().min(2).max(64).optional().default('12 Weeks (3 Months)'),
+  durationWeeks: z.number().int().positive().optional().default(12),
   startingFee: z.number().int().positive().max(500000),
-  nextBatch: z.string().min(2).max(100),
+  startingFeeFormatted: z.string().optional(),
+  nextBatch: z.string().min(2).max(100).optional().default('15th December 2026'),
+  mode: z.string().optional().default('Hybrid (Coimbatore Campus + Online Live)'),
   status: z.enum(['enrolling', 'upcoming', 'waitlist']).optional().default('enrolling'),
-  tools: z.array(z.string().max(40)).optional().default([]),
-  highlights: z.array(z.string().max(200)).optional().default([])
+  tools: z.array(z.string().max(60)).optional().default([]),
+  highlights: z.array(z.string().max(255)).optional().default([])
 });
 
 // ── 10. Certificate Create/Update Schemas ──

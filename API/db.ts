@@ -706,7 +706,7 @@ export const DB = {
       id,
       slug,
       title: courseData.title || 'Untitled Internship Course',
-      headline: courseData.headline || '',
+      headline: courseData.headline || courseData.shortDescription || courseData.title || '',
       shortDescription: courseData.shortDescription || '',
       fullDescription: courseData.fullDescription || '',
       category: courseData.category || 'General',
@@ -724,6 +724,7 @@ export const DB = {
       startingFeeFormatted: courseData.startingFeeFormatted || `₹${(courseData.startingFee || 5999).toLocaleString('en-IN')}`,
       status: courseData.status || 'enrolling',
       featured: courseData.featured ?? true,
+      thumbnail: courseData.thumbnail || '/assets/courses/ai-mobile-app.svg',
       tools: Array.isArray(courseData.tools) ? courseData.tools : [],
       careerRoles: Array.isArray(courseData.careerRoles) ? courseData.careerRoles : [],
       averagePackage: courseData.averagePackage || '₹4.5 - ₹8 LPA',
@@ -791,6 +792,11 @@ export const DB = {
     db.courses = db.courses.filter(c => c.id.toLowerCase() !== q && c.slug.toLowerCase() !== q);
     if (db.courses.length !== initLen) {
       saveDB();
+      if (SupabaseService.isAvailable()) {
+        SupabaseService.deleteCourse(idOrSlug).catch(e =>
+          console.error('[SUPABASE ASYNC ERROR] deleteCourse:', e?.message || e)
+        );
+      }
       return true;
     }
     return false;

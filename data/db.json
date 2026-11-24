@@ -371,188 +371,6 @@
   "processedWebhooks": [],
   "courses": [
     {
-      "id": "fullstack-ai-web",
-      "slug": "fullstack-ai-web",
-      "title": "Full-Stack Web Development & AI Engineering",
-      "headline": "Become a 360° Software Engineer with React 19, Next.js, Node.js, PostgreSQL & LLM Workflows",
-      "shortDescription": "Build modern responsive web applications, secure REST & GraphQL APIs, microservices, and autonomous AI agents. 100% placement track.",
-      "fullDescription": "An industry-grade full-stack engineering track designed following contemporary software standards. You will master both frontend architecture (React 19, TypeScript, Tailwind CSS, Next.js App Router) and backend scalable systems (Node.js, Express, PostgreSQL, Prisma, Redis, Docker) along with integrating generative AI agents and LangChain pipelines.",
-      "category": "Full-Stack Web",
-      "badge": "100% Placement Track",
-      "level": "Beginner to Advanced",
-      "duration": "16 Weeks (4 Months)",
-      "durationWeeks": 16,
-      "mode": "Hybrid (Coimbatore Campus + Live Online)",
-      "rating": 4.95,
-      "reviewsCount": 420,
-      "learnersEnrolled": 1120,
-      "liveProjectsCount": 4,
-      "nextBatch": "15th November 2026",
-      "startingFee": 7999,
-      "startingFeeFormatted": "₹7,999",
-      "status": "enrolling",
-      "featured": true,
-      "thumbnail": "/assets/courses/fullstack-ai-web.svg",
-      "tools": [
-        "React 19",
-        "Next.js",
-        "TypeScript",
-        "Node.js",
-        "PostgreSQL",
-        "Prisma ORM",
-        "Docker",
-        "LangChain",
-        "Tailwind CSS"
-      ],
-      "careerRoles": [
-        "Full-Stack Developer",
-        "Frontend Engineer",
-        "Backend Node.js Developer",
-        "Software Engineer"
-      ],
-      "averagePackage": "₹5.5 LPA",
-      "highestPackage": "₹14.0 LPA",
-      "highlights": [
-        "Comprehensive 400+ hours of coding, architecture design, and system debugging",
-        "Build 4 enterprise-grade applications including an AI SaaS product with payments",
-        "Direct interview drives with 45+ IT product companies & service firms",
-        "Dedicated soft skills, English communication, and DSA interview coaching"
-      ],
-      "prerequisites": "Basic computer literacy and enthusiasm to write code. We start from ground zero HTML/CSS/JS and build up to distributed systems.",
-      "targetAudience": [
-        "Non-IT graduates and degree holders looking for a guaranteed transition into software jobs",
-        "Fresh engineering graduates wanting deep technical stack depth beyond college syllabus",
-        "Junior frontend coders aiming to level up to high-paying full-stack engineers"
-      ],
-      "curriculum": [
-        {
-          "title": "Modern Frontend Architecture & TypeScript",
-          "topics": [
-            "TypeScript interfaces & generics",
-            "React state & effects",
-            "Custom hooks",
-            "Tailwind responsive layouts",
-            "Performance profiling"
-          ],
-          "duration": "Weeks 1 - 4",
-          "description": "Deep dive into HTML5 semantic standards, modern Tailwind CSS, JavaScript ES2024, TypeScript strict typing, and React 19 hooks.",
-          "moduleNumber": 1,
-          "handsOnProject": "Interactive Enterprise Analytics Dashboard with real-time charts"
-        },
-        {
-          "title": "Server-Side Next.js & Full-Stack Systems",
-          "topics": [
-            "Next.js 15 App Router",
-            "Server-side rendering vs static gen",
-            "Authentication & OAuth2",
-            "SEO optimization",
-            "Zod validation"
-          ],
-          "duration": "Weeks 5 - 8",
-          "description": "Server Actions, React Server Components (RSC), App Router, dynamic routing, middleware, and NextAuth authentication.",
-          "moduleNumber": 2,
-          "handsOnProject": "Multi-vendor E-Commerce Platform with Cart & Razorpay Checkout"
-        },
-        {
-          "title": "Backend Scalability, Databases & Docker",
-          "topics": [
-            "PostgreSQL queries & indexes",
-            "Prisma schema design",
-            "Redis cache layer",
-            "Dockerization & Docker Compose",
-            "API rate limiting"
-          ],
-          "duration": "Weeks 9 - 12",
-          "description": "Relational databases with PostgreSQL, Prisma ORM migrations, Redis caching, JWT security, Docker containers, and RESTful API standards.",
-          "moduleNumber": 3,
-          "handsOnProject": "High-throughput Social Community API with search and notifications"
-        },
-        {
-          "title": "AI Integrations, Production CI/CD & Placement Camp",
-          "topics": [
-            "LangChain agentic workflows",
-            "Vector search with pgvector",
-            "GitHub Actions deployment",
-            "Data structures & algorithms (DSA) prep",
-            "Live placement drives"
-          ],
-          "duration": "Weeks 13 - 16",
-          "description": "Build autonomous AI agents with LangChain & OpenAI/Gemini, set up GitHub Actions CI/CD to AWS/Vercel, and undergo 20+ mock interview rounds.",
-          "moduleNumber": 4,
-          "handsOnProject": "AI Document Intelligence & Copilot SaaS with subscription billing"
-        }
-      ],
-      "plans": {
-        "pro": {
-          "id": "builder",
-          "fee": 12999,
-          "name": "Professional Full-Stack",
-          "outcome": "Build complete production apps with Next.js, Docker, and cloud databases.",
-          "duration": "3 Months",
-          "features": [
-            "Everything in Standard",
-            "Next.js 15 App Router & Server Actions",
-            "Prisma ORM & Redis caching",
-            "Docker containerization",
-            "3 Full-stack projects on GitHub",
-            "Resume building & LinkedIn optimization"
-          ],
-          "weeksTotal": 12,
-          "recommended": true,
-          "feeFormatted": "₹12,999",
-          "durationMonths": 3,
-          "certificateType": "Advanced Full-Stack Engineering Diploma",
-          "liveProjectRole": "Develop full feature vertical from schema to deployment with code reviews."
-        },
-        "career": {
-          "id": "professional",
-          "fee": 18999,
-          "name": "Career & Placement Track",
-          "outcome": "Job-ready engineer with AI integration expertise, DSA preparation, and direct placement drives.",
-          "duration": "4 Months",
-          "features": [
-            "Everything in Professional",
-            "Autonomous AI agents & LangChain integration",
-            "AWS cloud deployment & CI/CD pipeline",
-            "100% Placement assistance & company interview pipeline",
-            "1-on-1 technical mock interviews with tech leads",
-            "Official VGM Soft Tech Experience Letter"
-          ],
-          "weeksTotal": 16,
-          "feeFormatted": "₹18,999",
-          "durationMonths": 4,
-          "certificateType": "Industry Experience Letter + Placement Guarantee Support",
-          "liveProjectRole": "Lead architecture of an enterprise module, participate in sprint demos, and receive interview referrals."
-        },
-        "standard": {
-          "id": "explorer",
-          "fee": 7999,
-          "name": "Standard Foundation",
-          "outcome": "Master frontend, backend fundamentals, and complete 2 verified web projects.",
-          "duration": "2 Months",
-          "features": [
-            "Frontend React 19 & Tailwind CSS",
-            "Node.js & Express REST APIs",
-            "Database design with PostgreSQL",
-            "2 Guided web projects",
-            "Weekly mentor Q&A sessions",
-            "Digital certificate & GitHub portfolio review"
-          ],
-          "weeksTotal": 8,
-          "feeFormatted": "₹7,999",
-          "durationMonths": 2,
-          "certificateType": "Certificate of Full-Stack Competency",
-          "liveProjectRole": "Contribute to frontend UI and REST API modules under mentor supervision."
-        }
-      },
-      "faqs": [
-        {
-          "answer": "Over 45% of our successful alumni come from non-computer science streams. Our curriculum begins from fundamental logic building and step-by-step programming. With our daily lab practice and mentor guidance, non-IT graduates transition smoothly into IT careers.",
-          "question": "I come from a Mechanical/Civil/Commerce background. Can I succeed in this course?"
-        }
-      ]
-    },
-    {
       "id": "data-science-ai",
       "slug": "data-science-ai",
       "title": "Data Science, Machine Learning & Agentic AI",
@@ -1247,8 +1065,8 @@
       "learnersEnrolled": 840,
       "liveProjectsCount": 3,
       "nextBatch": "10th November 2026",
-      "startingFee": 5999,
-      "startingFeeFormatted": "₹5,999",
+      "startingFee": 1500,
+      "startingFeeFormatted": "₹1,500",
       "status": "enrolling",
       "featured": true,
       "thumbnail": "/assets/courses/ai-mobile-app.svg",
@@ -1345,10 +1163,10 @@
       "plans": {
         "builder": {
           "id": "builder",
-          "fee": 9999,
+          "fee": 1800,
           "name": "Builder",
           "outcome": "Build a complete app with a backend and smarter AI features.",
-          "duration": "2 Months",
+          "duration": "4 Weeks",
           "features": [
             "Everything in Explorer",
             "Firebase backend and sign-in",
@@ -1359,19 +1177,19 @@
             "Mid-term review & individual code review",
             "Working capstone project on GitHub"
           ],
-          "weeksTotal": 8,
+          "weeksTotal": 4,
           "recommended": true,
-          "feeFormatted": "₹9,999",
+          "feeFormatted": "₹1,800",
           "durationMonths": 2,
           "certificateType": "Certificate of Completion",
           "liveProjectRole": "Own assigned feature modules and work through Git branches with mentor code review."
         },
         "explorer": {
           "id": "explorer",
-          "fee": 5999,
+          "fee": 1500,
           "name": "Explorer",
           "outcome": "Understand the basics and build one working AI-powered mini app.",
-          "duration": "1 Month",
+          "duration": "2 Weeks",
           "features": [
             "App development fundamentals",
             "AI assistants for coding and learning",
@@ -1382,19 +1200,19 @@
             "Mentor guidance and doubt clearing",
             "Project templates and code access"
           ],
-          "weeksTotal": 4,
+          "weeksTotal": 2,
           "recommended": false,
-          "feeFormatted": "₹5,999",
+          "feeFormatted": "₹1,500",
           "durationMonths": 1,
           "certificateType": "Certificate of Participation",
           "liveProjectRole": "Shadow the team and complete small guided tasks such as UI fixes and screen changes."
         },
         "professional": {
           "id": "professional",
-          "fee": 14999,
+          "fee": 2500,
           "name": "Professional",
-          "outcome": "Become job-ready with a published app and a strong portfolio.",
-          "duration": "3 Months",
+          "outcome": "Become job-ready with a published app, live feature ownership, and a strong portfolio.",
+          "duration": "6 Weeks",
           "features": [
             "Everything in Builder",
             "App architecture and performance",
@@ -1405,8 +1223,9 @@
             "Official Experience Letter on completion",
             "Priority recommendation for openings at VGM Soft Tech"
           ],
-          "weeksTotal": 12,
-          "feeFormatted": "₹14,999",
+          "weeksTotal": 6,
+          "recommended": false,
+          "feeFormatted": "₹2,500",
           "durationMonths": 3,
           "certificateType": "Certificate of Completion + Experience Letter",
           "liveProjectRole": "Take full ownership of a feature from planning to release, with regular reviews. An experience letter is issued on completion."
@@ -1420,6 +1239,188 @@
         {
           "answer": "Yes. Students enrolled in the Builder (2-Month) and Professional (3-Month) tracks receive an official VGM Soft Tech Experience Letter, stamped project completion certificate, and a verifiable digital credential.",
           "question": "Will I receive an official Experience Letter for college submission?"
+        }
+      ]
+    },
+    {
+      "id": "fullstack-ai-web",
+      "slug": "fullstack-ai-web",
+      "title": "Full-Stack Web Development & AI Engineering",
+      "headline": "Become a 360° Software Engineer with React 19, Next.js, Node.js, PostgreSQL & LLM Workflows",
+      "shortDescription": "Build modern responsive web applications, secure REST & GraphQL APIs, microservices, and autonomous AI agents. 100% placement track.",
+      "fullDescription": "An industry-grade full-stack engineering track designed following contemporary software standards. You will master both frontend architecture (React 19, TypeScript, Tailwind CSS, Next.js App Router) and backend scalable systems (Node.js, Express, PostgreSQL, Prisma, Redis, Docker) along with integrating generative AI agents and LangChain pipelines.",
+      "category": "Full-Stack Web",
+      "badge": "100% Placement Track",
+      "level": "Beginner to Advanced",
+      "duration": "16 Weeks (4 Months)",
+      "durationWeeks": 16,
+      "mode": "Hybrid (Coimbatore Campus + Live Online)",
+      "rating": 4.95,
+      "reviewsCount": 420,
+      "learnersEnrolled": 1120,
+      "liveProjectsCount": 4,
+      "nextBatch": "15th November 2026",
+      "startingFee": 7999,
+      "startingFeeFormatted": "₹7,999",
+      "status": "enrolling",
+      "featured": true,
+      "thumbnail": "/assets/courses/fullstack-ai-web.svg",
+      "tools": [
+        "React 19",
+        "Next.js",
+        "TypeScript",
+        "Node.js",
+        "PostgreSQL",
+        "Prisma ORM",
+        "Docker",
+        "LangChain",
+        "Tailwind CSS"
+      ],
+      "careerRoles": [
+        "Full-Stack Developer",
+        "Frontend Engineer",
+        "Backend Node.js Developer",
+        "Software Engineer"
+      ],
+      "averagePackage": "₹5.5 LPA",
+      "highestPackage": "₹14.0 LPA",
+      "highlights": [
+        "Comprehensive 400+ hours of coding, architecture design, and system debugging",
+        "Build 4 enterprise-grade applications including an AI SaaS product with payments",
+        "Direct interview drives with 45+ IT product companies & service firms",
+        "Dedicated soft skills, English communication, and DSA interview coaching"
+      ],
+      "prerequisites": "Basic computer literacy and enthusiasm to write code. We start from ground zero HTML/CSS/JS and build up to distributed systems.",
+      "targetAudience": [
+        "Non-IT graduates and degree holders looking for a guaranteed transition into software jobs",
+        "Fresh engineering graduates wanting deep technical stack depth beyond college syllabus",
+        "Junior frontend coders aiming to level up to high-paying full-stack engineers"
+      ],
+      "curriculum": [
+        {
+          "title": "Modern Frontend Architecture & TypeScript",
+          "topics": [
+            "TypeScript interfaces & generics",
+            "React state & effects",
+            "Custom hooks",
+            "Tailwind responsive layouts",
+            "Performance profiling"
+          ],
+          "duration": "Weeks 1 - 4",
+          "description": "Deep dive into HTML5 semantic standards, modern Tailwind CSS, JavaScript ES2024, TypeScript strict typing, and React 19 hooks.",
+          "moduleNumber": 1,
+          "handsOnProject": "Interactive Enterprise Analytics Dashboard with real-time charts"
+        },
+        {
+          "title": "Server-Side Next.js & Full-Stack Systems",
+          "topics": [
+            "Next.js 15 App Router",
+            "Server-side rendering vs static gen",
+            "Authentication & OAuth2",
+            "SEO optimization",
+            "Zod validation"
+          ],
+          "duration": "Weeks 5 - 8",
+          "description": "Server Actions, React Server Components (RSC), App Router, dynamic routing, middleware, and NextAuth authentication.",
+          "moduleNumber": 2,
+          "handsOnProject": "Multi-vendor E-Commerce Platform with Cart & Razorpay Checkout"
+        },
+        {
+          "title": "Backend Scalability, Databases & Docker",
+          "topics": [
+            "PostgreSQL queries & indexes",
+            "Prisma schema design",
+            "Redis cache layer",
+            "Dockerization & Docker Compose",
+            "API rate limiting"
+          ],
+          "duration": "Weeks 9 - 12",
+          "description": "Relational databases with PostgreSQL, Prisma ORM migrations, Redis caching, JWT security, Docker containers, and RESTful API standards.",
+          "moduleNumber": 3,
+          "handsOnProject": "High-throughput Social Community API with search and notifications"
+        },
+        {
+          "title": "AI Integrations, Production CI/CD & Placement Camp",
+          "topics": [
+            "LangChain agentic workflows",
+            "Vector search with pgvector",
+            "GitHub Actions deployment",
+            "Data structures & algorithms (DSA) prep",
+            "Live placement drives"
+          ],
+          "duration": "Weeks 13 - 16",
+          "description": "Build autonomous AI agents with LangChain & OpenAI/Gemini, set up GitHub Actions CI/CD to AWS/Vercel, and undergo 20+ mock interview rounds.",
+          "moduleNumber": 4,
+          "handsOnProject": "AI Document Intelligence & Copilot SaaS with subscription billing"
+        }
+      ],
+      "plans": {
+        "pro": {
+          "id": "builder",
+          "fee": 12999,
+          "name": "Professional Full-Stack",
+          "outcome": "Build complete production apps with Next.js, Docker, and cloud databases.",
+          "duration": "3 Months",
+          "features": [
+            "Everything in Standard",
+            "Next.js 15 App Router & Server Actions",
+            "Prisma ORM & Redis caching",
+            "Docker containerization",
+            "3 Full-stack projects on GitHub",
+            "Resume building & LinkedIn optimization"
+          ],
+          "weeksTotal": 12,
+          "recommended": true,
+          "feeFormatted": "₹12,999",
+          "durationMonths": 3,
+          "certificateType": "Advanced Full-Stack Engineering Diploma",
+          "liveProjectRole": "Develop full feature vertical from schema to deployment with code reviews."
+        },
+        "career": {
+          "id": "professional",
+          "fee": 18999,
+          "name": "Career & Placement Track",
+          "outcome": "Job-ready engineer with AI integration expertise, DSA preparation, and direct placement drives.",
+          "duration": "4 Months",
+          "features": [
+            "Everything in Professional",
+            "Autonomous AI agents & LangChain integration",
+            "AWS cloud deployment & CI/CD pipeline",
+            "100% Placement assistance & company interview pipeline",
+            "1-on-1 technical mock interviews with tech leads",
+            "Official VGM Soft Tech Experience Letter"
+          ],
+          "weeksTotal": 16,
+          "feeFormatted": "₹18,999",
+          "durationMonths": 4,
+          "certificateType": "Industry Experience Letter + Placement Guarantee Support",
+          "liveProjectRole": "Lead architecture of an enterprise module, participate in sprint demos, and receive interview referrals."
+        },
+        "standard": {
+          "id": "explorer",
+          "fee": 7999,
+          "name": "Standard Foundation",
+          "outcome": "Master frontend, backend fundamentals, and complete 2 verified web projects.",
+          "duration": "2 Months",
+          "features": [
+            "Frontend React 19 & Tailwind CSS",
+            "Node.js & Express REST APIs",
+            "Database design with PostgreSQL",
+            "2 Guided web projects",
+            "Weekly mentor Q&A sessions",
+            "Digital certificate & GitHub portfolio review"
+          ],
+          "weeksTotal": 8,
+          "feeFormatted": "₹7,999",
+          "durationMonths": 2,
+          "certificateType": "Certificate of Full-Stack Competency",
+          "liveProjectRole": "Contribute to frontend UI and REST API modules under mentor supervision."
+        }
+      },
+      "faqs": [
+        {
+          "answer": "Over 45% of our successful alumni come from non-computer science streams. Our curriculum begins from fundamental logic building and step-by-step programming. With our daily lab practice and mentor guidance, non-IT graduates transition smoothly into IT careers.",
+          "question": "I come from a Mechanical/Civil/Commerce background. Can I succeed in this course?"
         }
       ]
     }
@@ -1523,11 +1524,11 @@
     "explorer": {
       "id": "explorer",
       "name": "Explorer",
-      "duration": "1 Month",
+      "duration": "2 Weeks",
       "durationMonths": 1,
-      "weeksTotal": 4,
-      "fee": 5999,
-      "feeFormatted": "₹5,999",
+      "weeksTotal": 2,
+      "fee": 1500,
+      "feeFormatted": "₹1,500",
       "recommended": false,
       "outcome": "Understand the basics and build one working AI-powered mini app.",
       "certificateType": "Certificate of Participation",
@@ -1546,11 +1547,11 @@
     "builder": {
       "id": "builder",
       "name": "Builder",
-      "duration": "2 Months",
+      "duration": "4 Weeks",
       "durationMonths": 2,
-      "weeksTotal": 8,
-      "fee": 9999,
-      "feeFormatted": "₹9,999",
+      "weeksTotal": 4,
+      "fee": 1800,
+      "feeFormatted": "₹1,800",
       "recommended": true,
       "outcome": "Build a complete app with a backend and smarter AI features.",
       "certificateType": "Certificate of Completion",
@@ -1569,11 +1570,11 @@
     "professional": {
       "id": "professional",
       "name": "Professional",
-      "duration": "3 Months",
+      "duration": "6 Weeks",
       "durationMonths": 3,
-      "weeksTotal": 12,
-      "fee": 14999,
-      "feeFormatted": "₹14,999",
+      "weeksTotal": 6,
+      "fee": 2500,
+      "feeFormatted": "₹2,500",
       "recommended": false,
       "outcome": "Become job-ready with a published app, live feature ownership, and a strong portfolio.",
       "certificateType": "Certificate of Completion + Experience Letter",

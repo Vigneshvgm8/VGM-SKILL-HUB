@@ -30,10 +30,15 @@ const DOMAIN_CODES: Record<string, string> = {
 const COURSE_ARTWORK: Record<string, string> = {
   'ai-mobile-app': '/assets/courses/ai-mobile-app.svg',
   'full-stack-web-ai': '/assets/courses/fullstack-ai-web.svg',
+  'fullstack-ai-web': '/assets/courses/fullstack-ai-web.svg',
   'python-ai-engineering': '/assets/courses/data-science-ai.svg',
+  'data-science-ai': '/assets/courses/data-science-ai.svg',
   'cloud-devops-linux': '/assets/courses/cloud-devops.svg',
+  'cloud-devops': '/assets/courses/cloud-devops.svg',
   'ui-ux-design-frontend': '/assets/courses/uiux-product-design.svg',
+  'uiux-product-design': '/assets/courses/uiux-product-design.svg',
   'cybersecurity-ethical-hacking': '/assets/courses/cybersecurity-defensive.svg',
+  'cybersecurity-defensive': '/assets/courses/cybersecurity-defensive.svg',
 };
 
 // Hardcover Color Palettes

@@ -209,6 +209,20 @@ export const SupabaseService = {
     }
   },
 
+  async deleteCourse(idOrSlug: string): Promise<boolean> {
+    if (!supabaseClient) return false;
+    const { error } = await supabaseClient
+      .from('courses')
+      .delete()
+      .or(`id.eq.${idOrSlug},slug.eq.${idOrSlug}`);
+
+    if (error) {
+      console.error('[SUPABASE ERROR] deleteCourse:', error.message);
+      return false;
+    }
+    return true;
+  },
+
   // 4. Coupons Operations
   async getCoupons(): Promise<any[]> {
     if (!supabaseClient) return [];
