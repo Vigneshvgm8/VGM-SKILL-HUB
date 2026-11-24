@@ -9,7 +9,7 @@ import { Phone, Mail, MapPin, MessageCircle, Clock, Send, CheckCircle2, Sparkles
 const sectionAnim = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
+  viewport: { once: false, amount: 0.15 },
   transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
 };
 
@@ -28,7 +28,7 @@ export const AboutContactPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] space-y-20 pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 font-body">
+    <div className="min-h-screen bg-[#FFFFFF] space-y-20 pt-36 sm:pt-40 md:pt-44 pb-16 md:pb-24 font-body">
       
       {/* 1. Header Section */}
       <motion.section

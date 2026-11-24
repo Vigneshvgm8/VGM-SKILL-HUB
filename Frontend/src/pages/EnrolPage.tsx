@@ -440,7 +440,7 @@ export const EnrolPage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 text-[#111111]">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 md:pt-44 pb-16 md:pb-24 text-[#111111]">
       
       {/* Title */}
       <div className="mb-8 text-center sm:text-left">

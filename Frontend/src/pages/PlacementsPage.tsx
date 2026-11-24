@@ -22,7 +22,7 @@ import {
 const sectionAnim = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
+  viewport: { once: false, amount: 0.15 },
   transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
 };
 
@@ -37,7 +37,7 @@ export const PlacementsPage: React.FC = () => {
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] pb-24 font-body">
       
       {/* 1. Placement Hero Banner */}
-      <section className="bg-[#FFFFFF] text-[#111111] pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24 relative overflow-hidden">
+      <section className="bg-[#FFFFFF] text-[#111111] pt-36 sm:pt-40 md:pt-44 pb-16 md:pb-24 relative overflow-hidden">
         {/* Subtle mesh orb */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#1E9E54]/5 blur-[120px] pointer-events-none animate-orb" />
         

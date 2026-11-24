@@ -51,7 +51,7 @@ export const CinematicTextReveal: React.FC<CinematicTextRevealProps> = ({
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-60px' }}
+      viewport={{ once: false, amount: 0.2 }}
       className={`inline-flex flex-wrap gap-x-[0.28em] gap-y-[0.1em] ${className}`}
     >
       {words.map((word, i) => (

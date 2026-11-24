@@ -338,7 +338,7 @@ export const StudentPortalPage: React.FC = () => {
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] pb-24 font-body">
 
       {/* ── TOP SEARCH & VERIFICATION HERO ── */}
-      <section className="bg-gradient-to-b from-[#F7F8FA] via-[#F0F7F3] to-[#FFFFFF] border-b border-black/10 pt-28 sm:pt-32 md:pt-36 pb-12">
+      <section className="bg-gradient-to-b from-[#F7F8FA] via-[#F0F7F3] to-[#FFFFFF] border-b border-black/10 pt-36 sm:pt-40 md:pt-44 pb-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
           <div className="text-center space-y-2.5">

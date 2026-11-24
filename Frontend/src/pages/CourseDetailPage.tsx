@@ -45,7 +45,7 @@ export const CourseDetailPage: React.FC = () => {
 
   if (loading && !course) {
     return (
-      <div className="min-h-screen bg-[#FFFFFF] pt-28 sm:pt-32 pb-24 px-4 max-w-3xl mx-auto text-center space-y-4">
+      <div className="min-h-screen bg-[#FFFFFF] pt-36 sm:pt-40 pb-24 px-4 max-w-3xl mx-auto text-center space-y-4">
         <div className="w-10 h-10 border-4 border-[#1E9E54] border-t-transparent rounded-full animate-spin mx-auto" />
         <p className="text-[#666666] text-sm">Loading course details...</p>
       </div>
@@ -71,7 +71,7 @@ export const CourseDetailPage: React.FC = () => {
   const planKeys = Object.keys(course.plans || {});
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] pb-24 font-body pt-24 sm:pt-28 md:pt-32">
+    <div className="min-h-screen bg-[#FFFFFF] text-[#111111] pb-24 font-body pt-36 sm:pt-40 md:pt-44">
       
       {/* 1. Breadcrumbs */}
       <div className="bg-[#F7F8FA] border-b border-black/5 text-[#777777] text-xs py-3 px-4 sm:px-6 lg:px-8">
@@ -250,7 +250,7 @@ export const CourseDetailPage: React.FC = () => {
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false, amount: 0.15 }}
         transition={{ duration: 0.7 }}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16"
       >
@@ -283,7 +283,7 @@ export const CourseDetailPage: React.FC = () => {
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false, amount: 0.15 }}
         transition={{ duration: 0.7 }}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16"
       >
@@ -381,7 +381,7 @@ export const CourseDetailPage: React.FC = () => {
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false, amount: 0.15 }}
         transition={{ duration: 0.7 }}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20"
       >
@@ -463,7 +463,7 @@ export const CourseDetailPage: React.FC = () => {
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false, amount: 0.15 }}
         transition={{ duration: 0.7 }}
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20"
       >
@@ -517,7 +517,7 @@ export const CourseDetailPage: React.FC = () => {
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
+        viewport={{ once: false, amount: 0.15 }}
         transition={{ duration: 0.7 }}
         className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-20 space-y-6"
       >
