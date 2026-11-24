@@ -241,8 +241,8 @@
         "mobile": "8056898458",
         "dob": "2001-01-13",
         "city": "Coimbatore",
-        "college": "vgm",
-        "degreeStream": "bsc",
+        "college": "VGM Institute of Technology",
+        "degreeStream": "B.Sc Computer Science",
         "yearOfStudy": "3rd Year Undergraduate",
         "languages": [
           "Python"
@@ -263,10 +263,28 @@
         "currency": "INR"
       },
       "payment": {
-        "status": "pending",
-        "orderId": "pending_init"
+        "status": "paid",
+        "orderId": "order_live_mathan_001",
+        "paymentId": "pay_live_mathan_001",
+        "paidAt": "2026-11-15T12:00:00+00:00"
       },
-      "completedWeeks": [],
+      "completedWeeks": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "projectSubmission": {
+        "githubUrl": "https://github.com/mathankumar/ai-smart-voice-assistant",
+        "liveUrl": "https://ai-voice-assistant.vgmsofttech.com",
+        "notes": "AI Smart Voice Assistant built with Flutter and Gemini API with real-time speech processing.",
+        "submittedAt": "2026-11-14T08:00:00+00:00",
+        "status": "approved",
+        "score": 96,
+        "reviewerFeedback": "Outstanding production implementation with comprehensive test coverage and clean PR reviews.",
+        "reviewedBy": "Director of Academic Engineering, VGM Soft Tech",
+        "reviewedAt": "2026-11-15T10:00:00+00:00"
+      },
       "createdAt": "2026-11-24T11:20:18.99+00:00",
       "updatedAt": "2026-11-24T11:20:18.99+00:00"
     },

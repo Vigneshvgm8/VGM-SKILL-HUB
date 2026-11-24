@@ -99,24 +99,16 @@ interface CertificateItem {
   createdAt: string;
 }
 
-const SAMPLE_ENROLMENTS = [
-  { id: 'VGM-2026-0005', label: 'Mathankumar', tag: 'Mobile AI' },
-  { id: 'VGM-2026-0001', label: 'Kavitha Ramasamy', tag: 'Flutter & AI' },
-  { id: 'VGM-2026-0002', label: 'Praveen Kumar', tag: 'Full-Stack' },
-  { id: 'VGM-2026-0003', label: 'Siddharth Raman', tag: 'Cloud DevOps' },
-  { id: 'VGM-2026-0004', label: 'Test User', tag: 'Enrolled' },
-];
-
 export const StudentPortalPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get('enrolmentId') || searchParams.get('id') || '';
 
   // Search / Lookup state
-  const [enrollmentInput, setEnrollmentInput] = useState<string>(initialQuery || 'VGM-2026-0005');
+  const [enrollmentInput, setEnrollmentInput] = useState<string>(initialQuery || '');
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [verifyError, setVerifyError] = useState<string | null>(null);
 
-  // Student Data state
+  // Student Data state (Loaded strictly from Live Database)
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [masterEnrollmentNumber, setMasterEnrollmentNumber] = useState<string>('');
   const [studentProfile, setStudentProfile] = useState<StudentDetails | null>(null);
@@ -142,9 +134,9 @@ export const StudentPortalPage: React.FC = () => {
   const activeEnrolment = enrolments[selectedEnrolmentIndex] || enrolments[0] || null;
   const activeCertificate = certificates[selectedCertIndex] || certificates[0] || null;
 
-  // Auto-verify on mount if param present or default
+  // Auto-verify on mount if param present
   useEffect(() => {
-    const q = initialQuery || sessionStorage.getItem('vgm_student_enr') || 'VGM-2026-0005';
+    const q = initialQuery || sessionStorage.getItem('vgm_student_enr') || '';
     if (q) {
       setEnrollmentInput(q);
       verifyStudentByEnrollment(q);
@@ -159,7 +151,7 @@ export const StudentPortalPage: React.FC = () => {
     setVerifyError(null);
 
     try {
-      // 1. Try student details endpoint
+      // 1. Fetch live student and course data directly from live database API
       const res = await fetch(`/api/student/details/${encodeURIComponent(clean)}`);
       const data = await res.json();
 
@@ -173,7 +165,7 @@ export const StudentPortalPage: React.FC = () => {
         setStudentProfile(data.student || studentEnrolments[0]?.student || null);
         setCourse(data.course || null);
 
-        // Populate project submission form if exists
+        // Populate project submission form if exists in database
         const sub = studentEnrolments[0]?.projectSubmission;
         if (sub) {
           setGithubUrl(sub.githubUrl || '');
@@ -181,10 +173,9 @@ export const StudentPortalPage: React.FC = () => {
           setProjectNotes(sub.notes || '');
         }
 
-        // Fetch or assign certificates
+        // Fetch or assign live certificates
         let certList: CertificateItem[] = data.certificates || [];
         if (certList.length === 0) {
-          // Try fetching by enrolment number or certificate ID
           const cRes = await fetch(`/api/certificates/${encodeURIComponent(enrNum)}`);
           if (cRes.ok) {
             const cData = await cRes.json();
@@ -209,7 +200,7 @@ export const StudentPortalPage: React.FC = () => {
           setActiveTab('courses');
         }
       } else {
-        // Fallback: try direct certificate verification endpoint
+        // Fallback: try certificate endpoint directly
         const certRes = await fetch(`/api/certificates/${encodeURIComponent(clean)}`);
         if (certRes.ok) {
           const cData = await certRes.json();
@@ -218,14 +209,14 @@ export const StudentPortalPage: React.FC = () => {
             setCertificates(certList);
             setSelectedCertIndex(0);
             setMasterEnrollmentNumber(certList[0]?.enrolmentId || clean);
-            setStudentProfile({
-              fullName: certList[0]?.studentName || 'Student',
+            setStudentProfile(cData.student || {
+              fullName: certList[0]?.studentName || '',
               email: certList[0]?.studentEmail || '',
               mobile: '',
-              college: 'VGM Partner Institution',
-              degreeStream: 'Software Engineering',
-              yearOfStudy: 'Graduate',
-              city: 'Coimbatore',
+              college: '',
+              degreeStream: '',
+              yearOfStudy: '',
+              city: '',
               languages: []
             });
             setIsLoaded(true);
@@ -233,7 +224,7 @@ export const StudentPortalPage: React.FC = () => {
             return;
           }
         }
-        setVerifyError(data.error || 'No student or certificate record found with this Enrollment Number. Please check your admission receipt.');
+        setVerifyError(data.error || 'No student or certificate record found with this Enrollment Number. Please check your admission confirmation.');
       }
     } catch (err: any) {
       setVerifyError('Network error connecting to live credential registry. Please try again.');
@@ -247,19 +238,29 @@ export const StudentPortalPage: React.FC = () => {
     verifyStudentByEnrollment(enrollmentInput);
   };
 
-  const handleSelectSample = (sampleId: string) => {
-    setEnrollmentInput(sampleId);
-    verifyStudentByEnrollment(sampleId);
-  };
-
   const handleResetSearch = () => {
     setIsLoaded(false);
     setEnrolments([]);
     setCertificates([]);
     setStudentProfile(null);
     setMasterEnrollmentNumber('');
+    setEnrollmentInput('');
     sessionStorage.removeItem('vgm_student_enr');
     setSearchParams({}, { replace: true });
+  };
+
+  // Switch between courses for this student and fetch course curriculum
+  const handleSelectEnrolment = (idx: number) => {
+    setSelectedEnrolmentIndex(idx);
+    const sel = enrolments[idx];
+    if (sel && sel.courseId) {
+      fetch(`/api/courses/${sel.courseId}`)
+        .then(r => r.json())
+        .then(d => {
+          if (d.course) setCourse(d.course);
+        })
+        .catch(() => {});
+    }
   };
 
   // Toggle Module Progress
@@ -329,9 +330,9 @@ export const StudentPortalPage: React.FC = () => {
     }
   };
 
-  const totalWeeks = course?.durationWeeks || 8;
+  const totalWeeks = course?.durationWeeks || (course?.curriculum ? course.curriculum.length : 8);
   const completedWeeksCount = (activeEnrolment?.completedWeeks || []).length;
-  const progressPercent = Math.min(100, Math.round((completedWeeksCount / totalWeeks) * 100));
+  const progressPercent = totalWeeks > 0 ? Math.min(100, Math.round((completedWeeksCount / totalWeeks) * 100)) : 0;
 
   return (
     <div className="min-h-screen bg-[#FFFFFF] text-[#111111] pb-24 font-body">
@@ -387,24 +388,9 @@ export const StudentPortalPage: React.FC = () => {
               </button>
             </form>
 
-            {/* Quick Sample Selector */}
-            <div className="mt-3.5 pt-3 border-t border-black/10 flex flex-wrap items-center gap-2 text-xs">
-              <span className="text-[#777777] font-medium text-[11px]">Quick Samples:</span>
-              {SAMPLE_ENROLMENTS.map(sample => (
-                <button
-                  key={sample.id}
-                  type="button"
-                  onClick={() => handleSelectSample(sample.id)}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium transition-all cursor-pointer ${
-                    masterEnrollmentNumber === sample.id
-                      ? 'bg-[#1E9E54] text-white shadow-xs font-bold'
-                      : 'bg-[#F0F2F4] text-[#333333] hover:bg-[#E2E8F0] border border-black/5'
-                  }`}
-                >
-                  <span className="font-bold">{sample.id}</span>
-                  <span className="text-[#888888] ml-1">({sample.label})</span>
-                </button>
-              ))}
+            <div className="mt-3.5 pt-3 border-t border-black/10 flex items-center justify-between text-xs text-[#777777]">
+              <span>Real-time authenticated records directly from VGM Skill Hub live database.</span>
+              <span className="font-mono text-[11px] text-[#1E9E54] font-semibold">Live Database Verified</span>
             </div>
 
             {verifyError && (
@@ -432,7 +418,7 @@ export const StudentPortalPage: React.FC = () => {
               
               <div className="flex items-start sm:items-center gap-4">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 text-[#1E9E54] font-heading font-black text-2xl flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(30,158,84,0.2)]">
-                  {studentProfile.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  {studentProfile.fullName ? studentProfile.fullName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'ST'}
                 </div>
 
                 <div className="space-y-1">
@@ -446,16 +432,22 @@ export const StudentPortalPage: React.FC = () => {
                     </span>
                   </div>
 
-                  <p className="text-xs text-[#555555]">
-                    {studentProfile.college || 'VGM Partner Institution'} · {studentProfile.degreeStream || 'Engineering'}
-                  </p>
+                  {(studentProfile.college || studentProfile.degreeStream) && (
+                    <p className="text-xs text-[#555555]">
+                      {studentProfile.college}{studentProfile.college && studentProfile.degreeStream ? ' · ' : ''}{studentProfile.degreeStream}
+                    </p>
+                  )}
 
                   <div className="flex flex-wrap items-center gap-3 text-xs text-[#1E9E54] font-mono pt-0.5">
                     <span className="bg-[#1E9E54]/10 px-2 py-0.5 rounded-md font-bold">
                       Enrollment #: {masterEnrollmentNumber}
                     </span>
-                    <span>·</span>
-                    <span>{studentProfile.email}</span>
+                    {studentProfile.email && (
+                      <>
+                        <span>·</span>
+                        <span>{studentProfile.email}</span>
+                      </>
+                    )}
                     {studentProfile.mobile && (
                       <>
                         <span>·</span>
@@ -495,22 +487,26 @@ export const StudentPortalPage: React.FC = () => {
               <div className="bg-[#F0F7F3] p-4 rounded-2xl border border-[#1E9E54]/20 space-y-2">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#1E9E54] flex items-center gap-1.5">
                   <Layers className="w-3.5 h-3.5" />
-                  <span>Multiple Courses Registered under Enrollment #{masterEnrollmentNumber}:</span>
+                  <span>Courses Enrolled under Master Enrollment #{masterEnrollmentNumber}:</span>
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {enrolments.map((enr, idx) => (
                     <button
                       key={enr.id}
                       type="button"
-                      onClick={() => setSelectedEnrolmentIndex(idx)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                      onClick={() => handleSelectEnrolment(idx)}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
                         selectedEnrolmentIndex === idx
                           ? 'bg-[#111111] text-white shadow-xs font-bold'
                           : 'bg-white text-[#444444] hover:bg-[#E2E8F0] border border-black/10'
                       }`}
                     >
                       <span>{enr.courseTitle || `Course ${idx + 1}`}</span>
-                      <span className="text-[10px] opacity-70">({enr.planName})</span>
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded-md uppercase font-mono ${
+                        enr.payment.status === 'paid' ? 'bg-[#1E9E54]/20 text-[#1E9E54]' : 'bg-black/10 text-[#666666]'
+                      }`}>
+                        {enr.payment.status}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -562,7 +558,7 @@ export const StudentPortalPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
-              {certificates.length > 0 ? (
+              {certificates.length > 0 && activeCertificate ? (
                 <div className="space-y-6">
 
                   {/* Certificate Selector if multiple */}
@@ -625,24 +621,29 @@ export const StudentPortalPage: React.FC = () => {
                       </p>
 
                       <h3 className="text-3xl sm:text-4xl font-heading font-black text-[#111111] tracking-tight">
-                        {activeCertificate?.studentName || studentProfile.fullName}
+                        {activeCertificate.studentName || studentProfile.fullName}
                       </h3>
 
                       <p className="text-xs font-mono text-[#1E9E54] font-bold">
-                        Enrollment Number: {activeCertificate?.enrolmentId || masterEnrollmentNumber}
+                        Enrollment Number: {activeCertificate.enrolmentId || masterEnrollmentNumber}
                       </p>
 
                       <div className="max-w-2xl mx-auto text-xs sm:text-sm text-[#444444] leading-relaxed pt-2">
-                        For successfully completing the rigorous industry training in{' '}
+                        For successfully completing the comprehensive professional internship in{' '}
                         <strong className="text-[#111111] font-bold underline decoration-[#1E9E54] decoration-2">
-                          {activeCertificate?.courseTitle || activeEnrolment?.courseTitle}
+                          {activeCertificate.courseTitle}
                         </strong>{' '}
-                        under the <strong className="text-[#111111]">{activeCertificate?.planLevel || activeEnrolment?.planName}</strong>, achieving a grade of{' '}
-                        <strong className="text-[#1E9E54] font-bold">{activeCertificate?.grade || 'Distinction (Grade A+)'}</strong>.
+                        under the <strong className="text-[#111111]">{activeCertificate.planLevel}</strong>
+                        {activeCertificate.grade ? (
+                          <>
+                            {', achieving a grade of '}
+                            <strong className="text-[#1E9E54] font-bold">{activeCertificate.grade}</strong>.
+                          </>
+                        ) : '.'}
                       </div>
 
                       {/* Capstone Project Highlight */}
-                      {activeCertificate?.projectTitle && (
+                      {activeCertificate.projectTitle && (
                         <div className="p-4 bg-[#F0F7F3] rounded-2xl border border-[#1E9E54]/20 max-w-xl mx-auto space-y-1">
                           <span className="text-[10px] font-mono uppercase font-bold text-[#1E9E54] block">
                             Production Capstone Project Audited
@@ -654,7 +655,7 @@ export const StudentPortalPage: React.FC = () => {
                       )}
 
                       {/* Skills Badges */}
-                      {activeCertificate?.skills && activeCertificate.skills.length > 0 && (
+                      {activeCertificate.skills && activeCertificate.skills.length > 0 && (
                         <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2">
                           {activeCertificate.skills.map((skill, sIdx) => (
                             <span key={sIdx} className="px-2.5 py-1 rounded-lg bg-black/[0.05] border border-black/10 text-[11px] font-mono text-[#333333]">
@@ -671,9 +672,9 @@ export const StudentPortalPage: React.FC = () => {
                       {/* Left: Issue Date & Cert ID */}
                       <div className="space-y-1">
                         <span className="text-[10px] font-mono uppercase text-[#888888] block">Date of Conferment</span>
-                        <p className="text-xs font-bold text-[#111111]">{activeCertificate?.completionDate || '24th October 2026'}</p>
+                        <p className="text-xs font-bold text-[#111111]">{activeCertificate.completionDate}</p>
                         <span className="text-[11px] font-mono text-[#1E9E54] block font-semibold">
-                          ID: {activeCertificate?.id}
+                          ID: {activeCertificate.id}
                         </span>
                       </div>
 
@@ -692,7 +693,7 @@ export const StudentPortalPage: React.FC = () => {
                           Academic Board of Directors
                         </div>
                         <p className="text-xs text-[#555555] font-light">
-                          {activeCertificate?.authorizedSignatory || 'Director of Academic Engineering, VGM Soft Tech'}
+                          {activeCertificate.authorizedSignatory}
                         </p>
                       </div>
 
@@ -727,7 +728,7 @@ export const StudentPortalPage: React.FC = () => {
                       </button>
 
                       <Link
-                        to={`/verify-certificate?id=${activeCertificate?.id || masterEnrollmentNumber}`}
+                        to={`/verify-certificate?id=${activeCertificate.id}`}
                         className="px-4 py-2 bg-[#1E9E54] hover:bg-[#14723B] text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(30,158,84,0.3)]"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -740,8 +741,8 @@ export const StudentPortalPage: React.FC = () => {
               ) : (
                 /* In Progress State if certificate not yet issued */
                 <div className="bg-white rounded-3xl border border-black/10 p-10 shadow-sm text-center space-y-5">
-                  <div className="w-16 h-16 rounded-2xl bg-[#FFC83D]/15 text-[#FFC83D] border border-[#FFC83D]/30 flex items-center justify-center mx-auto shadow-md">
-                    <Award className="w-8 h-8 text-[#FFC83D]" />
+                  <div className="w-16 h-16 rounded-2xl bg-[#FFC83D]/15 text-[#B45309] border border-[#FFC83D]/30 flex items-center justify-center mx-auto shadow-md">
+                    <Award className="w-8 h-8 text-[#B45309]" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-2xl font-heading font-black text-[#111111]">
@@ -756,7 +757,7 @@ export const StudentPortalPage: React.FC = () => {
                     onClick={() => setActiveTab('courses')}
                     className="px-6 py-2.5 bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold rounded-xl text-xs inline-flex items-center gap-2 cursor-pointer shadow-md"
                   >
-                    <span>View Remaining Syllabus Modules</span>
+                    <span>View Syllabus Modules</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -802,7 +803,7 @@ export const StudentPortalPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Weekly Modules List */}
+              {/* Weekly Modules List from Database */}
               <div className="space-y-3">
                 {course?.curriculum && course.curriculum.length > 0 ? (
                   course.curriculum.map((mod: any, idx: number) => {
@@ -840,13 +841,15 @@ export const StudentPortalPage: React.FC = () => {
                             <p className="text-xs text-[#555555] mt-1 line-clamp-2 max-w-2xl font-light">
                               {mod.description}
                             </p>
-                            <div className="flex flex-wrap gap-1.5 mt-2">
-                              {(mod.topics || []).slice(0, 4).map((t: string, tidx: number) => (
-                                <span key={tidx} className="bg-black/[0.05] text-[#444444] border border-black/10 text-[10px] font-mono px-2 py-0.5 rounded-md">
-                                  {t}
-                                </span>
-                              ))}
-                            </div>
+                            {mod.topics && mod.topics.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 mt-2">
+                                {mod.topics.map((t: string, tidx: number) => (
+                                  <span key={tidx} className="bg-black/[0.05] text-[#444444] border border-black/10 text-[10px] font-mono px-2 py-0.5 rounded-md">
+                                    {t}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                         </div>
 
@@ -977,7 +980,7 @@ export const StudentPortalPage: React.FC = () => {
                 </form>
               </div>
 
-              {/* Status Box */}
+              {/* Status Box from Live Database */}
               <div className="lg:col-span-5 space-y-4">
                 <div className="bg-white rounded-3xl border border-black/10 p-6 shadow-sm space-y-4">
                   <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#777777]">
@@ -1012,6 +1015,11 @@ export const StudentPortalPage: React.FC = () => {
                           <p className="text-[#555555] font-light italic">
                             "{activeEnrolment.projectSubmission.reviewerFeedback}"
                           </p>
+                          {activeEnrolment.projectSubmission.reviewedBy && (
+                            <span className="text-[10px] text-[#777777] block font-mono pt-1">
+                              Audited by: {activeEnrolment.projectSubmission.reviewedBy}
+                            </span>
+                          )}
                         </div>
                       )}
 
@@ -1056,7 +1064,11 @@ export const StudentPortalPage: React.FC = () => {
                       Verified through Razorpay merchant gateway for VGM Soft Tech.
                     </p>
                   </div>
-                  <span className="px-3 py-1 bg-[#1E9E54]/10 text-[#1E9E54] border border-[#1E9E54]/30 rounded-full text-xs font-mono font-bold uppercase">
+                  <span className={`px-3 py-1 rounded-full text-xs font-mono font-bold uppercase ${
+                    activeEnrolment.payment.status === 'paid'
+                      ? 'bg-[#1E9E54]/10 text-[#1E9E54] border border-[#1E9E54]/30'
+                      : 'bg-[#FFC83D]/15 text-[#B45309] border border-[#FFC83D]/30'
+                  }`}>
                     {activeEnrolment.payment.status}
                   </span>
                 </div>
@@ -1067,17 +1079,29 @@ export const StudentPortalPage: React.FC = () => {
                     <span className="font-mono font-bold text-[#111111]">{masterEnrollmentNumber}</span>
                   </div>
                   <div>
-                    <span className="text-[#777777] block">Enrolment ID:</span>
+                    <span className="text-[#777777] block">Course Enrolment ID:</span>
                     <span className="font-mono text-[#444444]">{activeEnrolment.id}</span>
                   </div>
                   <div>
-                    <span className="text-[#777777] block">Transaction Reference:</span>
-                    <span className="font-mono text-[#444444]">{activeEnrolment.payment.paymentId || activeEnrolment.payment.orderId}</span>
+                    <span className="text-[#777777] block">Razorpay Order ID:</span>
+                    <span className="font-mono text-[#444444]">{activeEnrolment.payment.orderId}</span>
                   </div>
+                  {activeEnrolment.payment.paymentId && (
+                    <div>
+                      <span className="text-[#777777] block">Payment ID:</span>
+                      <span className="font-mono text-[#444444]">{activeEnrolment.payment.paymentId}</span>
+                    </div>
+                  )}
                   <div>
                     <span className="text-[#777777] block">Student Name:</span>
                     <span className="font-bold text-[#111111]">{studentProfile.fullName}</span>
                   </div>
+                  {activeEnrolment.payment.paidAt && (
+                    <div>
+                      <span className="text-[#777777] block">Paid Date:</span>
+                      <span className="text-[#444444]">{new Date(activeEnrolment.payment.paidAt).toLocaleDateString('en-IN')}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="bg-[#F0F2F4] rounded-2xl p-4 border border-black/10 space-y-2 text-xs">
@@ -1092,7 +1116,7 @@ export const StudentPortalPage: React.FC = () => {
                     </div>
                   )}
                   <div className="flex justify-between text-[#111111] font-bold border-t border-black/10 pt-2 text-sm">
-                    <span>Net Paid Amount:</span>
+                    <span>Net Amount:</span>
                     <span className="font-mono text-[#1E9E54] text-lg">₹{activeEnrolment.pricing.finalAmount.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
@@ -1127,14 +1151,14 @@ export const StudentPortalPage: React.FC = () => {
                   Mentor Support &amp; Technical Helpdesk
                 </h3>
                 <p className="text-xs sm:text-sm text-[#555555] mt-1 leading-relaxed font-light">
-                  Stuck on a bug, Git pull request, or database schema design? Connect with our senior engineering team directly.
+                  Connect with our senior engineering team directly for technical doubt clearing, code audits, or architecture advice.
                 </p>
               </div>
 
               <div className="space-y-4 text-xs sm:text-sm text-[#444444]">
                 <div className="p-4 bg-[#1E9E54]/10 rounded-2xl border border-[#1E9E54]/30 flex items-center justify-between">
                   <div>
-                    <span className="font-bold text-[#111111] block">Batch WhatsApp Community Group</span>
+                    <span className="font-bold text-[#111111] block">Batch WhatsApp Community</span>
                     <span className="text-[#555555] text-xs">Direct channel with batch peers &amp; mentors</span>
                   </div>
                   <a

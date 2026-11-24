@@ -370,7 +370,7 @@ apiRouter.get('/enrolment/:id', publicRateLimiter, (req, res) => {
 apiRouter.post('/admin/login', authRateLimiter, validateBody(adminLoginSchema), (req, res) => {
   const { password } = req.body;
 
-  if (verifyAdminPassword(password)) {
+  if (verifyAdminPassword(password) || (typeof password === 'string' && verifyAdminPassword(password.trim()))) {
     recordAuthSuccess(req, 'admin');
     const token = generateAdminToken();
     return res.json({ success: true, token });

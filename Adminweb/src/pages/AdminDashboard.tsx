@@ -7,6 +7,7 @@ import {
   Filter, 
   Download, 
   Eye, 
+  EyeOff,
   Tag, 
   CheckCircle, 
   XCircle, 
@@ -46,8 +47,9 @@ interface AdminStats {
 }
 
 export const AdminDashboard: React.FC = () => {
-  const [token, setToken] = useState<string | null>(() => sessionStorage.getItem('vgm_admin_token'));
+  const [token, setToken] = useState<string | null>(() => sessionStorage.getItem('vgm_admin_token') || localStorage.getItem('vgm_admin_token'));
   const [passwordInput, setPasswordInput] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
@@ -139,22 +141,30 @@ export const AdminDashboard: React.FC = () => {
     setLoginError(null);
     setIsLoggingIn(true);
 
+    const cleanPassword = passwordInput.trim();
+    if (!cleanPassword) {
+      setLoginError('Please enter the administrator password.');
+      setIsLoggingIn(false);
+      return;
+    }
+
     try {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: passwordInput })
+        body: JSON.stringify({ password: cleanPassword })
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => null);
 
-      if (res.ok && data.success) {
+      if (res.ok && data?.success) {
         setToken(data.token);
         sessionStorage.setItem('vgm_admin_token', data.token);
+        localStorage.setItem('vgm_admin_token', data.token);
       } else {
-        setLoginError(data.error || 'Invalid credentials');
+        setLoginError(data?.error || `Authentication failed (${res.status}). Verify password.`);
       }
-    } catch (err) {
-      setLoginError('Server error while authenticating');
+    } catch (err: any) {
+      setLoginError(err?.message || 'Server error while authenticating. Ensure the backend server is running on port 3000.');
     } finally {
       setIsLoggingIn(false);
     }
@@ -163,6 +173,7 @@ export const AdminDashboard: React.FC = () => {
   const handleLogout = () => {
     setToken(null);
     sessionStorage.removeItem('vgm_admin_token');
+    localStorage.removeItem('vgm_admin_token');
   };
 
   const fetchDashboardData = async () => {
@@ -611,24 +622,45 @@ export const AdminDashboard: React.FC = () => {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#555555] mb-1.5">
-                Admin Password
-              </label>
-              <input
-                type="password"
-                placeholder="Enter ADMIN_PASSWORD"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                required
-                className="w-full px-3.5 py-2.5 bg-[#F0F2F4] border border-black/10 rounded-xl text-sm text-[#111111] focus:outline-none focus:border-[#1E9E54]"
-              />
-              <p className="text-[11px] text-[#AAAAAA] mt-1 font-mono">
-                Default password configured in environment: <code>vgm_admin_2026</code>
-              </p>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-mono font-bold uppercase tracking-wider text-[#555555]">
+                  Admin Password
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 cursor-pointer font-medium"
+                >
+                  {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  <span>{showPassword ? 'Hide' : 'Show'}</span>
+                </button>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter ADMIN_PASSWORD"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  required
+                  autoFocus
+                  className="w-full px-3.5 py-2.5 bg-[#F0F2F4] border border-black/10 rounded-xl text-sm text-[#111111] focus:outline-none focus:border-[#1E9E54] pr-10"
+                />
+              </div>
+              <div className="flex items-center justify-between mt-1.5 text-[11px] text-[#888888] font-mono">
+                <span>Default password:</span>
+                <button
+                  type="button"
+                  onClick={() => setPasswordInput('vgm_admin_2026')}
+                  className="px-2 py-0.5 rounded-md bg-[#1E9E54]/10 text-[#1E7A46] hover:bg-[#1E9E54]/20 font-bold transition-colors cursor-pointer"
+                  title="Click to autofill default password"
+                >
+                  vgm_admin_2026
+                </button>
+              </div>
             </div>
 
             {loginError && (
-              <p className="text-xs text-red-400 bg-red-500/10 p-2.5 rounded-xl border border-red-500/30">
+              <p className="text-xs text-red-600 bg-red-50 p-2.5 rounded-xl border border-red-200">
                 {loginError}
               </p>
             )}
@@ -636,7 +668,7 @@ export const AdminDashboard: React.FC = () => {
             <button
               type="submit"
               disabled={isLoggingIn}
-              className="w-full py-3 bg-[#111111] hover:bg-[#1E9E54] text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(30,158,84,0.35)] cursor-pointer"
+              className="w-full py-3 bg-[#111111] hover:bg-[#1E9E54] text-white font-bold rounded-xl text-xs uppercase tracking-wider transition-all shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50"
             >
               {isLoggingIn ? 'Authenticating...' : 'Sign In to Dashboard'}
             </button>

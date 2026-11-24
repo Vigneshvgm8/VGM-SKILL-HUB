@@ -69,7 +69,7 @@ export const SupabaseService = {
     if (!supabaseClient) return [];
     const { data, error } = await supabaseClient
       .from('enrolments')
-      .select('*')
+      .select('*, project_submissions(*)')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -471,7 +471,11 @@ function formatEnrolmentFromDb(r: any): any {
       liveUrl: r.project_submissions[0].live_url,
       notes: r.project_submissions[0].notes,
       submittedAt: r.project_submissions[0].submitted_at,
-      status: r.project_submissions[0].status
+      status: r.project_submissions[0].status,
+      score: r.project_submissions[0].score,
+      reviewerFeedback: r.project_submissions[0].reviewer_feedback,
+      reviewedBy: r.project_submissions[0].reviewed_by,
+      reviewedAt: r.project_submissions[0].reviewed_at
     } : undefined,
     createdAt: r.created_at,
     updatedAt: r.updated_at
