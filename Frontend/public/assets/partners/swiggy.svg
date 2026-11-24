@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" fill="none">
+    <rect x="10" y="10" width="28" height="30" rx="7" fill="#FC8019"/>
+    <path d="M22 17c-3 0-5 2-5 5 0 4 6 7 7 11 1-4 7-7 7-11 0-3-2-5-5-5-2 0-3 1-4 2-1-1-2-2-4-2z" fill="#FFFFFF"/>
+    <text x="44" y="32" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#FC8019">SWIGGY</text>
+  </svg>

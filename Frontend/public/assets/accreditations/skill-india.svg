@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+    <circle cx="60" cy="60" r="54" stroke="#E65100" stroke-width="3" fill="#FFF8E1"/>
+    <!-- Sun rays & wheel -->
+    <circle cx="60" cy="50" r="16" fill="#F57C00"/>
+    <circle cx="60" cy="50" r="8" fill="#FFFFFF"/>
+    <!-- Hands holding -->
+    <path d="M35 78c6-8 15-12 25-12s19 4 25 12" stroke="#138808" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <text x="60" y="93" font-family="system-ui, sans-serif" font-size="10" font-weight="900" fill="#003366" text-anchor="middle" letter-spacing="0.5">SKILL INDIA</text>
+    <text x="60" y="103" font-family="system-ui, sans-serif" font-size="7" font-weight="700" fill="#555555" text-anchor="middle">NSDC ALIGNED</text>
+  </svg>

@@ -1,0 +1,384 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --color-brand-green: #1E9E54;
+  --color-brand-darkgreen: #14723B;
+  --color-brand-lightgreen: #43C170;
+  --color-brand-black: #111111;
+  --color-brand-amber: #D97706;
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F7F8FA;
+  --color-surface-1: #F0F2F4;
+  --color-surface-2: #E8ECEF;
+  --color-border: #E2E6EA;
+  --color-muted: #666666;
+  --color-soft-dark: #111111;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    color: #111111;
+    background-color: #FFFFFF;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.025em;
+  }
+
+  h1 {
+    letter-spacing: -0.04em;
+  }
+
+  /* Light thin scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F7F8FA;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1E9E54;
+  }
+
+  /* Selection styling — green tint */
+  ::selection {
+    background-color: rgba(67, 193, 112, 0.25);
+    color: #111111;
+  }
+
+  ::-moz-selection {
+    background-color: rgba(67, 193, 112, 0.25);
+    color: #111111;
+  }
+}
+
+/* ─── Marquee Animations ─────────────────────────────────────────── */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-reverse 35s linear infinite;
+}
+
+.animate-marquee:hover,
+.animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+/* ─── Float Animation ────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+/* ─── Cinematic Keyframes ────────────────────────────────────────── */
+@keyframes orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -20px) scale(1.05); }
+  66% { transform: translate(-20px, 10px) scale(0.95); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(30,158,84,0.18); }
+  50% { box-shadow: 0 0 40px rgba(30,158,84,0.35), 0 0 80px rgba(30,158,84,0.15); }
+}
+
+/* ─── Utility Classes ────────────────────────────────────────────── */
+.text-gradient-green {
+  background: linear-gradient(135deg, #1E9E54 0%, #10B981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #059669 0%, #1E9E54 50%, #10B981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-shimmer {
+  background: linear-gradient(90deg, #111111, #666666, #111111);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+.glow-green {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-orb {
+  animation: orb-float 8s ease-in-out infinite;
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out forwards;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+}
+
+.glass-green {
+  background: rgba(30, 158, 84, 0.07);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(30, 158, 84, 0.2);
+}
+
+/* ─── Lusion-Style Cinematic Components (Light Theme) ────────── */
+.lusion-cross {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+  color: #111111;
+}
+
+.lusion-cross::before {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 1px;
+  background-color: currentColor;
+}
+
+.lusion-cross::after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 14px;
+  background-color: currentColor;
+}
+
+/* Lusion Soft Card (Light Theme) */
+.lusion-soft-card {
+  position: relative;
+  border-radius: 28px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.6s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.lusion-soft-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(30, 158, 84, 0.4);
+  box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.08), 0 0 25px rgba(30, 158, 84, 0.12);
+}
+
+/* Lusion Pill CTA (Primary Dark Pill on Light Theme) */
+.lusion-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1.75rem;
+  border-radius: 9999px;
+  background-color: #111111;
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease, transform 0.2s ease;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.lusion-cta-btn .cta-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background-color: #43C170;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.45s ease;
+}
+
+.lusion-cta-btn .cta-text {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s ease;
+}
+
+.lusion-cta-btn .cta-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  transform: translateX(-4px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lusion-cta-btn:hover {
+  background-color: #1E9E54;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+.lusion-cta-btn:hover .cta-dot {
+  transform: scale(2.2);
+  background-color: #FFFFFF;
+}
+
+.lusion-cta-btn:hover .cta-text {
+  transform: translateX(-2px);
+}
+
+.lusion-cta-btn:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* Secondary Light Pill Variant */
+.lusion-cta-light {
+  background-color: #F0F2F4;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #111111;
+}
+
+.lusion-cta-light .cta-dot {
+  background-color: #1E9E54;
+}
+
+.lusion-cta-light:hover {
+  background-color: #111111;
+  border-color: #111111;
+  color: #FFFFFF;
+}
+
+.lusion-cta-light:hover .cta-dot {
+  background-color: #43C170;
+}
+
+/* ─── MotionSites Signature Shifting Gradient ───────────────────── */
+@property --gradient-x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 44.373%;
+}
+
+@property --gradient-y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 35.1526%;
+}
+
+@keyframes gradient-shift {
+  0% {
+    --gradient-x: 44.373%;
+    --gradient-y: 35.1526%;
+  }
+  33% {
+    --gradient-x: 61.34%;
+    --gradient-y: 50.46%;
+  }
+  66% {
+    --gradient-x: 30%;
+    --gradient-y: 60%;
+  }
+  100% {
+    --gradient-x: 44.373%;
+    --gradient-y: 35.1526%;
+  }
+}
+
+.animate-gradient-shift {
+  animation: 6s ease-in-out infinite gradient-shift;
+}
+
+/* ─── Print styles for payment receipts ─────────────────────────── */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-receipt, #printable-receipt * {
+    visibility: visible;
+  }
+  #printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: white;
+  }
+  .no-print {
+    display: none !important;
+  }
+}

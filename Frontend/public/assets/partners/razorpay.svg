@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 50" fill="none">
+    <path d="M22 9l-12 18h11l-5 14 17-21h-12l7-11z" fill="#0C2340"/>
+    <path d="M19 14l-8 12h9l-4 10 12-15h-10l5-9z" fill="#0272F2"/>
+    <text x="42" y="31" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#0C2340">Razor</text>
+    <text x="90" y="31" font-family="system-ui, sans-serif" font-size="16" font-weight="800" fill="#0272F2">pay</text>
+  </svg>

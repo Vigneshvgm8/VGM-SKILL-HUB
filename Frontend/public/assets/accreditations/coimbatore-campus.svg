@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+    <circle cx="60" cy="60" r="54" stroke="#DC2626" stroke-width="3" fill="#FEF2F2"/>
+    <path d="M60 28c-12 0-22 10-22 22 0 16 22 36 22 36s22-20 22-36c0-12-10-22-22-22z" fill="#EF4444"/>
+    <circle cx="60" cy="50" r="8" fill="#FFFFFF"/>
+    <text x="60" y="98" font-family="system-ui, sans-serif" font-size="9" font-weight="900" fill="#991B1B" text-anchor="middle">COIMBATORE HUB</text>
+    <text x="60" y="108" font-family="system-ui, sans-serif" font-size="7" font-weight="700" fill="#B91C1C" text-anchor="middle">SAIBABA COLONY</text>
+  </svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340" fill="none">
+    <rect width="600" height="340" rx="20" fill="#0B131E"/>
+    <circle cx="480" cy="180" r="140" fill="#EC4899" fill-opacity="0.15" filter="blur(40px)"/>
+    
+    <!-- Figma layout frame -->
+    <rect x="330" y="50" width="230" height="240" rx="14" fill="#111827" stroke="#334155" stroke-width="2"/>
+    <rect x="350" y="75" width="90" height="190" rx="12" fill="#1E293B" stroke="#F43F5E" stroke-width="1.5"/>
+    <rect x="455" y="75" width="90" height="190" rx="12" fill="#1E293B" stroke="#A855F7" stroke-width="1.5"/>
+    <circle cx="395" cy="120" r="18" fill="#F43F5E"/>
+    <circle cx="500" cy="120" r="18" fill="#A855F7"/>
+    
+    <!-- Left text -->
+    <rect x="40" y="45" width="130" height="26" rx="6" fill="#EC4899" fill-opacity="0.15" stroke="#EC4899" stroke-width="1.2"/>
+    <text x="50" y="62" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#F472B6">PRODUCT DESIGN</text>
+    
+    <text x="40" y="115" font-family="system-ui, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">UI/UX Design &amp;</text>
+    <text x="40" y="150" font-family="system-ui, sans-serif" font-size="28" font-weight="900" fill="#F472B6">Design Systems</text>
+    <text x="40" y="185" font-family="system-ui, sans-serif" font-size="13" font-weight="500" fill="#94A3B8">Figma · Auto Layout · Interactive Prototyping · Behance</text>
+    
+    <g transform="translate(40, 220)">
+      <rect width="65" height="26" rx="6" fill="#1E293B"/>
+      <text x="12" y="17" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#F472B6">Figma</text>
+      
+      <rect x="75" width="95" height="26" rx="6" fill="#1E293B"/>
+      <text x="85" y="17" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#C084FC">Prototypes</text>
+
+      <rect x="180" width="85" height="26" rx="6" fill="#1E293B"/>
+      <text x="190" y="17" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#38BDF8">Behance</text>
+    </g>
+  </svg>

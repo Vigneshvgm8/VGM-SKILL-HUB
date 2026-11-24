@@ -1,0 +1,55 @@
+# ====================================================================
+# Render Infrastructure Blueprint - VGM Skill Hub Full Stack Service
+# Docs: https://render.com/docs/blueprint-spec
+# ====================================================================
+
+services:
+  - type: web
+    name: vgm-skill-hub
+    runtime: node
+    plan: starter
+    region: singapore # Closest to India (Coimbatore) for ultra-low latency (< 40ms)
+    buildCommand: npm install --legacy-peer-deps && npm run build
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: APP_URL
+        sync: false
+      # Supabase Live Database
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      # Razorpay Payment Gateway
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      # Administrative & Security
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: SESSION_SECRET
+        generateValue: true
+      # Rate Limiting
+      - key: RATE_LIMIT_AUTH_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_AUTH_MAX_ATTEMPTS
+        value: 5
+      - key: RATE_LIMIT_AUTH_BASE_DELAY_SEC
+        value: 2
+      - key: RATE_LIMIT_PUBLIC_MAX_REQUESTS
+        value: 60
+      - key: RATE_LIMIT_API_MAX_REQUESTS
+        value: 120
+      # File Upload
+      - key: MAX_UPLOAD_SIZE_BYTES
+        value: 5242880

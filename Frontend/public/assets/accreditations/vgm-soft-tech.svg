@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+    <rect x="8" y="8" width="104" height="104" rx="28" fill="#141414" stroke="#43C170" stroke-width="3"/>
+    <path d="M40 44l20 34 20-34" stroke="#43C170" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="60" y="96" font-family="system-ui, sans-serif" font-size="11" font-weight="900" fill="#FFFFFF" text-anchor="middle">VGM SOFT TECH</text>
+    <text x="60" y="106" font-family="system-ui, sans-serif" font-size="7" font-weight="700" fill="#43C170" text-anchor="middle" letter-spacing="0.5">LIVE SOFTWARE DIV</text>
+  </svg>
