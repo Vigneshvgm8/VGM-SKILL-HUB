@@ -93,7 +93,11 @@ export async function startServer() {
   // Handle Adminweb routing
   if (!isProduction) {
     app.get(['/adminweb', '/adminweb/*'], (_req, res) => {
-      res.redirect('http://localhost:3001');
+      // --- LOCALHOST DEV REDIRECT (Commented out for live production) ---
+      // res.redirect('http://localhost:3001');
+
+      // --- LIVE PRODUCTION REDIRECT (Active) ---
+      res.redirect('https://adminskillhub.vgmsofttech.com');
     });
   } else if (fs.existsSync(adminDistPath)) {
     console.log('[SERVER] Serving Adminweb production static bundle from /adminweb and adminskillhub.* host...');
@@ -215,13 +219,19 @@ export async function startServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`================================================`);
-    console.log(` VGM SKILL HUB API & SERVER READY`);
-    console.log(` API & Frontend: http://0.0.0.0:${PORT}`);
-    console.log(` Adminweb App:   http://localhost:3001 (or /adminweb)`);
-    console.log(` Mode: ${isProduction ? 'Production' : 'Development'}`);
-    console.log(` Database: ${SupabaseService.isAvailable() ? 'Live Supabase (PostgreSQL)' : 'Local Persistent JSON'}`);
-    console.log(` Razorpay: ${isConfiguredRazorpay ? (isLiveMode ? 'Live Mode' : 'Test Mode') : 'Test Simulator'}`);
-    console.log(` Rate Limiting: Active (Auth exponential backoff + public limits)`);
+    console.log(` VGM SKILL HUB FULL-STACK SERVER READY`);
+    console.log(` Mode: ${isProduction ? 'Production' : 'Development'} (Port: ${PORT})`);
+    console.log(` --- LOCALHOST (Development - commented out) ---`);
+    console.log(` // Frontend:     http://localhost:3000`);
+    console.log(` // Adminweb:     http://localhost:3001 (or /adminweb)`);
+    console.log(` // API Base:     http://localhost:3000/api`);
+    console.log(` --- LIVE PRODUCTION (Active) ---`);
+    console.log(` Frontend:        https://skillhub.vgmsofttech.com`);
+    console.log(` Adminweb Portal: https://adminskillhub.vgmsofttech.com`);
+    console.log(` API Base:        https://skillhub.vgmsofttech.com/api`);
+    console.log(` Database:        ${SupabaseService.isAvailable() ? 'Live Supabase (PostgreSQL)' : 'Local Persistent JSON'}`);
+    console.log(` Razorpay:        ${isConfiguredRazorpay ? (isLiveMode ? 'Live Mode' : 'Test Mode') : 'Test Simulator'}`);
+    console.log(` Rate Limiting:   Active (Auth exponential backoff + public limits)`);
     console.log(` Input Validation: Strict Zod Schemas Active`);
     console.log(`================================================`);
 

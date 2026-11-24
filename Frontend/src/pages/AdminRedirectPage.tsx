@@ -1,10 +1,16 @@
 import React from 'react';
-import { Shield, ExternalLink, ArrowRight } from 'lucide-react';
+import { Shield, ArrowRight } from 'lucide-react';
+import { ADMIN_PORTAL_URL, API_BASE_URL } from '../config/api.js';
+
+// --- LOCALHOST CONFIGURATION (Commented out for live production) ---
+// const adminUrl = 'http://localhost:3001';
+// const apiUrl = 'http://localhost:3000/api';
+
+// --- LIVE PRODUCTION CONFIGURATION (Active) ---
+const adminUrl = ADMIN_PORTAL_URL;
+const apiUrl = `${API_BASE_URL}/api`;
 
 export const AdminRedirectPage: React.FC = () => {
-  const adminUrl = window.location.port === '3000'
-    ? 'http://localhost:3001'
-    : '/adminweb';
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-16 bg-[#F8F9FA]">
@@ -36,7 +42,7 @@ export const AdminRedirectPage: React.FC = () => {
           </div>
           <div className="flex items-center justify-between text-[#888888]">
             <span>API Server:</span>
-            <span className="text-[#111111] font-bold">http://localhost:3000/api</span>
+            <span className="text-[#111111] font-bold">{apiUrl}</span>
           </div>
         </div>
 

@@ -21,7 +21,11 @@ export default defineConfig(({ mode }) => {
       port: 3001,
       proxy: {
         '/api': {
-          target: process.env.VITE_API_URL || 'http://localhost:3000',
+          // --- LOCALHOST PROXY (Commented out for live production) ---
+          // target: 'http://localhost:3000',
+
+          // --- LIVE PRODUCTION PROXY (Active) ---
+          target: process.env.VITE_API_URL || 'https://skillhub.vgmsofttech.com',
           changeOrigin: true,
           secure: false,
         },
