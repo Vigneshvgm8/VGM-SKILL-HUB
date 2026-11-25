@@ -810,8 +810,9 @@ export const AdminDashboard: React.FC = () => {
       <div className="max-w-md mx-auto px-4 py-20 text-[#111111]">
         <div className="bg-white border border-black/10 rounded-3xl p-8 shadow-2xl space-y-6">
           <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-[#1E9E54]/15 text-[#1E9E54] flex items-center justify-center mx-auto border border-[#1E9E54]/30 shadow-[0_0_20px_rgba(30,158,84,0.3)]">
-              <Lock className="w-6 h-6" />
+            <img src="/assets/logo.png" alt="VGM Skill Hub" className="h-10 w-auto mx-auto object-contain mb-2" />
+            <div className="w-12 h-12 rounded-2xl bg-[#1E9E54]/15 text-[#1E9E54] flex items-center justify-center mx-auto border border-[#1E9E54]/30 shadow-[0_0_20px_rgba(30,158,84,0.3)]">
+              <Lock className="w-5 h-5" />
             </div>
             <h1 className="text-2xl font-heading font-black text-[#111111] tracking-tight">
               VGM Staff Admin Portal
