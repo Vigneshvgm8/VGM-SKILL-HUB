@@ -1639,46 +1639,67 @@ export async function createStudentEnrollment(req: Request, res: Response) {
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* 12. SECTION: SCROLL NAV TRANSITION (#scroll-nav-section)     */}
+      {/* 12. SECTION: ADMISSION & FELLOWSHIP MILESTONE (PRE-FOOTER)   */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="scroll-nav-section"
-        className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-12 bg-[#F0F2F4]/95 backdrop-blur-xl border-t border-black/[0.08] text-[#111111] cursor-pointer group"
-        onClick={() => navigate('/courses')}
+        className="relative z-10 py-16 sm:py-24 px-4 sm:px-8 lg:px-12 bg-gradient-to-b from-white via-[#F8FAFC] to-[#F1F5F9] border-t border-black/[0.08] text-[#111111]"
       >
-        <div className="max-w-7xl mx-auto space-y-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="rounded-3xl bg-[#111111] text-white p-8 sm:p-14 relative overflow-hidden shadow-2xl">
+            {/* Ambient emerald glow aura */}
+            <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 bg-[#1E9E54]/20 rounded-full blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 bg-[#43C170]/15 rounded-full blur-3xl" />
 
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#1E9E54]" />
-              <span>[11 // ADMISSION ENROLLMENT &amp; STAGE]</span>
-            </span>
-            <span className="font-mono text-xs text-[#666666] uppercase tracking-widest hidden sm:inline">
-              CLICK OR SCROLL TO ENTER
-            </span>
-          </div>
+            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+              <div className="space-y-4 max-w-2xl">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#43C170] text-xs font-mono font-bold uppercase tracking-widest">
+                  <Sparkles className="w-3.5 h-3.5 text-[#43C170]" />
+                  <span>NEXT SPRINT COHORT: 15TH DECEMBER 2026</span>
+                </div>
+                <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-heading leading-tight">
+                  Ready to Build Production Software at VGM?
+                </h2>
+                <p className="text-sm sm:text-base text-white/70 font-light leading-relaxed">
+                  Join our hands-on engineering pods in Saibaba Colony, Coimbatore. Work on live client codebases, ship verified PRs, and graduate with an ISO 9001:2015 accredited experience letter.
+                </p>
+              </div>
 
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div className="text-4xl sm:text-6xl lg:text-7xl font-black text-[#111111] group-hover:text-[#1E9E54] transition-colors tracking-[-0.04em] leading-none font-heading">
-              Explore All 6 Tracks
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 shrink-0">
+                <Link
+                  to="/courses"
+                  className="px-6 py-4 bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 group"
+                >
+                  <span>Explore All 6 Tracks</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/enrol"
+                  className="px-6 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                >
+                  <span>Enrol in Next Cohort</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#43C170]" />
+                </Link>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4 min-w-[260px] lg:w-1/3">
-              <span className="font-mono text-xs uppercase tracking-wider text-[#666666] group-hover:text-[#111111] transition-colors font-bold">
-                Courses Stage
-              </span>
-              <div className="flex-1 h-1.5 bg-black/10 rounded-full overflow-hidden relative">
-                <div
-                  className="h-full bg-[#1E9E54] rounded-full transition-all duration-150 ease-out"
-                  style={{ width: `${Math.min(100, Math.max(15, scrollProgress))}%` }}
-                />
+            {/* Bottom credential micro-strip */}
+            <div className="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-white/50">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#43C170]" />
+                <span>ISO 9001:2015 Verified Academy</span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-[#111111] group-hover:bg-[#1E9E54] text-white flex items-center justify-center shrink-0 group-hover:translate-x-2 transition-all duration-300">
-                <ArrowRight className="w-5 h-5" />
+              <div className="flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-[#43C170]" />
+                <span>Saibaba Colony Tech Hub, Coimbatore</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Award className="w-4 h-4 text-[#43C170]" />
+                <span>400+ Hours Practical Live Sprints</span>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
       </section>
 

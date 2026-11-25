@@ -54,8 +54,15 @@ export const Navbar: React.FC = () => {
 
   const isHomeDarkHero = location.pathname === '/' && !scrolled;
 
+  interface NavItem {
+    label: string;
+    path: string;
+    badge?: string;
+    liveDot?: boolean;
+  }
+
   // Direct individual page links — strict single-line, no dropdowns, no word-wrap
-  const navItems = [
+  const navItems: NavItem[] = [
     { label: 'Courses', path: '/courses' },
     // { label: 'AI Mobile', path: '/programme', liveDot: true },
     { label: 'Placements', path: '/placements', badge: '94.8%' },
