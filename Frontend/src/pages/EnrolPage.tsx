@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { PROGRAM_PLANS, BATCH_OPTIONS, PlanInfo } from '../config/programData.js';
-import { CourseItem } from '../config/coursesData.js';
+import { CourseItem, COURSES_CATALOG } from '../config/coursesData.js';
 import { getApiUrl } from '../config/api.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic } from '../components/LusionMotionPrimitives.js';
@@ -76,7 +76,7 @@ export const EnrolPage: React.FC = () => {
 
   // Dynamic Course Selection
   const initialCourseSlug = searchParams.get('course') || 'ai-mobile-app';
-  const [coursesList, setCoursesList] = useState<CourseItem[]>([]);
+  const [coursesList, setCoursesList] = useState<CourseItem[]>(() => COURSES_CATALOG);
   const [selectedCourseSlug, setSelectedCourseSlug] = useState<string>(initialCourseSlug);
   const [livePlans, setLivePlans] = useState<Record<string, PlanInfo>>(PROGRAM_PLANS);
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { COURSE_CATEGORIES, CourseItem } from '../config/coursesData.js';
+import { COURSE_CATEGORIES, CourseItem, COURSES_CATALOG } from '../config/coursesData.js';
 import { getApiUrl } from '../config/api.js';
 import { CurvedCourseShelf } from '../components/CurvedCourseShelf.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
@@ -39,26 +39,23 @@ const DOMAIN_CODES: Record<string, string> = {
 
 export const CoursesPage: React.FC = () => {
   const navigate = useNavigate();
-  const [courses, setCourses] = useState<CourseItem[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [courses, setCourses] = useState<CourseItem[]>(() => COURSES_CATALOG);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('All Tracks');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeModalCourse, setActiveModalCourse] = useState<CourseItem | null>(null);
 
-  // Fetch live courses from API — no static fallback
+  // Sync live courses from API in background, maintaining catalog as fallback
   useEffect(() => {
-    setIsLoading(true);
     fetch(getApiUrl('/api/courses'))
       .then(res => res.json())
       .then(data => {
-        if (data.courses && Array.isArray(data.courses)) {
+        if (data.courses && Array.isArray(data.courses) && data.courses.length > 0) {
           setCourses(data.courses);
-        } else {
-          setCourses([]);
         }
       })
-      .catch(() => {
-        setCourses([]);
+      .catch((err) => {
+        console.warn('[Courses] Using catalog fallback:', err);
       })
       .finally(() => {
         setIsLoading(false);
