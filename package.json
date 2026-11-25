@@ -7,12 +7,14 @@
     "dev": "tsx API/server.ts",
     "dev:admin": "vite --config Adminweb/vite.config.ts",
     "start": "node server.js",
+    "build": "vite build && vite build --config Adminweb/vite.config.ts && npm run build:server",
     "build:frontend": "vite build",
     "build:admin": "vite build --config Adminweb/vite.config.ts",
     "build:server": "npx esbuild API/server.ts --bundle --platform=node --format=esm --target=node20 --packages=external --outfile=server.js",
-    "build": "vite build && vite build --config Adminweb/vite.config.ts && npm run build:server",
+    "build:zip": "node scripts/package-builds.js",
+    "package": "npm run build && node scripts/package-builds.js",
     "preview": "vite preview",
-    "clean": "rm -rf dist dist-admin server.js",
+    "clean": "rm -rf dist dist-admin server.js frontend-build.zip adminweb-build.zip",
     "lint": "tsc --noEmit"
   },
   "dependencies": {

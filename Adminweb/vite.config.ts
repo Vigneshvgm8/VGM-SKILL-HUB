@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig(({ mode }) => {
   return {
-    base: mode === 'production' ? '/adminweb/' : '/',
+    base: process.env.VITE_BASE_PATH || './',
     root: __dirname,
     plugins: [react(), tailwindcss()],
     resolve: {
