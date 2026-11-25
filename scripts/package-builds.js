@@ -24,15 +24,30 @@ if (!fs.existsSync(adminDistDir)) {
   process.exit(1);
 }
 
+// 1. Ensure .htaccess is explicitly copied into both dist/ and dist-admin/
+const frontendHtaccess = path.join(rootDir, 'Frontend/public/.htaccess');
+const adminHtaccess = path.join(rootDir, 'Adminweb/public/.htaccess');
+
+if (fs.existsSync(frontendHtaccess)) {
+  fs.copyFileSync(frontendHtaccess, path.join(distDir, '.htaccess'));
+  console.log('[PACKAGE] Verified .htaccess in dist/');
+}
+
+if (fs.existsSync(adminHtaccess)) {
+  fs.copyFileSync(adminHtaccess, path.join(adminDistDir, '.htaccess'));
+  console.log('[PACKAGE] Verified .htaccess in dist-admin/');
+}
+
 const isWindows = process.platform === 'win32';
 
 try {
   if (isWindows) {
-    execSync(`powershell -NoProfile -Command "Compress-Archive -Path '${distDir}/*' -DestinationPath '${frontendZip}' -Force"`, { stdio: 'inherit' });
-    execSync(`powershell -NoProfile -Command "Compress-Archive -Path '${adminDistDir}/*' -DestinationPath '${adminZip}' -Force"`, { stdio: 'inherit' });
+    // In PowerShell, Get-ChildItem with -Force is required to include hidden files like .htaccess
+    execSync(`powershell -NoProfile -Command "$files = (Get-ChildItem -Path '${distDir}' -Force).FullName; Compress-Archive -Path $files -DestinationPath '${frontendZip}' -Force"`, { stdio: 'inherit' });
+    execSync(`powershell -NoProfile -Command "$files = (Get-ChildItem -Path '${adminDistDir}' -Force).FullName; Compress-Archive -Path $files -DestinationPath '${adminZip}' -Force"`, { stdio: 'inherit' });
   } else {
-    execSync(`cd "${distDir}" && zip -r "${frontendZip}" ./*`, { stdio: 'inherit' });
-    execSync(`cd "${adminDistDir}" && zip -r "${adminZip}" ./*`, { stdio: 'inherit' });
+    execSync(`cd "${distDir}" && zip -r "${frontendZip}" ./* .htaccess`, { stdio: 'inherit' });
+    execSync(`cd "${adminDistDir}" && zip -r "${adminZip}" ./* .htaccess`, { stdio: 'inherit' });
   }
 
   const fSize = (fs.statSync(frontendZip).size / (1024 * 1024)).toFixed(2);

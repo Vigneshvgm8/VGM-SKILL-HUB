@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic, LUSION_EASE } from '../components/LusionMotionPrimitives.js';
+import { getApiUrl } from '../config/api.js';
 import {
   ShieldCheck,
   Search,
@@ -59,7 +60,7 @@ export const VerifyCertificatePage: React.FC = () => {
     setNotFound(false);
 
     try {
-      const res = await fetch(`/api/certificates/${encodeURIComponent(cleanId)}`);
+      const res = await fetch(getApiUrl(`/api/certificates/${encodeURIComponent(cleanId)}`));
       if (res.ok) {
         const data = await res.json();
         if (data.success && data.certificate) {

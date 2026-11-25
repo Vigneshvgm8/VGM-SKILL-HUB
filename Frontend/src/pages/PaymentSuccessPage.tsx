@@ -17,6 +17,7 @@ import { CONTACT_INFO } from '../config/programData.js';
 import { motion } from 'motion/react';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic, LUSION_EASE } from '../components/LusionMotionPrimitives.js';
+import { getApiUrl } from '../config/api.js';
 
 export const PaymentSuccessPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -32,7 +33,7 @@ export const PaymentSuccessPage: React.FC = () => {
       return;
     }
 
-    fetch(`/api/enrolment/${enrolmentId}`)
+    fetch(getApiUrl(`/api/enrolment/${enrolmentId}`))
       .then(res => {
         if (!res.ok) throw new Error('Enrolment not found');
         return res.json();

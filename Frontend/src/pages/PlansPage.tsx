@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { PROGRAM_PLANS, CONTACT_INFO } from '../config/programData.js';
+import { getApiUrl } from '../config/api.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
 import {
@@ -41,7 +42,7 @@ export const PlansPage: React.FC = () => {
   const [activePlanHover, setActivePlanHover] = useState<string>('builder');
 
   useEffect(() => {
-    fetch('/api/plans')
+    fetch(getApiUrl('/api/plans'))
       .then(res => res.json())
       .then(data => {
         if (data.success && data.plans) {

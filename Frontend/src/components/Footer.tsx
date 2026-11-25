@@ -21,12 +21,13 @@ import {
 } from 'lucide-react';
 import { CONTACT_INFO } from '../config/programData.js';
 import { CourseItem } from '../config/coursesData.js';
+import { getApiUrl } from '../config/api.js';
 
 export const Footer: React.FC = () => {
   const [courses, setCourses] = useState<CourseItem[]>([]);
 
   useEffect(() => {
-    fetch('/api/courses')
+    fetch(getApiUrl('/api/courses'))
       .then(res => res.json())
       .then(data => {
         if (data.courses && Array.isArray(data.courses)) {

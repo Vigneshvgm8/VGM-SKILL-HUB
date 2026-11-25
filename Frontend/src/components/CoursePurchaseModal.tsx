@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CourseItem } from '../config/coursesData.js';
+import { getApiUrl } from '../config/api.js';
 import { 
   Check, 
   ArrowRight, 
@@ -149,7 +150,7 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
     setCouponError(null);
 
     try {
-      const res = await fetch('/api/validate-coupon', {
+      const res = await fetch(getApiUrl('/api/validate-coupon'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -211,7 +212,7 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
         }
       };
 
-      const res = await fetch('/api/create-order', {
+      const res = await fetch(getApiUrl('/api/create-order'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -257,7 +258,7 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
           theme: { color: '#1E9E54' },
           handler: async (response: any) => {
             try {
-              const verifyRes = await fetch('/api/verify-payment', {
+              const verifyRes = await fetch(getApiUrl('/api/verify-payment'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -295,7 +296,7 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
 
       // Development fallback if offline / test simulator
       if (!import.meta.env.PROD) {
-        const verifyRes = await fetch('/api/verify-payment', {
+        const verifyRes = await fetch(getApiUrl('/api/verify-payment'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

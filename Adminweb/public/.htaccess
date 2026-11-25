@@ -1,0 +1,29 @@
+# VGM Skill Hub - Adminweb Hostinger Apache / LiteSpeed SPA Configuration
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.html [L,QSA]
+</IfModule>
+
+# MIME Types (Crucial for Hostinger LiteSpeed / Apache ES Module Support)
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/css .css
+  AddType image/svg+xml .svg
+  AddType application/json .json
+  AddType font/woff .woff
+  AddType font/woff2 .woff2
+</IfModule>
+
+# Cache static assets & prevent stale index.html
+<IfModule mod_headers.c>
+  <FilesMatch "\.(js|mjs|css|svg|png|jpg|jpeg|webp|gif|woff|woff2)$">
+    Header set Cache-Control "max-age=31536000, public, immutable"
+  </FilesMatch>
+  <FilesMatch "index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </FilesMatch>
+</IfModule>

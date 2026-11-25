@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { COURSE_CATEGORIES, CourseItem } from '../config/coursesData.js';
+import { getApiUrl } from '../config/api.js';
 import { CurvedCourseShelf } from '../components/CurvedCourseShelf.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
@@ -47,7 +48,7 @@ export const CoursesPage: React.FC = () => {
   // Fetch live courses from API — no static fallback
   useEffect(() => {
     setIsLoading(true);
-    fetch('/api/courses')
+    fetch(getApiUrl('/api/courses'))
       .then(res => res.json())
       .then(data => {
         if (data.courses && Array.isArray(data.courses)) {

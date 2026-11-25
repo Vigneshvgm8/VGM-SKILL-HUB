@@ -34,6 +34,26 @@ import { BATCH_OPTIONS } from '../config/programData.js';
 import { ASSESSMENT_QUESTIONS } from '../config/assessmentQuestions.js';
 import { COURSES_CATALOG } from '../config/coursesData.js';
 
+const API_BASE = (typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'adminskillhub.vgmsofttech.com')
+    ? ''
+    : 'https://skillhub.vgmsofttech.com'
+);
+
+function getAdminApiUrl(path: string): string {
+  const clean = path.startsWith('/') ? path : `/${path}`;
+  return `${API_BASE}${clean}`;
+}
+
+const safeJson = async (res: Response) => {
+  try {
+    const text = await res.text();
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
+};
+
 interface AdminStats {
   totalEnrolments: number;
   paidCount: number;
@@ -176,12 +196,12 @@ export const AdminDashboard: React.FC = () => {
     }
 
     try {
-      const res = await fetch('/api/admin/login', {
+      const res = await fetch(getAdminApiUrl('/api/admin/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: cleanPassword })
       });
-      const data = await res.json().catch(() => null);
+      const data = await safeJson(res);
 
       if (res.ok && data?.success) {
         setToken(data.token);
@@ -191,7 +211,7 @@ export const AdminDashboard: React.FC = () => {
         setLoginError(data?.error || `Authentication failed (${res.status}). Verify password.`);
       }
     } catch (err: any) {
-      setLoginError(err?.message || 'Server error while authenticating. Ensure the backend server is running on port 3000.');
+      setLoginError(err?.message || 'Server error while authenticating. Ensure the backend server is running.');
     } finally {
       setIsLoggingIn(false);
     }
@@ -211,16 +231,17 @@ export const AdminDashboard: React.FC = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       // Fetch Stats
-      const statsRes = await fetch('/api/admin/stats', { headers });
+      const statsRes = await fetch(getAdminApiUrl('/api/admin/stats'), { headers });
       if (statsRes.status === 401) {
         handleLogout();
         return;
       }
-      const statsData = await statsRes.json();
-      setStats(statsData);
+      const statsData = await safeJson(statsRes);
+      if (statsData) setStats(statsData);
 
       // Fetch Enrolments
-      const url = new URL('/api/admin/enrolments', window.location.origin);
+      const apiOrigin = API_BASE || window.location.origin;
+      const url = new URL('/api/admin/enrolments', apiOrigin);
       if (searchQuery) url.searchParams.set('search', searchQuery);
       if (filterType !== 'all') url.searchParams.set('type', filterType);
       if (filterCourse !== 'all') url.searchParams.set('course', filterCourse);
@@ -229,41 +250,41 @@ export const AdminDashboard: React.FC = () => {
       if (filterBatch !== 'all') url.searchParams.set('batch', filterBatch);
 
       const enrolRes = await fetch(url.toString(), { headers });
-      const enrolData = await enrolRes.json();
-      setEnrolments(enrolData.enrolments || []);
+      const enrolData = await safeJson(enrolRes);
+      setEnrolments(enrolData?.enrolments || []);
 
       // Fetch Coupons
-      const couponRes = await fetch('/api/admin/coupons', { headers });
-      const couponData = await couponRes.json();
-      setCoupons(couponData.coupons || []);
+      const couponRes = await fetch(getAdminApiUrl('/api/admin/coupons'), { headers });
+      const couponData = await safeJson(couponRes);
+      setCoupons(couponData?.coupons || []);
 
       // Fetch Dynamic Courses
-      const coursesRes = await fetch('/api/courses');
-      const coursesData = await coursesRes.json();
-      setCoursesList(coursesData.courses || []);
+      const coursesRes = await fetch(getAdminApiUrl('/api/courses'));
+      const coursesData = await safeJson(coursesRes);
+      setCoursesList(coursesData?.courses || []);
 
       // Fetch Plans & Tuition
-      const plansRes = await fetch('/api/admin/plans', { headers });
+      const plansRes = await fetch(getAdminApiUrl('/api/admin/plans'), { headers });
       if (plansRes.ok) {
-        const plansData = await plansRes.json();
-        setPlansList(plansData.plans || {});
+        const plansData = await safeJson(plansRes);
+        if (plansData?.plans) setPlansList(plansData.plans);
       }
 
       // Fetch Certificates
-      const certRes = await fetch('/api/admin/certificates', { headers });
-      const certData = await certRes.json();
-      setCertificates(certData.certificates || []);
+      const certRes = await fetch(getAdminApiUrl('/api/admin/certificates'), { headers });
+      const certData = await safeJson(certRes);
+      setCertificates(certData?.certificates || []);
 
       // Fetch Projects
-      const projRes = await fetch('/api/admin/projects', { headers });
-      const projData = await projRes.json();
-      setProjects(projData.projects || []);
+      const projRes = await fetch(getAdminApiUrl('/api/admin/projects'), { headers });
+      const projData = await safeJson(projRes);
+      setProjects(projData?.projects || []);
 
       // Fetch Enrolment Limit Setting
-      const settingsRes = await fetch('/api/admin/settings', { headers });
+      const settingsRes = await fetch(getAdminApiUrl('/api/admin/settings'), { headers });
       if (settingsRes.ok) {
-        const settingsData = await settingsRes.json();
-        const lim = settingsData.enrolmentLimit ?? 20;
+        const settingsData = await safeJson(settingsRes);
+        const lim = settingsData?.enrolmentLimit ?? 20;
         setEnrolmentLimit(lim);
         setEnrolmentLimitInput(String(lim));
       }
@@ -361,8 +382,8 @@ export const AdminDashboard: React.FC = () => {
 
     try {
       const url = editingCourseId
-        ? `/api/admin/courses/${editingCourseId}`
-        : '/api/admin/courses';
+        ? getAdminApiUrl(`/api/admin/courses/${editingCourseId}`)
+        : getAdminApiUrl('/api/admin/courses');
       const method = editingCourseId ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -373,12 +394,12 @@ export const AdminDashboard: React.FC = () => {
         },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
-      if (res.ok && data.success) {
+      const data = await safeJson(res);
+      if (res.ok && data?.success) {
         setShowCourseModal(false);
         fetchDashboardData();
       } else {
-        alert(data.error || 'Failed to save course');
+        alert(data?.error || 'Failed to save course');
       }
     } catch (err) {
       alert('Network error saving course');
@@ -389,7 +410,7 @@ export const AdminDashboard: React.FC = () => {
     if (!token || !window.confirm(`Are you sure you want to permanently delete enrolment ${enrolmentId}? This action cannot be undone.`)) return;
 
     try {
-      const res = await fetch(`/api/admin/enrolments/${enrolmentId}`, {
+      const res = await fetch(getAdminApiUrl(`/api/admin/enrolments/${enrolmentId}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -412,16 +433,18 @@ export const AdminDashboard: React.FC = () => {
     }
     setSavingLimit(true);
     try {
-      const res = await fetch('/api/admin/settings', {
+      const res = await fetch(getAdminApiUrl('/api/admin/settings'), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ enrolmentLimit: val })
       });
       if (res.ok) {
-        const data = await res.json();
-        setEnrolmentLimit(data.enrolmentLimit);
-        setEnrolmentLimitInput(String(data.enrolmentLimit));
-        alert(`✅ Enrolment limit updated to ${data.enrolmentLimit} students per batch.`);
+        const data = await safeJson(res);
+        if (data?.enrolmentLimit) {
+          setEnrolmentLimit(data.enrolmentLimit);
+          setEnrolmentLimitInput(String(data.enrolmentLimit));
+          alert(`✅ Enrolment limit updated to ${data.enrolmentLimit} students per batch.`);
+        }
       } else {
         alert('Failed to update enrolment limit.');
       }
@@ -436,7 +459,7 @@ export const AdminDashboard: React.FC = () => {
     if (!token || !window.confirm('Are you sure you want to delete this course from the database?')) return;
 
     try {
-      const res = await fetch(`/api/admin/courses/${courseId}`, {
+      const res = await fetch(getAdminApiUrl(`/api/admin/courses/${courseId}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -452,9 +475,8 @@ export const AdminDashboard: React.FC = () => {
 
   const handleExportCSV = () => {
     if (!token) return;
-    window.location.href = `/api/admin/export-csv?auth=${token}`;
-    // alternatively fetch blob
-    fetch('/api/admin/export-csv', {
+    window.location.href = getAdminApiUrl(`/api/admin/export-csv?auth=${token}`);
+    fetch(getAdminApiUrl('/api/admin/export-csv'), {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.blob())
@@ -474,7 +496,7 @@ export const AdminDashboard: React.FC = () => {
     if (!token) return;
 
     try {
-      const res = await fetch('/api/admin/coupons', {
+      const res = await fetch(getAdminApiUrl('/api/admin/coupons'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -498,8 +520,8 @@ export const AdminDashboard: React.FC = () => {
         });
         fetchDashboardData();
       } else {
-        const err = await res.json();
-        alert(err.error || 'Failed to create coupon');
+        const err = await safeJson(res);
+        alert(err?.error || 'Failed to create coupon');
       }
     } catch (e) {
       alert('Error creating coupon');
@@ -508,7 +530,7 @@ export const AdminDashboard: React.FC = () => {
 
   const handleToggleCoupon = async (coupon: Coupon) => {
     if (!token) return;
-    await fetch(`/api/admin/coupons/${coupon.id}`, {
+    await fetch(getAdminApiUrl(`/api/admin/coupons/${coupon.id}`), {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -522,7 +544,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteCoupon = async (couponId: string) => {
     if (!token) return;
     if (!confirm('Are you sure you want to delete this coupon?')) return;
-    await fetch(`/api/admin/coupons/${couponId}`, {
+    await fetch(getAdminApiUrl(`/api/admin/coupons/${couponId}`), {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -579,8 +601,8 @@ export const AdminDashboard: React.FC = () => {
 
     try {
       const url = editingCertId
-        ? `/api/admin/certificates/${editingCertId}`
-        : '/api/admin/certificates';
+        ? getAdminApiUrl(`/api/admin/certificates/${editingCertId}`)
+        : getAdminApiUrl('/api/admin/certificates');
       const method = editingCertId ? 'PATCH' : 'POST';
 
       const res = await fetch(url, {
@@ -591,12 +613,12 @@ export const AdminDashboard: React.FC = () => {
         },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
-      if (res.ok && data.success) {
+      const data = await safeJson(res);
+      if (res.ok && data?.success) {
         setShowCertModal(false);
         fetchDashboardData();
       } else {
-        alert(data.error || 'Failed to save certificate');
+        alert(data?.error || 'Failed to save certificate');
       }
     } catch (err) {
       alert('Network error saving certificate');
@@ -607,7 +629,7 @@ export const AdminDashboard: React.FC = () => {
     if (!token) return;
     const nextStatus = cert.verificationStatus === 'verified' ? 'revoked' : 'verified';
     try {
-      const res = await fetch(`/api/admin/certificates/${cert.id}`, {
+      const res = await fetch(getAdminApiUrl(`/api/admin/certificates/${cert.id}`), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -626,7 +648,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteCert = async (certId: string) => {
     if (!token || !window.confirm(`Delete certificate ${certId} permanently?`)) return;
     try {
-      const res = await fetch(`/api/admin/certificates/${certId}`, {
+      const res = await fetch(getAdminApiUrl(`/api/admin/certificates/${certId}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -655,7 +677,7 @@ export const AdminDashboard: React.FC = () => {
     if (!token || !selectedProject) return;
 
     try {
-      const res = await fetch(`/api/admin/projects/${selectedProject.enrolmentId}/review`, {
+      const res = await fetch(getAdminApiUrl(`/api/admin/projects/${selectedProject.enrolmentId}/review`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -663,12 +685,12 @@ export const AdminDashboard: React.FC = () => {
         },
         body: JSON.stringify(reviewFormData)
       });
-      const data = await res.json();
-      if (res.ok && data.success) {
+      const data = await safeJson(res);
+      if (res.ok && data?.success) {
         setShowReviewModal(false);
         fetchDashboardData();
       } else {
-        alert(data.error || 'Failed to submit review');
+        alert(data?.error || 'Failed to submit review');
       }
     } catch (err) {
       alert('Network error saving review');
@@ -699,7 +721,7 @@ export const AdminDashboard: React.FC = () => {
   const handleUpdateEnrolmentStatus = async (enrolmentId: string, newStatus: 'paid' | 'pending' | 'failed') => {
     if (!token) return;
     try {
-      const res = await fetch(`/api/admin/enrolments/${enrolmentId}/status`, {
+      const res = await fetch(getAdminApiUrl(`/api/admin/enrolments/${enrolmentId}/status`), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -762,7 +784,7 @@ export const AdminDashboard: React.FC = () => {
         features
       };
 
-      const res = await fetch(`/api/admin/plans/${editingPlanId}`, {
+      const res = await fetch(getAdminApiUrl(`/api/admin/plans/${editingPlanId}`), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -770,12 +792,12 @@ export const AdminDashboard: React.FC = () => {
         },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
-      if (res.ok && data.success) {
+      const data = await safeJson(res);
+      if (res.ok && data?.success) {
         setShowPlanModal(false);
         fetchDashboardData();
       } else {
-        alert(data.error || 'Failed to save plan');
+        alert(data?.error || 'Failed to save plan');
       }
     } catch (err) {
       alert('Network error saving plan');

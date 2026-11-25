@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic, LUSION_EASE } from '../components/LusionMotionPrimitives.js';
+import { getApiUrl } from '../config/api.js';
 import { 
   GraduationCap, 
   BookOpen, 
@@ -155,7 +156,7 @@ export const StudentPortalPage: React.FC = () => {
 
     try {
       // 1. Fetch live student and course data directly from live database API
-      const res = await fetch(`/api/student/details/${encodeURIComponent(clean)}`);
+      const res = await fetch(getApiUrl(`/api/student/details/${encodeURIComponent(clean)}`));
       const data = await res.json();
 
       if (res.ok && data.success) {
@@ -179,7 +180,7 @@ export const StudentPortalPage: React.FC = () => {
         // Fetch or assign live certificates
         let certList: CertificateItem[] = data.certificates || [];
         if (certList.length === 0) {
-          const cRes = await fetch(`/api/certificates/${encodeURIComponent(enrNum)}`);
+          const cRes = await fetch(getApiUrl(`/api/certificates/${encodeURIComponent(enrNum)}`));
           if (cRes.ok) {
             const cData = await cRes.json();
             if (cData.certificates && cData.certificates.length > 0) {
@@ -204,7 +205,7 @@ export const StudentPortalPage: React.FC = () => {
         }
       } else {
         // Fallback: try certificate endpoint directly
-        const certRes = await fetch(`/api/certificates/${encodeURIComponent(clean)}`);
+        const certRes = await fetch(getApiUrl(`/api/certificates/${encodeURIComponent(clean)}`));
         if (certRes.ok) {
           const cData = await certRes.json();
           if (cData.success && (cData.certificate || (cData.certificates && cData.certificates.length > 0))) {
@@ -257,7 +258,7 @@ export const StudentPortalPage: React.FC = () => {
     setSelectedEnrolmentIndex(idx);
     const sel = enrolments[idx];
     if (sel && sel.courseId) {
-      fetch(`/api/courses/${sel.courseId}`)
+      fetch(getApiUrl(`/api/courses/${sel.courseId}`))
         .then(r => r.json())
         .then(d => {
           if (d.course) setCourse(d.course);
@@ -275,7 +276,7 @@ export const StudentPortalPage: React.FC = () => {
       : [...currentCompleted, weekNumber];
 
     try {
-      const res = await fetch('/api/student/progress', {
+      const res = await fetch(getApiUrl('/api/student/progress'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -301,7 +302,7 @@ export const StudentPortalPage: React.FC = () => {
     setSubmissionSuccess(false);
 
     try {
-      const res = await fetch('/api/student/submit-project', {
+      const res = await fetch(getApiUrl('/api/student/submit-project'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

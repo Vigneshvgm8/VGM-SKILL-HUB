@@ -29,6 +29,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { CoursePurchaseModal } from '../components/CoursePurchaseModal.js';
+import { getApiUrl } from '../config/api.js';
 
 export const CourseDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -38,7 +39,7 @@ export const CourseDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (slug) {
-      fetch(`/api/courses/${slug}`)
+      fetch(getApiUrl(`/api/courses/${slug}`))
         .then(res => res.json())
         .then(data => {
           if (data.course) {

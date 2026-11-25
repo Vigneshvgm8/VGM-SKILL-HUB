@@ -7,6 +7,16 @@
   RewriteRule . /index.html [L]
 </IfModule>
 
+# MIME Types (Crucial for Hostinger LiteSpeed / Apache ES Module Support)
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/css .css
+  AddType image/svg+xml .svg
+  AddType application/json .json
+  AddType font/woff .woff
+  AddType font/woff2 .woff2
+</IfModule>
+
 # Enable GZIP Compression for optimal performance
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml

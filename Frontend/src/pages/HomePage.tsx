@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { CourseItem } from '../config/coursesData.js';
+import { getApiUrl } from '../config/api.js';
 import { PLACEMENT_STATS, HIRING_PARTNERS, ALUMNI_STORIES } from '../config/placementsData.js';
 import { SyllabusDownloadModal } from '../components/SyllabusDownloadModal.js';
 import { CinematicBackground } from '../components/CinematicBackground.js';
@@ -116,7 +117,7 @@ export const HomePage: React.FC = () => {
   const [testLogs, setTestLogs] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch('/api/courses')
+    fetch(getApiUrl('/api/courses'))
       .then(res => res.json())
       .then(data => {
         if (data.courses && Array.isArray(data.courses) && data.courses.length > 0) {

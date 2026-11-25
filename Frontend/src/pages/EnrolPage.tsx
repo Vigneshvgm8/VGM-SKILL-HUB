@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { PROGRAM_PLANS, BATCH_OPTIONS, PlanInfo } from '../config/programData.js';
 import { CourseItem } from '../config/coursesData.js';
+import { getApiUrl } from '../config/api.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic } from '../components/LusionMotionPrimitives.js';
 import { 
@@ -84,7 +85,7 @@ export const EnrolPage: React.FC = () => {
   const [enrolmentStatus, setEnrolmentStatus] = useState<{ limit: number; enrolled: number; spotsLeft: number } | null>(null);
 
   useEffect(() => {
-    fetch('/api/courses')
+    fetch(getApiUrl('/api/courses'))
       .then(res => res.json())
       .then(data => {
         if (data.courses && Array.isArray(data.courses) && data.courses.length > 0) {
@@ -93,7 +94,7 @@ export const EnrolPage: React.FC = () => {
       })
       .catch(() => {});
 
-    fetch('/api/plans')
+    fetch(getApiUrl('/api/plans'))
       .then(res => res.json())
       .then(data => {
         if (data.success && data.plans) {
@@ -106,7 +107,7 @@ export const EnrolPage: React.FC = () => {
   // Check enrolment capacity whenever the selected course changes
   useEffect(() => {
     if (!selectedCourseSlug) return;
-    fetch(`/api/enrolment-status/${encodeURIComponent(selectedCourseSlug)}`)
+    fetch(getApiUrl(`/api/enrolment-status/${encodeURIComponent(selectedCourseSlug)}`))
       .then(res => res.json())
       .then(data => {
         setCourseFull(data.isFull === true);
@@ -210,7 +211,7 @@ export const EnrolPage: React.FC = () => {
     setCouponError(null);
 
     try {
-      const res = await fetch('/api/validate-coupon', {
+      const res = await fetch(getApiUrl('/api/validate-coupon'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, planId: selectedPlanId, fee: selectedPlan.fee })
@@ -323,7 +324,7 @@ export const EnrolPage: React.FC = () => {
         couponCode: appliedCoupon ? appliedCoupon.code : undefined
       };
 
-      const res = await fetch('/api/create-order', {
+      const res = await fetch(getApiUrl('/api/create-order'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderPayload)
@@ -385,7 +386,7 @@ export const EnrolPage: React.FC = () => {
         },
         handler: async function (response: any) {
           try {
-            const verifyRes = await fetch('/api/verify-payment', {
+            const verifyRes = await fetch(getApiUrl('/api/verify-payment'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -442,7 +443,7 @@ export const EnrolPage: React.FC = () => {
       const fakePaymentId = `pay_sim_${Date.now()}`;
       const fakeSignature = `sig_sim_${Math.random().toString(36).substring(2, 10)}`;
 
-      const verifyRes = await fetch('/api/verify-payment', {
+      const verifyRes = await fetch(getApiUrl('/api/verify-payment'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
