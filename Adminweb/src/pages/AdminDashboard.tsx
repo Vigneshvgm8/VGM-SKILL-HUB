@@ -797,16 +797,9 @@ export const AdminDashboard: React.FC = () => {
                   className="w-full px-3.5 py-2.5 bg-[#F0F2F4] border border-black/10 rounded-xl text-sm text-[#111111] focus:outline-none focus:border-[#1E9E54] pr-10"
                 />
               </div>
-              <div className="flex items-center justify-between mt-1.5 text-[11px] text-[#888888] font-mono">
-                <span>Default password:</span>
-                <button
-                  type="button"
-                  onClick={() => setPasswordInput('vgm_admin_2026')}
-                  className="px-2 py-0.5 rounded-md bg-[#1E9E54]/10 text-[#1E7A46] hover:bg-[#1E9E54]/20 font-bold transition-colors cursor-pointer"
-                  title="Click to autofill default password"
-                >
-                  vgm_admin_2026
-                </button>
+              <div className="flex items-center justify-between mt-1.5 text-[11px] text-[#888888]">
+                <span>Authorized personnel only</span>
+                <span className="text-[#1E7A46] font-medium">SSL Encrypted</span>
               </div>
             </div>
 

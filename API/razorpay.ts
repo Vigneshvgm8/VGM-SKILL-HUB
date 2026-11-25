@@ -92,9 +92,23 @@ export const RazorpayService = {
   },
 
   verifyPaymentSignature(orderId: string, paymentId: string, signature: string): boolean {
-    // If running with simulator order
-    if (orderId.startsWith('order_test_') || !isConfiguredRazorpay) {
-      return true;
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    // In production, NEVER allow simulated or test order bypass
+    if (isProduction) {
+      if (!isConfiguredRazorpay) {
+        console.error('[SECURITY CRITICAL] Razorpay is not configured with production keys in production mode!');
+        return false;
+      }
+      if (orderId.startsWith('order_test_')) {
+        console.warn(`[SECURITY] Blocked test order spoof attempt in production: ${orderId}`);
+        return false;
+      }
+    } else {
+      // In development / local testing mode only
+      if (orderId.startsWith('order_test_') || !isConfiguredRazorpay) {
+        return true;
+      }
     }
 
     try {

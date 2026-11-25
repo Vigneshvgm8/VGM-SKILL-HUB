@@ -141,7 +141,8 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
     const currentPlans = DB.getPlans();
     const plan = currentPlans[planId];
     const resolvedPlanName = customPlanName || plan?.name || 'Explorer';
-    const baseAmount = typeof customFee === 'number' && customFee > 0 ? customFee : (plan ? plan.fee : 5999);
+    // Server-enforced plan fee: never allow untrusted client customFee to override standard pricing
+    const baseAmount = plan ? plan.fee : (typeof customFee === 'number' && customFee >= 1 ? customFee : 5999);
 
     const cleanMobile = student.mobile.replace(/\D/g, '');
 

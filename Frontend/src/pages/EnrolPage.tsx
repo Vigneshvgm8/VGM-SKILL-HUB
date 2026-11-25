@@ -340,8 +340,17 @@ export const EnrolPage: React.FC = () => {
       const orderData = await res.json();
       const RazorpayConstructor = (window as any).Razorpay;
 
+      // In production mode, disallow test simulator modal
+      if (import.meta.env.PROD && (orderData.isSimulated || orderData.keyId === 'rzp_test_placeholder_key')) {
+        throw new Error('Payment gateway is currently connecting to live Razorpay. Please contact admissions at contact@vgmsofttech.com or retry shortly.');
+      }
+
+      if (!RazorpayConstructor && import.meta.env.PROD) {
+        throw new Error('Razorpay secure checkout failed to load. Please disable ad-blockers or check your internet connection.');
+      }
+
       if (!RazorpayConstructor || orderData.isSimulated || orderData.keyId === 'rzp_test_placeholder_key') {
-        // Show seamless test payment simulator modal
+        // Show seamless test payment simulator modal in local development
         setSimulatedOrderModal({
           orderId: orderData.orderId,
           enrolmentId: orderData.enrolmentId,

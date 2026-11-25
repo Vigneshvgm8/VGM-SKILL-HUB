@@ -46,13 +46,31 @@ export async function startServer() {
     next();
   });
 
-  // 3.5. CORS Integration (Full interoperability between Frontend, Adminweb, and API)
+  // 3.5. CORS Integration (Hardened for Production Security)
+  const isAllowedOrigin = (origin: string | undefined): boolean => {
+    if (!origin) return true; // allow same-origin, curl, server-to-server
+    try {
+      const parsed = new URL(origin);
+      const host = parsed.hostname.toLowerCase();
+      if (host === 'skillhub.vgmsofttech.com' || 
+          host === 'adminskillhub.vgmsofttech.com' || 
+          host.endsWith('.vgmsofttech.com') ||
+          host === 'vgmsofttech.com') {
+        return true;
+      }
+      if (!isProduction && (host === 'localhost' || host === '127.0.0.1')) {
+        return true;
+      }
+    } catch {}
+    return false;
+  };
+
   app.use((req, res, next) => {
     const origin = req.headers.origin;
-    if (origin) {
+    if (origin && isAllowedOrigin(origin)) {
       res.setHeader('Access-Control-Allow-Origin', origin);
       res.setHeader('Access-Control-Allow-Credentials', 'true');
-    } else {
+    } else if (!origin) {
       res.setHeader('Access-Control-Allow-Origin', '*');
     }
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
