@@ -1060,13 +1060,6 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
       onPointerLeave={handlePointerLeave}
       style={{ touchAction: 'pan-y' }}
     >
-      {/* ── Kanji & Technical Watermark Background ── */}
-      <div
-        className="pointer-events-none absolute left-1/2 top-[43%] -translate-x-1/2 -translate-y-1/2 select-none z-0 text-black/[0.06] sm:text-black/[0.04] font-black tracking-widest leading-none text-center"
-        style={{ fontSize: '22vw', opacity: 0.8 }}
-      >
-        技術書
-      </div>
 
       {/* ── Soft floor shadow ── */}
       <div
