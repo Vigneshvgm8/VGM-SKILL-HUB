@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CourseItem } from '../config/coursesData.js';
 import { 
@@ -50,6 +50,36 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
   // Submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Lock body scroll and pause Lenis smooth scroll while modal is active
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const prevOverflow = document.body.style.overflow;
+    const prevPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    document.body.style.overflow = 'hidden';
+
+    const lenis = (window as any).__lenis;
+    if (lenis && typeof lenis.stop === 'function') {
+      try {
+        lenis.stop();
+      } catch {}
+    }
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.body.style.paddingRight = prevPaddingRight;
+      if (lenis && typeof lenis.start === 'function') {
+        try {
+          lenis.start();
+        } catch {}
+      }
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -290,11 +320,20 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-xs overflow-y-auto">
-      <div className="bg-white rounded-3xl max-w-4xl w-full my-auto overflow-hidden shadow-2xl border border-black/10 animate-in fade-in zoom-in-95 duration-200">
+    <div 
+      data-lenis-prevent
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-xs overflow-y-auto overscroll-contain"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div 
+        data-lenis-prevent
+        className="bg-white rounded-3xl max-w-4xl w-full my-auto max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-black/10 animate-in fade-in zoom-in-95 duration-200"
+      >
         
         {/* Modal Header */}
-        <div className="px-6 py-4 bg-slate-50 border-b border-black/5 flex items-center justify-between">
+        <div className="shrink-0 px-6 py-4 bg-slate-50 border-b border-black/5 flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200">
@@ -318,7 +357,11 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 sm:p-6 max-h-[75vh] overflow-y-auto">
+        <div 
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="flex-1 p-4 sm:p-6 overflow-y-auto overscroll-contain"
+        >
           {step === 1 ? (
             <div className="space-y-6">
               <div className="text-center max-w-xl mx-auto">

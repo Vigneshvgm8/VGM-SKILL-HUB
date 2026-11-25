@@ -539,6 +539,10 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }
     document.body.style.overflow = 'hidden';
+    const lenis = (window as any).__lenis;
+    if (lenis && typeof lenis.stop === 'function') {
+      try { lenis.stop(); } catch {}
+    }
 
     if (prefersReduced) {
       setClipPathStyle('inset(0px 0px 0px 0px round 0px)');
@@ -596,6 +600,12 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
     const restoreBody = () => {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
+      const lenis = (window as any).__lenis;
+      if (lenis && typeof lenis.start === 'function') {
+        try {
+          lenis.start();
+        } catch {}
+      }
     };
 
     if (prefersReduced) {
@@ -638,6 +648,12 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
     return () => {
       document.body.style.overflow = '';
       document.body.style.paddingRight = '';
+      const lenis = (window as any).__lenis;
+      if (lenis && typeof lenis.start === 'function') {
+        try {
+          lenis.start();
+        } catch {}
+      }
       sheetTimersRef.current.forEach((t) => clearTimeout(t));
     };
   }, []);
@@ -747,7 +763,8 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
 
     const sheetContent = (
       <div
-        className="fixed inset-0 z-[999999] h-screen h-[100dvh] w-full overflow-hidden bg-[#FAF9F5] text-[#111111] flex flex-col shadow-2xl"
+        data-lenis-prevent
+        className="fixed inset-0 z-[999999] h-screen h-[100dvh] w-full overflow-hidden bg-[#FAF9F5] text-[#111111] flex flex-col shadow-2xl overscroll-contain"
         style={{
           clipPath: sheetState === 'open' ? 'none' : clipPathStyle,
           WebkitClipPath: sheetState === 'open' ? 'none' : clipPathStyle,
@@ -791,7 +808,11 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
         </header>
 
         {/* Sheet Body: Single scrolling column on phones, 2 columns on desktop */}
-        <div className="flex-1 overflow-y-auto">
+        <div 
+          data-lenis-prevent
+          onWheel={(e) => e.stopPropagation()}
+          className="flex-1 overflow-y-auto overscroll-contain"
+        >
           <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-10 pb-24 sm:pb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             
             {/* Left Column: Full Cover Poster with Ragged Ink Bleed Animation */}

@@ -21,6 +21,8 @@ export const useLenis = () => {
       touchMultiplier: 1.5,
     });
 
+    (window as any).__lenis = lenis;
+
     lenis.on('scroll', ScrollTrigger.update);
 
     const updateTicker = (time: number) => {
@@ -33,6 +35,9 @@ export const useLenis = () => {
     return () => {
       gsap.ticker.remove(updateTicker);
       lenis.destroy();
+      if ((window as any).__lenis === lenis) {
+        delete (window as any).__lenis;
+      }
     };
   }, []);
 };
