@@ -9,6 +9,12 @@ export interface CourseCurriculumModule {
   handsOnProject: string;
 }
 
+export interface CourseTierPricing {
+  explorer: { months: number; fee: number; label: string };
+  builder: { months: number; fee: number; label: string };
+  professional: { months: number; fee: number; label: string };
+}
+
 export interface CourseItem {
   id: string;
   slug: string;
@@ -29,6 +35,7 @@ export interface CourseItem {
   nextBatch: string;
   startingFee: number;
   startingFeeFormatted: string;
+  tierPricing?: CourseTierPricing;
   status: 'enrolling' | 'upcoming' | 'waitlist';
   featured?: boolean;
   thumbnail?: string;

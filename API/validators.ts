@@ -5,6 +5,7 @@ import { Request, Response, NextFunction } from 'express';
 export const createOrderSchema = z.object({
   courseId: z.string().min(1).max(64),
   courseTitle: z.string().min(1).max(120),
+  enrolmentType: z.enum(['internship', 'course']).optional().default('internship'),
   planId: z.string().min(1).max(64),
   planName: z.string().max(80).optional(),
   batchId: z.string().min(1).max(64),
@@ -111,6 +112,11 @@ export const courseCreateSchema = z.object({
   durationWeeks: z.number().int().positive().optional().default(12),
   startingFee: z.number().int().positive().max(500000),
   startingFeeFormatted: z.string().optional(),
+  tierPricing: z.object({
+    explorer: z.object({ months: z.number().optional().default(1), fee: z.number().positive(), label: z.string().optional().default('1 Month') }),
+    builder: z.object({ months: z.number().optional().default(2), fee: z.number().positive(), label: z.string().optional().default('2 Months') }),
+    professional: z.object({ months: z.number().optional().default(3), fee: z.number().positive(), label: z.string().optional().default('3 Months') })
+  }).optional(),
   nextBatch: z.string().min(2).max(100).optional().default('15th December 2026'),
   mode: z.string().optional().default('Hybrid (Coimbatore Campus + Online Live)'),
   status: z.enum(['enrolling', 'upcoming', 'waitlist']).optional().default('enrolling'),

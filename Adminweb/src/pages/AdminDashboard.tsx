@@ -70,6 +70,7 @@ export const AdminDashboard: React.FC = () => {
 
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filterType, setFilterType] = useState<string>('all');
   const [filterCourse, setFilterCourse] = useState<string>('all');
   const [filterPlan, setFilterPlan] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
@@ -110,7 +111,10 @@ export const AdminDashboard: React.FC = () => {
     level: 'Beginner to Advanced',
     duration: '12 Weeks (3 Months)',
     durationWeeks: 12,
-    startingFee: 7999,
+    startingFee: 5999,
+    explorerFee: 5999,
+    builderFee: 9999,
+    professionalFee: 14999,
     mode: 'Hybrid (Coimbatore Campus + Online Live)',
     nextBatch: '15th December 2026',
     shortDescription: '',
@@ -218,6 +222,7 @@ export const AdminDashboard: React.FC = () => {
       // Fetch Enrolments
       const url = new URL('/api/admin/enrolments', window.location.origin);
       if (searchQuery) url.searchParams.set('search', searchQuery);
+      if (filterType !== 'all') url.searchParams.set('type', filterType);
       if (filterCourse !== 'all') url.searchParams.set('course', filterCourse);
       if (filterPlan !== 'all') url.searchParams.set('plan', filterPlan);
       if (filterStatus !== 'all') url.searchParams.set('status', filterStatus);
@@ -273,7 +278,7 @@ export const AdminDashboard: React.FC = () => {
     if (token) {
       fetchDashboardData();
     }
-  }, [token, filterCourse, filterPlan, filterStatus, filterBatch, searchQuery]);
+  }, [token, filterType, filterCourse, filterPlan, filterStatus, filterBatch, searchQuery]);
 
   // Course Handlers
   const openNewCourseModal = () => {
@@ -286,7 +291,10 @@ export const AdminDashboard: React.FC = () => {
       level: 'Beginner to Advanced',
       duration: '12 Weeks (3 Months)',
       durationWeeks: 12,
-      startingFee: 7999,
+      startingFee: 5999,
+      explorerFee: 5999,
+      builderFee: 9999,
+      professionalFee: 14999,
       mode: 'Hybrid (Coimbatore Campus + Online Live)',
       nextBatch: '15th December 2026',
       shortDescription: '',
@@ -300,6 +308,10 @@ export const AdminDashboard: React.FC = () => {
 
   const openEditCourseModal = (c: any) => {
     setEditingCourseId(c.id);
+    const explorerFee = c.tierPricing?.explorer?.fee || c.plans?.explorer?.fee || c.startingFee || 5999;
+    const builderFee = c.tierPricing?.builder?.fee || c.plans?.builder?.fee || 9999;
+    const professionalFee = c.tierPricing?.professional?.fee || c.plans?.professional?.fee || 14999;
+
     setCourseFormData({
       title: c.title || '',
       slug: c.slug || '',
@@ -308,7 +320,10 @@ export const AdminDashboard: React.FC = () => {
       level: c.level || 'Beginner to Advanced',
       duration: c.duration || '12 Weeks',
       durationWeeks: c.durationWeeks || 12,
-      startingFee: c.startingFee || 5999,
+      startingFee: Math.min(explorerFee, builderFee, professionalFee),
+      explorerFee,
+      builderFee,
+      professionalFee,
       mode: c.mode || 'Hybrid (Coimbatore Campus + Online Live)',
       nextBatch: c.nextBatch || 'Coming Soon',
       shortDescription: c.shortDescription || '',
@@ -324,9 +339,22 @@ export const AdminDashboard: React.FC = () => {
     e.preventDefault();
     if (!token) return;
 
+    const expFee = Math.max(1, Number(courseFormData.explorerFee) || 5999);
+    const bldFee = Math.max(1, Number(courseFormData.builderFee) || 9999);
+    const proFee = Math.max(1, Number(courseFormData.professionalFee) || 14999);
+    const minFee = Math.min(expFee, bldFee, proFee);
+
+    const tierPricing = {
+      explorer: { months: 1, fee: expFee, label: '1 Month' },
+      builder: { months: 2, fee: bldFee, label: '2 Months' },
+      professional: { months: 3, fee: proFee, label: '3 Months' }
+    };
+
     const payload = {
       ...courseFormData,
-      startingFeeFormatted: `₹${Number(courseFormData.startingFee).toLocaleString('en-IN')}`,
+      startingFee: minFee,
+      startingFeeFormatted: `₹${minFee.toLocaleString('en-IN')}`,
+      tierPricing,
       tools: courseFormData.toolsInput.split(',').map(s => s.trim()).filter(Boolean),
       highlights: courseFormData.highlightsInput.split(',').map(s => s.trim()).filter(Boolean)
     };
@@ -1287,6 +1315,17 @@ export const AdminDashboard: React.FC = () => {
               />
             </div>
 
+            {/* Type filter */}
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-hidden"
+            >
+              <option value="all">All Enrolment Types</option>
+              <option value="internship">Internship Enrolments</option>
+              <option value="course">Course Purchases</option>
+            </select>
+
             {/* Course filter */}
             <select
               value={filterCourse}
@@ -1343,6 +1382,7 @@ export const AdminDashboard: React.FC = () => {
                 <thead className="bg-slate-50 border-b border-slate-200 font-heading text-slate-600 uppercase tracking-wider text-[11px]">
                   <tr>
                     <th className="py-3 px-4">Enrolment ID</th>
+                    <th className="py-3 px-4">Type</th>
                     <th className="py-3 px-4">Student</th>
                     <th className="py-3 px-4">Institution</th>
                     <th className="py-3 px-4">Plan &amp; Batch</th>
@@ -1355,7 +1395,7 @@ export const AdminDashboard: React.FC = () => {
                 <tbody className="divide-y divide-slate-100 text-slate-700">
                   {enrolments.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="py-8 text-center text-slate-400">
+                      <td colSpan={9} className="py-8 text-center text-slate-400">
                         No enrolment records match your search or filter criteria.
                       </td>
                     </tr>
@@ -1364,6 +1404,17 @@ export const AdminDashboard: React.FC = () => {
                       <tr key={e.id} className="hover:bg-slate-50/80 transition-colors">
                         <td className="py-3.5 px-4 font-mono font-semibold text-slate-900 whitespace-nowrap">
                           {e.id}
+                        </td>
+                        <td className="py-3.5 px-4 whitespace-nowrap">
+                          {e.enrolmentType === 'course' ? (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-200">
+                              Course
+                            </span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                              Internship
+                            </span>
+                          )}
                         </td>
                         <td className="py-3.5 px-4">
                           <strong className="text-slate-900 block">{e.student.fullName}</strong>
@@ -1478,6 +1529,18 @@ export const AdminDashboard: React.FC = () => {
                   <p className="text-xs text-slate-500 line-clamp-2">
                     {course.shortDescription || course.headline}
                   </p>
+
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 font-mono text-slate-700 font-semibold" title="1 Month Explorer Fee">
+                      1M: ₹{(course.tierPricing?.explorer?.fee || course.plans?.explorer?.fee || course.startingFee || 5999).toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 font-mono font-bold" title="2 Months Builder Fee">
+                      2M: ₹{(course.tierPricing?.builder?.fee || course.plans?.builder?.fee || 9999).toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-md bg-slate-100 font-mono text-slate-700 font-semibold" title="3 Months Professional Fee">
+                      3M: ₹{(course.tierPricing?.professional?.fee || course.plans?.professional?.fee || 14999).toLocaleString('en-IN')}
+                    </span>
+                  </div>
 
                   <div className="text-[11px] text-slate-400 space-y-1 pt-2 border-t border-slate-100">
                     <div><strong>Category:</strong> {course.category}</div>
@@ -1989,6 +2052,8 @@ export const AdminDashboard: React.FC = () => {
                 <span className="font-heading font-bold uppercase text-slate-400 block text-[10px]">
                   ENROLMENT &amp; PAYMENT
                 </span>
+                <p><strong>Type:</strong> <span className="font-bold text-slate-800">{selectedEnrolment.enrolmentType === 'course' ? 'Course Purchase' : 'Internship Enrolment'}</span></p>
+                <p><strong>Master ID:</strong> <span className="font-mono font-bold text-emerald-800">{selectedEnrolment.enrollmentNumber || selectedEnrolment.id.split('-').slice(0, 3).join('-')}</span></p>
                 <p><strong>Plan:</strong> {selectedEnrolment.planName}</p>
                 <p><strong>Batch:</strong> {selectedEnrolment.batchLabel}</p>
                 <p><strong>Status:</strong> <span className="uppercase font-bold text-[#1E7A46]">{selectedEnrolment.payment.status}</span></p>
@@ -2262,18 +2327,54 @@ export const AdminDashboard: React.FC = () => {
                   />
                 </div>
 
-                <div>
-                  <label className="block font-bold uppercase tracking-wider text-slate-700 mb-1">
-                    Starting Fee (INR) *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    min={1}
-                    value={courseFormData.startingFee}
-                    onChange={(e) => setCourseFormData({ ...courseFormData, startingFee: Number(e.target.value) })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono"
-                  />
+                <div className="sm:col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="block font-bold uppercase tracking-wider text-slate-800 text-xs">
+                      Course Individual Tier Pricing (INR) *
+                    </label>
+                    <span className="text-[11px] text-slate-500 font-medium">1 Month · 2 Months · 3 Months</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                        1 Month (Explorer)
+                      </label>
+                      <input
+                        type="number"
+                        required
+                        min={1}
+                        value={courseFormData.explorerFee}
+                        onChange={(e) => setCourseFormData({ ...courseFormData, explorerFee: Number(e.target.value) })}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-emerald-800 mb-1">
+                        2 Months (Builder - Rec.)
+                      </label>
+                      <input
+                        type="number"
+                        required
+                        min={1}
+                        value={courseFormData.builderFee}
+                        onChange={(e) => setCourseFormData({ ...courseFormData, builderFee: Number(e.target.value) })}
+                        className="w-full px-3 py-2 bg-white border border-emerald-300 rounded-lg text-xs font-mono font-bold text-emerald-900"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                        3 Months (Professional)
+                      </label>
+                      <input
+                        type="number"
+                        required
+                        min={1}
+                        value={courseFormData.professionalFee}
+                        onChange={(e) => setCourseFormData({ ...courseFormData, professionalFee: Number(e.target.value) })}
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono font-bold"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div>

@@ -8,8 +8,10 @@ import {
   ArrowUpRight, 
   BookOpen, 
   X, 
-  CheckCircle2 
+  CheckCircle2,
+  Sparkles
 } from 'lucide-react';
+import { CoursePurchaseModal } from './CoursePurchaseModal.js';
 
 interface CurvedCourseShelfProps {
   courses: CourseItem[];
@@ -319,6 +321,7 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
   const [clipPathStyle, setClipPathStyle] = useState<string>('none');
   const [textRevealed, setTextRevealed] = useState<boolean>(false);
   const [inkStarted, setInkStarted] = useState<boolean>(false);
+  const [purchasingCourse, setPurchasingCourse] = useState<CourseItem | null>(null);
 
   const sheetTimersRef = useRef<NodeJS.Timeout[]>([]);
   const coverRectRef = useRef<{ top: number; right: number; bottom: number; left: number } | null>(null);
@@ -1010,11 +1013,24 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
                     onClick={() => {
                       document.body.style.overflow = '';
                       document.body.style.paddingRight = '';
-                      navigate(`/enrol?course=${openedCourse.slug}`);
+                      setPurchasingCourse(openedCourse);
                     }}
-                    className="px-8 py-3.5 rounded-full bg-[#111111] text-white hover:bg-[#1E9E54] text-xs font-mono font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all text-center cursor-pointer flex items-center justify-center gap-2"
+                    className="px-8 py-3.5 rounded-full bg-[#1E9E54] text-white hover:bg-[#14723B] text-xs font-mono font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all text-center cursor-pointer flex items-center justify-center gap-2"
                   >
-                    <span>ENROL IN THIS TRACK</span>
+                    <Sparkles className="w-4 h-4" />
+                    <span>PURCHASE COURSE (1–3 MO)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      document.body.style.overflow = '';
+                      document.body.style.paddingRight = '';
+                      navigate(`/enrol?course=${openedCourse.slug}&type=internship`);
+                    }}
+                    className="px-6 py-3.5 rounded-full bg-[#111111] text-white hover:bg-black/80 text-xs font-mono font-bold uppercase tracking-wider shadow-md hover:shadow-lg transition-all text-center cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>INTERNSHIP ENROLMENT</span>
                     <ArrowUpRight className="w-4 h-4" />
                   </button>
 
@@ -1278,7 +1294,16 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
             </p>
 
             {/* Prominent Open Book CTA Button */}
-            <div className="mt-3 flex items-center justify-center gap-3">
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => setPurchasingCourse(activeCourse)}
+                className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-mono font-bold uppercase tracking-wider shadow-sm hover:shadow-md transition-all cursor-pointer group"
+              >
+                <Sparkles className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                <span>PURCHASE COURSE</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => openBook(activeIndex)}
@@ -1373,6 +1398,15 @@ export const CurvedCourseShelf: React.FC<CurvedCourseShelfProps> = ({
 
       {/* ── Render Detail Sheet Modal Portal ── */}
       {renderDetailSheetPortal()}
+
+      {/* ── Render Course Individual Purchase 3-Tier Modal ── */}
+      {purchasingCourse && (
+        <CoursePurchaseModal
+          course={purchasingCourse}
+          isOpen={Boolean(purchasingCourse)}
+          onClose={() => setPurchasingCourse(null)}
+        />
+      )}
     </div>
   );
 };

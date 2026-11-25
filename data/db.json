@@ -1,6 +1,91 @@
 {
-  "counter": 7,
-  "enrolments": [],
+  "counter": 12,
+  "enrolments": [
+    {
+      "enrolmentType": "course",
+      "courseId": "uiux-product-design",
+      "courseTitle": "UI/UX Design, Design Systems & AI Product Prototyping",
+      "planId": "explorer",
+      "planName": "1 Month Explorer",
+      "batchId": "batch-2026",
+      "batchLabel": "Immediate",
+      "student": {
+        "fullName": "Test Unified Student",
+        "email": "unified.test2@example.com",
+        "mobile": "9876543211",
+        "dob": "",
+        "city": "Coimbatore",
+        "college": "Institution",
+        "degreeStream": "Engineering",
+        "yearOfStudy": "Undergraduate",
+        "languages": [],
+        "referralSource": "Direct"
+      },
+      "assessment": {
+        "score": 0,
+        "total": 5,
+        "answers": {},
+        "completedAt": "2026-11-25T10:24:47.730Z"
+      },
+      "pricing": {
+        "baseAmount": 5999,
+        "discountAmount": 0,
+        "couponCode": null,
+        "finalAmount": 5999,
+        "currency": "INR"
+      },
+      "payment": {
+        "status": "pending",
+        "orderId": "order_U4NGS9IauqKG7l"
+      },
+      "id": "VGM-2026-0012",
+      "enrollmentNumber": "VGM-2026-0012",
+      "createdAt": "2026-11-25T10:24:47.730Z",
+      "updatedAt": "2026-11-25T10:24:47.936Z"
+    },
+    {
+      "enrolmentType": "internship",
+      "courseId": "uiux-product-design",
+      "courseTitle": "UI/UX Design, Design Systems & AI Product Prototyping",
+      "planId": "builder",
+      "planName": "Builder Plan",
+      "batchId": "batch-2026",
+      "batchLabel": "Immediate",
+      "student": {
+        "fullName": "Test Unified Student",
+        "email": "unified.test2@example.com",
+        "mobile": "9876543211",
+        "dob": "",
+        "city": "Coimbatore",
+        "college": "Institution",
+        "degreeStream": "Engineering",
+        "yearOfStudy": "Undergraduate",
+        "languages": [],
+        "referralSource": "Direct"
+      },
+      "assessment": {
+        "score": 0,
+        "total": 5,
+        "answers": {},
+        "completedAt": "2026-11-25T10:24:47.942Z"
+      },
+      "pricing": {
+        "baseAmount": 1800,
+        "discountAmount": 0,
+        "couponCode": null,
+        "finalAmount": 1800,
+        "currency": "INR"
+      },
+      "payment": {
+        "status": "pending",
+        "orderId": "order_U4NGSGlTZTOdRc"
+      },
+      "id": "VGM-2026-0012-02",
+      "enrollmentNumber": "VGM-2026-0012",
+      "createdAt": "2026-11-25T10:24:47.942Z",
+      "updatedAt": "2026-11-25T10:24:48.041Z"
+    }
+  ],
   "coupons": [],
   "processedWebhooks": [],
   "courses": [
@@ -22,8 +107,8 @@
       "learnersEnrolled": 310,
       "liveProjectsCount": 3,
       "nextBatch": "28th November 2026",
-      "startingFee": 5999,
-      "startingFeeFormatted": "₹5,999",
+      "startingFee": 1499,
+      "startingFeeFormatted": "₹1,499",
       "status": "enrolling",
       "featured": false,
       "thumbnail": "/assets/courses/uiux-product-design.svg",
@@ -140,6 +225,23 @@
           "liveProjectRole": "Create UI mockups and icon assets for internal VGM Soft Tech web pages."
         }
       },
+      "tierPricing": {
+        "explorer": {
+          "duration": "1 Month",
+          "fee": 5999,
+          "label": "1 Month Explorer"
+        },
+        "builder": {
+          "duration": "2 Months",
+          "fee": 9999,
+          "label": "2 Months Builder"
+        },
+        "professional": {
+          "duration": "3 Months",
+          "fee": 14999,
+          "label": "3 Months Professional"
+        }
+      },
       "faqs": [
         {
           "answer": "No! Figma runs completely in the modern web browser (Chrome, Edge, Firefox) on standard Windows laptops, MacBooks, or even Chromebooks.",
@@ -190,7 +292,9 @@
       "highestPackage": "₹11.5 LPA",
       "highlights": [
         "Real client project work on VGM Soft Tech enterprise codebases",
-        "Choose between 1-Month Explorer, 2-Month Builder, or 3-Month Professional plans",
+        "Choose between 1-Month Explorer",
+        "2-Month Builder",
+        "or 3-Month Professional plans",
         "Official Experience Letter & Certificate with online credential verification",
         "1-on-1 code reviews and technical mock interviews with Senior Staff Engineers"
       ],
@@ -284,10 +388,10 @@
         },
         "explorer": {
           "id": "explorer",
-          "fee": 5999,
+          "fee": 1500,
           "name": "Explorer",
           "outcome": "Understand the basics and build one working AI-powered mini app.",
-          "duration": "1 Month",
+          "duration": "2 Weeks",
           "features": [
             "App development fundamentals",
             "AI assistants for coding and learning",
@@ -298,18 +402,19 @@
             "Mentor guidance and doubt clearing",
             "Project templates and code access"
           ],
-          "weeksTotal": 4,
-          "feeFormatted": "₹5,999",
+          "weeksTotal": 2,
+          "recommended": false,
+          "feeFormatted": "₹1,500",
           "durationMonths": 1,
           "certificateType": "Certificate of Participation",
           "liveProjectRole": "Shadow the team and complete small guided tasks such as UI fixes and screen changes."
         },
         "professional": {
           "id": "professional",
-          "fee": 14999,
+          "fee": 2500,
           "name": "Professional",
-          "outcome": "Become job-ready with a published app and a strong portfolio.",
-          "duration": "3 Months",
+          "outcome": "Become job-ready with a published app, live feature ownership, and a strong portfolio.",
+          "duration": "6 Weeks",
           "features": [
             "Everything in Builder",
             "App architecture and performance",
@@ -320,11 +425,29 @@
             "Official Experience Letter on completion",
             "Priority recommendation for openings at VGM Soft Tech"
           ],
-          "weeksTotal": 12,
-          "feeFormatted": "₹14,999",
+          "weeksTotal": 6,
+          "recommended": false,
+          "feeFormatted": "₹2,500",
           "durationMonths": 3,
           "certificateType": "Certificate of Completion + Experience Letter",
           "liveProjectRole": "Take full ownership of a feature from planning to release, with regular reviews. An experience letter is issued on completion."
+        }
+      },
+      "tierPricing": {
+        "explorer": {
+          "duration": "1 Month",
+          "fee": 5999,
+          "label": "1 Month Explorer"
+        },
+        "builder": {
+          "duration": "2 Months",
+          "fee": 9999,
+          "label": "2 Months Builder"
+        },
+        "professional": {
+          "duration": "3 Months",
+          "fee": 14999,
+          "label": "3 Months Professional"
         }
       },
       "faqs": [

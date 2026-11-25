@@ -25,13 +25,16 @@ import {
   Terminal, 
   ExternalLink,
   ChevronRight,
-  ArrowUpRight
+  ArrowUpRight,
+  Sparkles
 } from 'lucide-react';
+import { CoursePurchaseModal } from '../components/CoursePurchaseModal.js';
 
 export const CourseDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [course, setCourse] = useState<CourseItem | null>(() => slug ? (getCourseBySlug(slug) || null) : null);
   const [loading, setLoading] = useState<boolean>(!course);
+  const [showPurchaseModal, setShowPurchaseModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (slug) {
@@ -157,12 +160,23 @@ export const CourseDetailPage: React.FC = () => {
               {/* CTAs */}
               <div className="flex flex-wrap items-center gap-4 pt-4">
                 <LusionMagnetic strength={8}>
+                  <button
+                    type="button"
+                    onClick={() => setShowPurchaseModal(true)}
+                    className="px-7 py-3.5 bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold rounded-full transition-all text-xs font-mono uppercase tracking-wider flex items-center gap-2 cursor-pointer shadow-md hover:shadow-lg"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    <span>Purchase Course (3 Tiers)</span>
+                  </button>
+                </LusionMagnetic>
+
+                <LusionMagnetic strength={8}>
                   <Link
-                    to={`/enrol?course=${course.slug}`}
+                    to={`/enrol?course=${course.slug}&type=internship`}
                     className="lusion-cta-btn"
                   >
                     <span className="cta-dot"></span>
-                    <span className="cta-text">Enrol in this Course</span>
+                    <span className="cta-text">Internship Enrolment</span>
                     <span className="cta-arrow">
                       <ArrowRight className="w-4 h-4" />
                     </span>
@@ -607,6 +621,15 @@ export const CourseDetailPage: React.FC = () => {
           })}
         </div>
       </motion.section>
+
+      {/* Course Purchase 3-Tier Modal */}
+      {course && (
+        <CoursePurchaseModal
+          course={course}
+          isOpen={showPurchaseModal}
+          onClose={() => setShowPurchaseModal(false)}
+        />
+      )}
 
     </div>
   );

@@ -492,6 +492,8 @@ function formatCertificateFromDb(r: any): any {
 function formatEnrolmentToDb(e: any): any {
   return {
     id: e.id,
+    enrollment_number: e.enrollmentNumber || e.id.split('-').slice(0, 3).join('-'),
+    enrolment_type: e.enrolmentType || 'internship',
     course_id: e.courseId || null,
     course_title: e.courseTitle,
     plan_id: e.planId,
@@ -532,6 +534,8 @@ function formatEnrolmentToDb(e: any): any {
 function formatEnrolmentFromDb(r: any): any {
   return {
     id: r.id,
+    enrollmentNumber: r.enrollment_number || r.id.split('-').slice(0, 3).join('-'),
+    enrolmentType: r.enrolment_type || 'internship',
     courseId: r.course_id,
     courseTitle: r.course_title,
     planId: r.plan_id,
@@ -658,6 +662,11 @@ function formatCourseFromDb(r: any): any {
     targetAudience: r.target_audience || [],
     curriculum: r.curriculum || [],
     plans: r.plans || {},
+    tierPricing: r.tier_pricing || r.tierPricing || {
+      explorer: { duration: '1 Month', fee: 5999, label: '1 Month Explorer' },
+      builder: { duration: '2 Months', fee: 9999, label: '2 Months Builder' },
+      professional: { duration: '3 Months', fee: 14999, label: '3 Months Professional' }
+    },
     faqs: r.faqs || []
   };
 }

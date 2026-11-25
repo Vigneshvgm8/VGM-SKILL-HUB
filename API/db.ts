@@ -162,6 +162,7 @@ export const INITIAL_PLANS: Record<string, PlanItem> = {
 export interface Enrolment {
   id: string; // e.g. VGM-2026-0001 or VGM-2026-0001-02
   enrollmentNumber?: string; // unique master enrollment number for the student e.g. VGM-2026-0001
+  enrolmentType?: 'internship' | 'course';
   courseId?: string;
   courseTitle?: string;
   planId: string;
@@ -485,16 +486,8 @@ export function findExistingStudentEnrollmentNumber(fullName: string, email: str
     const mobileMatches = Boolean(normMobile && eMobile && (normMobile === eMobile || normMobile.endsWith(eMobile) || eMobile.endsWith(normMobile)));
     const nameMatches = Boolean(normName && eName && (normName === eName || normName.includes(eName) || eName.includes(normName)));
 
-    // User requirement: if same student registers another course using same name, mobile number, email -> reuse same enrollment number
-    if (emailMatches && mobileMatches && nameMatches) {
-      return e.enrollmentNumber || e.id.split('-').slice(0, 3).join('-');
-    }
-    // Also if email and mobile match
-    if (emailMatches && mobileMatches) {
-      return e.enrollmentNumber || e.id.split('-').slice(0, 3).join('-');
-    }
-    // If name and email match
-    if (nameMatches && emailMatches) {
+    // User requirement: if same student enrolls in internship or buys course, reuse exact same enrollment number!
+    if (emailMatches || (normMobile.length >= 10 && mobileMatches) || (nameMatches && emailMatches)) {
       return e.enrollmentNumber || e.id.split('-').slice(0, 3).join('-');
     }
   }
@@ -807,6 +800,11 @@ export const DB = {
       nextBatch: courseData.nextBatch || 'Coming Soon',
       startingFee: courseData.startingFee || 5999,
       startingFeeFormatted: courseData.startingFeeFormatted || `₹${(courseData.startingFee || 5999).toLocaleString('en-IN')}`,
+      tierPricing: courseData.tierPricing || {
+        explorer: { months: 1, fee: 5999, label: '1 Month' },
+        builder: { months: 2, fee: 9999, label: '2 Months' },
+        professional: { months: 3, fee: 14999, label: '3 Months' }
+      },
       status: courseData.status || 'enrolling',
       featured: courseData.featured ?? true,
       thumbnail: courseData.thumbnail || '/assets/courses/ai-mobile-app.svg',
@@ -854,6 +852,17 @@ export const DB = {
     const q = idOrSlug.trim().toLowerCase();
     const idx = db.courses.findIndex(c => c.id.toLowerCase() === q || c.slug.toLowerCase() === q);
     if (idx === -1) return null;
+
+    if (updates.tierPricing) {
+      const tp = updates.tierPricing;
+      const minFee = Math.min(
+        tp.explorer?.fee || 5999,
+        tp.builder?.fee || 9999,
+        tp.professional?.fee || 14999
+      );
+      updates.startingFee = minFee;
+      updates.startingFeeFormatted = `₹${minFee.toLocaleString('en-IN')}`;
+    }
 
     db.courses[idx] = {
       ...db.courses[idx],

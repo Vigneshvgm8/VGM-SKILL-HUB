@@ -49,6 +49,7 @@ interface StudentDetails {
 
 interface EnrolmentItem {
   id: string;
+  enrolmentType?: 'internship' | 'course';
   enrollmentNumber?: string;
   courseId?: string;
   courseTitle?: string;
@@ -508,6 +509,13 @@ export const StudentPortalPage: React.FC = () => {
                           : 'bg-white text-[#444444] hover:bg-[#E2E8F0] border border-black/10'
                       }`}
                     >
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono uppercase font-bold ${
+                        enr.enrolmentType === 'course'
+                          ? 'bg-purple-100 text-purple-700 border border-purple-300'
+                          : 'bg-emerald-100 text-emerald-700 border border-emerald-300'
+                      }`}>
+                        {enr.enrolmentType === 'course' ? 'Course' : 'Internship'}
+                      </span>
                       <span>{enr.courseTitle || `Course ${idx + 1}`}</span>
                       <span className={`text-[10px] px-1.5 py-0.5 rounded-md uppercase font-mono ${
                         enr.payment.status === 'paid' ? 'bg-[#1E9E54]/20 text-[#1E9E54]' : 'bg-black/10 text-[#666666]'
@@ -1101,6 +1109,10 @@ export const StudentPortalPage: React.FC = () => {
                       <span className="font-mono text-[#444444]">{activeEnrolment.payment.paymentId}</span>
                     </div>
                   )}
+                  <div>
+                    <span className="text-[#777777] block">Admission Type:</span>
+                    <span className="font-semibold text-[#111111]">{activeEnrolment.enrolmentType === 'course' ? 'Course Purchase' : 'Internship Enrolment'}</span>
+                  </div>
                   <div>
                     <span className="text-[#777777] block">Student Name:</span>
                     <span className="font-bold text-[#111111]">{studentProfile.fullName}</span>

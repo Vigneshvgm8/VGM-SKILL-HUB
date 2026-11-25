@@ -128,6 +128,7 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
     const {
       courseId,
       courseTitle,
+      enrolmentType = 'internship',
       planId,
       planName: customPlanName,
       batchId,
@@ -138,11 +139,27 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
       couponCode
     } = req.body;
 
-    const currentPlans = DB.getPlans();
-    const plan = currentPlans[planId];
-    const resolvedPlanName = customPlanName || plan?.name || 'Explorer';
-    // Server-enforced plan fee: never allow untrusted client customFee to override standard pricing
-    const baseAmount = plan ? plan.fee : (typeof customFee === 'number' && customFee >= 1 ? customFee : 5999);
+    const resolvedCourseId = courseId || 'ai-mobile-app';
+    const course = DB.getCourseById(resolvedCourseId);
+    let baseAmount: number;
+    let resolvedPlanName = customPlanName;
+
+    if (enrolmentType === 'course') {
+      // 1. Course Purchase: Resolve 3-Tier Course Price (Image 3)
+      const tierKey = (planId?.toLowerCase().includes('prof') ? 'professional' :
+                       planId?.toLowerCase().includes('build') ? 'builder' : 'explorer') as 'explorer' | 'builder' | 'professional';
+      const courseTierFee = course?.tierPricing?.[tierKey]?.fee;
+      const coursePlanFee = course?.plans?.[tierKey]?.fee;
+      const defaultCourseFees = { explorer: 5999, builder: 9999, professional: 14999 };
+      baseAmount = courseTierFee || coursePlanFee || defaultCourseFees[tierKey];
+      resolvedPlanName = customPlanName || (tierKey === 'professional' ? 'Professional (3 Months)' : tierKey === 'builder' ? 'Builder (2 Months)' : 'Explorer (1 Month)');
+    } else {
+      // 2. Internship Enrolment: Resolve Internship Plan Price (Image 1)
+      const currentPlans = DB.getPlans();
+      const plan = currentPlans[planId];
+      resolvedPlanName = customPlanName || plan?.name || 'Explorer';
+      baseAmount = plan ? plan.fee : (typeof customFee === 'number' && customFee >= 1 ? customFee : 1500);
+    }
 
     const cleanMobile = student.mobile.replace(/\D/g, '');
 
@@ -167,7 +184,6 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
     // ── Enrolment Limit Check ───────────────────────────────────────────────
     // Count active (non-failed) enrolments for this course and enforce the
     // admin-configurable limit (default 20).
-    const resolvedCourseId = courseId || 'ai-mobile-app';
     const enrolmentLimit = DB.getEnrolmentLimit();
     const currentCount = DB.getEnrolmentCountByCourse(resolvedCourseId);
     if (currentCount >= enrolmentLimit) {
@@ -183,8 +199,9 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
 
     // Save pending enrolment in database first to get unique ID
     const pendingEnrolment = DB.createEnrolment({
+      enrolmentType: enrolmentType as 'internship' | 'course',
       courseId: resolvedCourseId,
-      courseTitle: courseTitle || 'AI-Powered Mobile App Development Internship',
+      courseTitle: courseTitle || (enrolmentType === 'course' ? (course?.title || 'Certification Course') : 'AI-Powered Mobile App Development Internship'),
       planId: planId || 'explorer',
       planName: resolvedPlanName,
       batchId: batchId || 'nov-morning',
@@ -247,6 +264,7 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
       success: true,
       orderId: rzpOrder.id,
       enrolmentId: pendingEnrolment.id,
+      enrollmentNumber: pendingEnrolment.enrollmentNumber,
       amount: finalAmount,
       amountPaise: amountInPaise,
       currency: 'INR',
@@ -492,8 +510,12 @@ apiRouter.get('/admin/enrolments', requireAdmin, async (req, res) => {
       }
     } catch (e) {}
   }
-  const { search, plan, status, batch, course } = req.query;
+  const { search, plan, status, batch, course, type } = req.query;
   let list = DB.getEnrolments();
+
+  if (type && type !== 'all') {
+    list = list.filter(e => (e.enrolmentType || 'internship') === type);
+  }
 
   if (course && course !== 'all') {
     list = list.filter(e => (e.courseId || 'ai-mobile-app') === course);

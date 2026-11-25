@@ -7,6 +7,12 @@ export interface CourseCurriculumModule {
   handsOnProject: string;
 }
 
+export interface CourseTierPricing {
+  explorer: { months: number; fee: number; label: string };
+  builder: { months: number; fee: number; label: string };
+  professional: { months: number; fee: number; label: string };
+}
+
 export interface CoursePlanTier {
   id: string;
   name: string;
@@ -42,6 +48,7 @@ export interface CourseItem {
   nextBatch: string;
   startingFee: number;
   startingFeeFormatted: string;
+  tierPricing?: CourseTierPricing;
   status: 'enrolling' | 'upcoming' | 'waitlist';
   featured?: boolean;
   thumbnail?: string;
@@ -79,6 +86,11 @@ export const INITIAL_COURSES: CourseItem[] = [
     nextBatch: '10th November 2026',
     startingFee: 5999,
     startingFeeFormatted: '₹5,999',
+    tierPricing: {
+      explorer: { months: 1, fee: 5999, label: '1 Month' },
+      builder: { months: 2, fee: 9999, label: '2 Months' },
+      professional: { months: 3, fee: 14999, label: '3 Months' }
+    },
     status: 'enrolling',
     featured: true,
     tools: ['Flutter', 'Dart', 'React Native', 'Firebase', 'Gemini AI API', 'Google Play Console', 'GitHub', 'Figma'],
@@ -232,6 +244,11 @@ export const INITIAL_COURSES: CourseItem[] = [
     nextBatch: '15th November 2026',
     startingFee: 7999,
     startingFeeFormatted: '₹7,999',
+    tierPricing: {
+      explorer: { months: 1, fee: 7999, label: '1 Month' },
+      builder: { months: 2, fee: 11999, label: '2 Months' },
+      professional: { months: 3, fee: 16999, label: '3 Months' }
+    },
     status: 'enrolling',
     featured: true,
     tools: ['React 19', 'Next.js', 'TypeScript', 'Node.js', 'PostgreSQL', 'Prisma ORM', 'Docker', 'LangChain', 'Tailwind CSS'],
@@ -375,6 +392,11 @@ export const INITIAL_COURSES: CourseItem[] = [
     nextBatch: '18th November 2026',
     startingFee: 7999,
     startingFeeFormatted: '₹7,999',
+    tierPricing: {
+      explorer: { months: 1, fee: 7999, label: '1 Month' },
+      builder: { months: 2, fee: 11999, label: '2 Months' },
+      professional: { months: 3, fee: 16999, label: '3 Months' }
+    },
     status: 'enrolling',
     featured: true,
     tools: ['Python', 'SQL', 'PowerBI', 'Pandas', 'NumPy', 'Scikit-Learn', 'PyTorch', 'Hugging Face', 'ChromaDB', 'FastAPI'],
@@ -517,6 +539,11 @@ export const INITIAL_COURSES: CourseItem[] = [
     nextBatch: '22nd November 2026',
     startingFee: 7999,
     startingFeeFormatted: '₹7,999',
+    tierPricing: {
+      explorer: { months: 1, fee: 7999, label: '1 Month' },
+      builder: { months: 2, fee: 11999, label: '2 Months' },
+      professional: { months: 3, fee: 16999, label: '3 Months' }
+    },
     status: 'enrolling',
     featured: false,
     tools: ['AWS (EC2, S3, EKS)', 'Docker', 'Kubernetes (K8s)', 'Terraform', 'Linux', 'GitHub Actions', 'Prometheus', 'Grafana', 'Nginx'],
@@ -659,6 +686,11 @@ export const INITIAL_COURSES: CourseItem[] = [
     nextBatch: '25th November 2026',
     startingFee: 7999,
     startingFeeFormatted: '₹7,999',
+    tierPricing: {
+      explorer: { months: 1, fee: 7999, label: '1 Month' },
+      builder: { months: 2, fee: 11999, label: '2 Months' },
+      professional: { months: 3, fee: 16999, label: '3 Months' }
+    },
     status: 'enrolling',
     featured: false,
     tools: ['Kali Linux', 'Wireshark', 'Burp Suite', 'Wazuh SIEM', 'Nmap', 'Metasploit', 'OWASP ZAP', 'Splunk'],
@@ -801,6 +833,11 @@ export const INITIAL_COURSES: CourseItem[] = [
     nextBatch: '28th November 2026',
     startingFee: 5999,
     startingFeeFormatted: '₹5,999',
+    tierPricing: {
+      explorer: { months: 1, fee: 5999, label: '1 Month' },
+      builder: { months: 2, fee: 9999, label: '2 Months' },
+      professional: { months: 3, fee: 14999, label: '3 Months' }
+    },
     status: 'enrolling',
     featured: false,
     tools: ['Figma', 'FigJam', 'Auto-Layout', 'Design Tokens', 'Miro', 'Relume AI', 'Notion', 'Adobe Creative Cloud'],
