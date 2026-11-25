@@ -199,13 +199,15 @@ export const SupabaseService = {
 
   async upsertCourses(courses: any[]): Promise<void> {
     if (!supabaseClient || courses.length === 0) return;
-    const payloads = courses.map(formatCourseToDb);
-    const { error } = await supabaseClient
-      .from('courses')
-      .upsert(payloads, { onConflict: 'slug' });
+    for (const c of courses) {
+      const payload = formatCourseToDb(c);
+      const { error } = await supabaseClient
+        .from('courses')
+        .upsert(payload, { onConflict: 'slug' });
 
-    if (error) {
-      console.error('[SUPABASE ERROR] upsertCourses:', error.message);
+      if (error) {
+        console.error('[SUPABASE ERROR] upsertCourse for', c.slug || c.id, ':', error.message);
+      }
     }
   },
 

@@ -1202,8 +1202,8 @@ export const AdminDashboard: React.FC = () => {
               onChange={(e) => setFilterCourse(e.target.value)}
               className="px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-700 focus:outline-hidden"
             >
-              <option value="all">All Courses ({COURSES_CATALOG.length})</option>
-              {COURSES_CATALOG.map(c => (
+              <option value="all">All Courses ({coursesList.length || COURSES_CATALOG.length})</option>
+              {(coursesList.length > 0 ? coursesList : COURSES_CATALOG).map(c => (
                 <option key={c.id} value={c.id}>{c.title}</option>
               ))}
             </select>
@@ -1351,7 +1351,7 @@ export const AdminDashboard: React.FC = () => {
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
               <span className="text-xs text-slate-500 block uppercase font-heading">Database State</span>
-              <span className="text-2xl font-bold font-heading text-[#1E7A46]">Active in db.json</span>
+              <span className="text-2xl font-bold font-heading text-[#1E7A46]">Live Supabase DB</span>
             </div>
             <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
               <span className="text-xs text-slate-500 block uppercase font-heading">Coimbatore Campus Hub</span>

@@ -418,11 +418,16 @@ if (isSupabaseConfigured) {
       if (ping.connected) {
         console.log(`[SUPABASE] Verified connection in ${ping.latencyMs}ms. Syncing local cache with remote PostgreSQL...`);
         const remoteCourses = await SupabaseService.getCourses();
-        if (remoteCourses.length === 0) {
-          console.log('[SUPABASE] Seeding initial courses into Supabase...');
-          await SupabaseService.upsertCourses(INITIAL_COURSES);
+        const existingSlugs = new Set((remoteCourses || []).map((c: any) => c.slug?.toLowerCase()));
+        const missingCourses = INITIAL_COURSES.filter(c => !existingSlugs.has(c.slug.toLowerCase()));
+
+        if (missingCourses.length > 0) {
+          console.log(`[SUPABASE] Seeding ${missingCourses.length} missing initial courses into Supabase...`);
+          await SupabaseService.upsertCourses(missingCourses);
+          const allCourses = await SupabaseService.getCourses();
+          db.courses = allCourses.length > 0 ? allCourses : INITIAL_COURSES;
         } else {
-          db.courses = remoteCourses;
+          db.courses = remoteCourses.length > 0 ? remoteCourses : [...INITIAL_COURSES];
         }
 
         const remoteEnrolments = await SupabaseService.getEnrolments();
