@@ -100,7 +100,7 @@ export const SupabaseService = {
     const dbPayload = formatEnrolmentToDb(record);
     const { data, error } = await supabaseClient
       .from('enrolments')
-      .insert(dbPayload)
+      .upsert(dbPayload, { onConflict: 'id' })
       .select()
       .single();
 
@@ -492,8 +492,6 @@ function formatCertificateFromDb(r: any): any {
 function formatEnrolmentToDb(e: any): any {
   return {
     id: e.id,
-    enrollment_number: e.enrollmentNumber || e.id.split('-').slice(0, 3).join('-'),
-    enrolment_type: e.enrolmentType || 'internship',
     course_id: e.courseId || null,
     course_title: e.courseTitle,
     plan_id: e.planId,
@@ -534,7 +532,7 @@ function formatEnrolmentToDb(e: any): any {
 function formatEnrolmentFromDb(r: any): any {
   return {
     id: r.id,
-    enrollmentNumber: r.enrollment_number || r.id.split('-').slice(0, 3).join('-'),
+    enrollmentNumber: r.enrollment_number || r.id,
     enrolmentType: r.enrolment_type || 'internship',
     courseId: r.course_id,
     courseTitle: r.course_title,

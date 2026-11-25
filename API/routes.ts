@@ -261,12 +261,22 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
     }
 
     // Update pending enrolment with orderId
-    DB.updateEnrolment(pendingEnrolment.id, {
+    const updatedPending = DB.updateEnrolment(pendingEnrolment.id, {
       payment: {
         status: 'pending',
         orderId: rzpOrderId
       }
     });
+
+    // Immediately persist to live Supabase DB
+    if (SupabaseService.isAvailable() && updatedPending) {
+      try {
+        await SupabaseService.createEnrolment(updatedPending);
+        console.log(`[SUPABASE] Successfully persisted enrolment ${pendingEnrolment.id} to live Supabase DB.`);
+      } catch (sbErr: any) {
+        console.error('[SUPABASE ERROR] Immediate sync in create-order:', sbErr?.message || sbErr);
+      }
+    }
 
     return res.json({
       success: true,
@@ -421,8 +431,13 @@ apiRouter.post('/razorpay-webhook', async (req: any, res) => {
 });
 
 // 7. GET /api/enrolment/:id - Retrieve enrolment for receipt/status
-apiRouter.get('/enrolment/:id', publicRateLimiter, (req, res) => {
-  const enrolment = DB.getEnrolmentById(req.params.id);
+apiRouter.get('/enrolment/:id', publicRateLimiter, async (req, res) => {
+  let enrolment = DB.getEnrolmentById(req.params.id);
+  if (!enrolment && SupabaseService.isAvailable()) {
+    try {
+      enrolment = await SupabaseService.getEnrolmentById(req.params.id);
+    } catch (e) {}
+  }
   if (!enrolment) {
     return res.status(404).json({ error: 'Enrolment record not found' });
   }
@@ -462,7 +477,15 @@ apiRouter.put('/admin/settings', requireAdmin, (req, res) => {
 });
 
 // 9. GET /api/admin/stats
-apiRouter.get('/admin/stats', requireAdmin, (_req, res) => {
+apiRouter.get('/admin/stats', requireAdmin, async (_req, res) => {
+  if (SupabaseService.isAvailable()) {
+    try {
+      const remote = await SupabaseService.getEnrolments();
+      if (Array.isArray(remote)) {
+        DB.setEnrolments(remote);
+      }
+    } catch (e) {}
+  }
   const enrolments = DB.getEnrolments();
   const totalEnrolments = enrolments.length;
   const paidEnrolments = enrolments.filter(e => e.payment.status === 'paid');
@@ -848,12 +871,27 @@ apiRouter.post('/upload', apiRateLimiter, handleSecureUpload);
 apiRouter.get('/files/:filename', publicRateLimiter, handleSecureFileServe);
 
 // 16. Enrolment Status Update Route (Admin)
-apiRouter.patch('/admin/enrolments/:id/status', requireAdmin, validateBody(enrolmentStatusSchema), (req, res) => {
+apiRouter.patch('/admin/enrolments/:id/status', requireAdmin, validateBody(enrolmentStatusSchema), async (req, res) => {
   const { status } = req.body;
   const updated = DB.updateEnrolmentPaymentStatus(req.params.id, status);
   if (!updated) {
     return res.status(404).json({ error: 'Enrolment not found.' });
   }
+
+  if (SupabaseService.isAvailable()) {
+    try {
+      await SupabaseService.updateEnrolment(updated.id, {
+        payment: {
+          status,
+          paidAt: updated.payment.paidAt
+        }
+      });
+      console.log(`[SUPABASE] Updated payment status for ${updated.id} to ${status}`);
+    } catch (sbErr: any) {
+      console.error('[SUPABASE ERROR] updateEnrolment status:', sbErr?.message || sbErr);
+    }
+  }
+
   res.json({ success: true, enrolment: updated });
 });
 
