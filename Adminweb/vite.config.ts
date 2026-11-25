@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig(({ mode }) => {
   return {
-    base: process.env.VITE_BASE_PATH || '/',
+    base: process.env.VITE_BASE_PATH || './',
     root: __dirname,
     publicDir: path.resolve(__dirname, 'public'),
     plugins: [react(), tailwindcss()],
