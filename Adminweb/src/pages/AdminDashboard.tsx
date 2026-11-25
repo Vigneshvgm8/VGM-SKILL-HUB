@@ -35,9 +35,9 @@ import { ASSESSMENT_QUESTIONS } from '../config/assessmentQuestions.js';
 import { COURSES_CATALOG } from '../config/coursesData.js';
 
 const API_BASE = (typeof window !== 'undefined' && 
-  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'adminskillhub.vgmsofttech.com')
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? ''
-    : 'https://skillhub.vgmsofttech.com'
+    : 'https://vgm-skill-hub.onrender.com'
 );
 
 function getAdminApiUrl(path: string): string {
