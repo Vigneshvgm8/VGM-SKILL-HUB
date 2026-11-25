@@ -71,6 +71,16 @@ apiRouter.get('/health/db', publicRateLimiter, async (_req, res) => {
   });
 });
 
+// 2b. GET /api/enrolment-status/:courseId — public endpoint for frontend to check if course is full
+apiRouter.get('/enrolment-status/:courseId', publicRateLimiter, (req, res) => {
+  const courseId = req.params.courseId?.trim();
+  if (!courseId) return res.status(400).json({ error: 'courseId required' });
+  const limit = DB.getEnrolmentLimit();
+  const enrolled = DB.getEnrolmentCountByCourse(courseId);
+  const isFull = enrolled >= limit;
+  res.json({ courseId, limit, enrolled, isFull, spotsLeft: Math.max(0, limit - enrolled) });
+});
+
 // 3. POST /api/validate-coupon (Public Rate Limited + Strict Input Validation)
 apiRouter.post('/validate-coupon', publicRateLimiter, validateBody(validateCouponSchema), (req, res) => {
   const { code, planId, fee } = req.body;
@@ -153,9 +163,26 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
     const finalAmount = Math.max(0, baseAmount - discountAmount);
     const amountInPaise = finalAmount * 100;
 
+    // ── Enrolment Limit Check ───────────────────────────────────────────────
+    // Count active (non-failed) enrolments for this course and enforce the
+    // admin-configurable limit (default 20).
+    const resolvedCourseId = courseId || 'ai-mobile-app';
+    const enrolmentLimit = DB.getEnrolmentLimit();
+    const currentCount = DB.getEnrolmentCountByCourse(resolvedCourseId);
+    if (currentCount >= enrolmentLimit) {
+      return res.status(400).json({
+        success: false,
+        error: `Enrolment for this course is currently full. Maximum ${enrolmentLimit} students have been admitted for this batch. Please contact admissions for the next batch.`,
+        code: 'ENROLMENT_LIMIT_REACHED',
+        limit: enrolmentLimit,
+        enrolled: currentCount
+      });
+    }
+    // ────────────────────────────────────────────────────────────────────────
+
     // Save pending enrolment in database first to get unique ID
     const pendingEnrolment = DB.createEnrolment({
-      courseId: courseId || 'ai-mobile-app',
+      courseId: resolvedCourseId,
       courseTitle: courseTitle || 'AI-Powered Mobile App Development Internship',
       planId: planId || 'explorer',
       planName: resolvedPlanName,
@@ -387,6 +414,24 @@ apiRouter.post('/admin/login', authRateLimiter, validateBody(adminLoginSchema), 
 
   recordAuthFailure(req, 'admin');
   return res.status(401).json({ success: false, error: 'Incorrect administrator password.' });
+});
+
+// 8b. GET /api/admin/settings — returns enrolment limit
+apiRouter.get('/admin/settings', requireAdmin, (_req, res) => {
+  res.json({
+    enrolmentLimit: DB.getEnrolmentLimit()
+  });
+});
+
+// 8c. PUT /api/admin/settings — update enrolment limit (admin only)
+apiRouter.put('/admin/settings', requireAdmin, (req, res) => {
+  const { enrolmentLimit } = req.body;
+  if (typeof enrolmentLimit !== 'number' || enrolmentLimit < 1 || enrolmentLimit > 10000) {
+    return res.status(400).json({ success: false, error: 'enrolmentLimit must be a number between 1 and 10000.' });
+  }
+  DB.setEnrolmentLimit(enrolmentLimit);
+  console.log(`[ADMIN] Enrolment limit updated to ${enrolmentLimit}`);
+  res.json({ success: true, enrolmentLimit: DB.getEnrolmentLimit() });
 });
 
 // 9. GET /api/admin/stats

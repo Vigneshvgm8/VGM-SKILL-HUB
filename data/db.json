@@ -1,5 +1,5 @@
 {
-  "counter": 6,
+  "counter": 7,
   "enrolments": [],
   "coupons": [],
   "processedWebhooks": [],
@@ -410,5 +410,6 @@
         "Priority recommendation for openings at VGM Soft Tech"
       ]
     }
-  }
+  },
+  "enrolmentLimit": 20
 }

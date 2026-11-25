@@ -73,9 +73,13 @@ export const EnrolPage: React.FC = () => {
 
   // Dynamic Course Selection
   const initialCourseSlug = searchParams.get('course') || 'ai-mobile-app';
-  const [coursesList, setCoursesList] = useState<CourseItem[]>(COURSES_CATALOG);
+  const [coursesList, setCoursesList] = useState<CourseItem[]>([]);
   const [selectedCourseSlug, setSelectedCourseSlug] = useState<string>(initialCourseSlug);
   const [livePlans, setLivePlans] = useState<Record<string, PlanInfo>>(PROGRAM_PLANS);
+
+  // Enrolment capacity state
+  const [courseFull, setCourseFull] = useState<boolean>(false);
+  const [enrolmentStatus, setEnrolmentStatus] = useState<{ limit: number; enrolled: number; spotsLeft: number } | null>(null);
 
   useEffect(() => {
     fetch('/api/courses')
@@ -96,6 +100,21 @@ export const EnrolPage: React.FC = () => {
       })
       .catch(() => {});
   }, []);
+
+  // Check enrolment capacity whenever the selected course changes
+  useEffect(() => {
+    if (!selectedCourseSlug) return;
+    fetch(`/api/enrolment-status/${encodeURIComponent(selectedCourseSlug)}`)
+      .then(res => res.json())
+      .then(data => {
+        setCourseFull(data.isFull === true);
+        setEnrolmentStatus({ limit: data.limit, enrolled: data.enrolled, spotsLeft: data.spotsLeft });
+      })
+      .catch(() => {
+        setCourseFull(false);
+        setEnrolmentStatus(null);
+      });
+  }, [selectedCourseSlug]);
 
   const selectedCourse: CourseItem = coursesList.find(c => c.slug === selectedCourseSlug) || coursesList[0] || COURSES_CATALOG[0];
 
@@ -1044,24 +1063,33 @@ export const EnrolPage: React.FC = () => {
                 <span>Back to Student Details</span>
               </button>
 
-              <button
-                type="button"
-                onClick={handleRazorpayPayment}
-                disabled={isProcessingPayment}
-                className="w-full sm:w-auto px-8 py-3.5 bg-[#1E9E54] hover:bg-[#14723B] text-black font-bold rounded-xl shadow-[0_0_25px_rgba(30,158,84,0.4)] transition-all flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
-              >
-                {isProcessingPayment ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Connecting to Razorpay...</span>
-                  </>
-                ) : (
-                  <>
-                    <Lock className="w-4 h-4" />
-                    <span>Pay ₹{finalPrice.toLocaleString('en-IN')} Securely with Razorpay</span>
-                  </>
-                )}
-              </button>
+              {courseFull ? (
+                <div className="flex-1 text-center bg-red-50 border border-red-200 rounded-xl px-6 py-3">
+                  <p className="text-sm font-bold text-red-700">🚫 This batch is full</p>
+                  <p className="text-xs text-red-500 mt-0.5">
+                    Maximum {enrolmentStatus?.limit ?? 20} students admitted. Contact admissions for the next batch.
+                  </p>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleRazorpayPayment}
+                  disabled={isProcessingPayment}
+                  className="w-full sm:w-auto px-8 py-3.5 bg-[#1E9E54] hover:bg-[#14723B] text-black font-bold rounded-xl shadow-[0_0_25px_rgba(30,158,84,0.4)] transition-all flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
+                >
+                  {isProcessingPayment ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Connecting to Razorpay...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="w-4 h-4" />
+                      <span>Pay ₹{finalPrice.toLocaleString('en-IN')} Securely with Razorpay</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
 
             <div className="flex items-center justify-center gap-4 text-xs font-mono text-[#999999] pt-2">

@@ -198,6 +198,7 @@ interface DatabaseSchema {
   certificates: Certificate[];
   plans?: Record<string, PlanItem>;
   processedWebhooks: { id: string; processedAt: string; eventType: string }[];
+  enrolmentLimit: number; // Max students per course batch (default 20, configurable via admin)
 }
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
@@ -334,6 +335,11 @@ function initDB(): DatabaseSchema {
         parsed.plans = INITIAL_PLANS;
         changed = true;
       }
+      // Ensure enrolmentLimit is set (default 20 if not present in old db.json)
+      if (typeof parsed.enrolmentLimit !== 'number') {
+        parsed.enrolmentLimit = 20;
+        changed = true;
+      }
       if (changed) {
         fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), 'utf-8');
       }
@@ -393,7 +399,8 @@ function initDB(): DatabaseSchema {
       }
     ],
     coupons: INITIAL_COUPONS,
-    processedWebhooks: []
+    processedWebhooks: [],
+    enrolmentLimit: 20
   };
 
   fs.writeFileSync(DB_FILE, JSON.stringify(defaultData, null, 2), 'utf-8');
@@ -1203,5 +1210,22 @@ export const DB = {
     db.enrolments[idx].updatedAt = new Date().toISOString();
     saveDB();
     return db.enrolments[idx];
+  },
+
+  // --- Enrolment Limit Settings ---
+  getEnrolmentLimit(): number {
+    return typeof db.enrolmentLimit === 'number' ? db.enrolmentLimit : 20;
+  },
+
+  setEnrolmentLimit(limit: number): void {
+    db.enrolmentLimit = Math.max(1, Math.floor(limit));
+    saveDB();
+  },
+
+  // Count active enrolments for a given courseId (excludes failed payments)
+  getEnrolmentCountByCourse(courseId: string): number {
+    return db.enrolments.filter(
+      e => (e.courseId === courseId) && e.payment.status !== 'failed'
+    ).length;
   }
 };

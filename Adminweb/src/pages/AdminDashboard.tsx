@@ -63,6 +63,11 @@ export const AdminDashboard: React.FC = () => {
   const [projects, setProjects] = useState<any[]>([]);
   const [loadingData, setLoadingData] = useState<boolean>(false);
 
+  // Enrolment Limit Settings
+  const [enrolmentLimit, setEnrolmentLimit] = useState<number>(20);
+  const [enrolmentLimitInput, setEnrolmentLimitInput] = useState<string>('20');
+  const [savingLimit, setSavingLimit] = useState<boolean>(false);
+
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filterCourse, setFilterCourse] = useState<string>('all');
@@ -248,6 +253,15 @@ export const AdminDashboard: React.FC = () => {
       const projRes = await fetch('/api/admin/projects', { headers });
       const projData = await projRes.json();
       setProjects(projData.projects || []);
+
+      // Fetch Enrolment Limit Setting
+      const settingsRes = await fetch('/api/admin/settings', { headers });
+      if (settingsRes.ok) {
+        const settingsData = await settingsRes.json();
+        const lim = settingsData.enrolmentLimit ?? 20;
+        setEnrolmentLimit(lim);
+        setEnrolmentLimitInput(String(lim));
+      }
     } catch (e) {
       console.error('Error fetching admin data:', e);
     } finally {
@@ -358,6 +372,35 @@ export const AdminDashboard: React.FC = () => {
       }
     } catch (err) {
       alert('Network error deleting enrolment record.');
+    }
+  };
+
+  const handleSaveEnrolmentLimit = async () => {
+    if (!token) return;
+    const val = parseInt(enrolmentLimitInput, 10);
+    if (isNaN(val) || val < 1) {
+      alert('Please enter a valid limit (minimum 1).');
+      return;
+    }
+    setSavingLimit(true);
+    try {
+      const res = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ enrolmentLimit: val })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setEnrolmentLimit(data.enrolmentLimit);
+        setEnrolmentLimitInput(String(data.enrolmentLimit));
+        alert(`✅ Enrolment limit updated to ${data.enrolmentLimit} students per batch.`);
+      } else {
+        alert('Failed to update enrolment limit.');
+      }
+    } catch (err) {
+      alert('Network error updating enrolment limit.');
+    } finally {
+      setSavingLimit(false);
     }
   };
 
@@ -1200,6 +1243,43 @@ export const AdminDashboard: React.FC = () => {
       {activeTab === 'enrolments' && (
         <div className="space-y-4">
           
+          {/* ── Enrolment Limit Control Card ── */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="w-9 h-9 rounded-lg bg-amber-100 border border-amber-200 flex items-center justify-center shrink-0">
+                <span className="text-amber-600 text-base font-bold">⚙</span>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-amber-900 uppercase tracking-wide">Batch Enrolment Limit</p>
+                <p className="text-[11px] text-amber-700 mt-0.5">
+                  Max students per course batch. Currently&nbsp;
+                  <span className="font-mono font-bold">{enrolments.filter(e => e.payment.status !== 'failed').length}</span>
+                  &nbsp;/&nbsp;
+                  <span className="font-mono font-bold">{enrolmentLimit}</span>
+                  &nbsp;admitted.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min={1}
+                max={10000}
+                value={enrolmentLimitInput}
+                onChange={(e) => setEnrolmentLimitInput(e.target.value)}
+                className="w-20 px-3 py-2 bg-white border border-amber-300 rounded-lg text-sm font-mono font-bold text-center focus:ring-2 focus:ring-amber-400 focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={handleSaveEnrolmentLimit}
+                disabled={savingLimit}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap"
+              >
+                {savingLimit ? 'Saving…' : 'Save Limit'}
+              </button>
+            </div>
+          </div>
+
           {/* Search & Filter Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
             {/* Search query */}
