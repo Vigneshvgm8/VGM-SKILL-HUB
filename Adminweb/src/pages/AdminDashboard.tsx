@@ -2276,7 +2276,7 @@ export const AdminDashboard: React.FC = () => {
                   <input
                     type="number"
                     required
-                    min={1000}
+                    min={1}
                     value={courseFormData.startingFee}
                     onChange={(e) => setCourseFormData({ ...courseFormData, startingFee: Number(e.target.value) })}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono"
@@ -2767,7 +2767,7 @@ export const AdminDashboard: React.FC = () => {
                   <input
                     type="number"
                     required
-                    min={0}
+                    min={1}
                     value={planFormData.fee}
                     onChange={(e) => setPlanFormData({ ...planFormData, fee: Number(e.target.value) })}
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs font-mono font-bold"
