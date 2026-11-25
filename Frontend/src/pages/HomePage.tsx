@@ -13,6 +13,15 @@ import { CinematicMarquee } from '../components/CinematicMarquee.js';
 import { AnimatedCounter } from '../components/AnimatedCounter.js';
 import { MotionGridCanvas } from '../components/MotionGridCanvas.js';
 import {
+  LusionCrosshairRow,
+  LusionFeaturedCard,
+  LusionMaskLine,
+  LusionRevealBlock,
+  LusionMagnetic,
+  LusionDivider,
+  LUSION_EASE,
+} from '../components/LusionMotionPrimitives.js';
+import {
   ArrowRight,
   Check,
   Cpu,
@@ -478,24 +487,32 @@ export async function createStudentEnrollment(req: Request, res: Response) {
           </div>
 
           {/* Academic Accreditations & Industry Standards */}
-          <div className="pt-6 border-t border-black/[0.08] flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-[#666666] font-mono uppercase tracking-wider">
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs">
-              <Shield className="w-4 h-4 text-[#1E9E54]" />
-              <span>VGM Soft Tech Enterprise Division</span>
-            </div>
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs">
-              <Award className="w-4 h-4 text-[#1E9E54]" />
-              <span>ISO 9001:2015 Certified Curriculum</span>
-            </div>
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs">
-              <GraduationCap className="w-4 h-4 text-[#1E9E54]" />
-              <span>Official Stamped Relieving Letter</span>
-            </div>
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs">
-              <MapPin className="w-4 h-4 text-[#1E9E54]" />
-              <span>Saibaba Colony Tech Hub, Coimbatore</span>
-            </div>
+          <div className="pt-6 border-t border-black/[0.08] flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs text-[#666666] font-mono uppercase tracking-wider">
+            {[
+              { icon: Shield, text: 'VGM Soft Tech Enterprise Division' },
+              { icon: Award, text: 'ISO 9001:2015 Certified Curriculum' },
+              { icon: GraduationCap, text: 'Official Stamped Relieving Letter' },
+              { icon: MapPin, text: 'Saibaba Colony Tech Hub, Coimbatore' },
+            ].map((acc, idx) => {
+              const Icon = acc.icon;
+              return (
+                <motion.div
+                  key={acc.text}
+                  initial={{ opacity: 0, y: 16, scale: 0.94 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  viewport={{ once: false, amount: 0.2 }}
+                  transition={{ duration: 0.55, delay: idx * 0.07, ease: LUSION_EASE }}
+                  whileHover={{ y: -3, scale: 1.03 }}
+                  className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white border border-black/[0.06] hover:border-[#1E9E54]/40 shadow-2xs transition-colors"
+                >
+                  <Icon className="w-4 h-4 text-[#1E9E54]" />
+                  <span>{acc.text}</span>
+                </motion.div>
+              );
+            })}
           </div>
+
+          <LusionCrosshairRow count={5} label="01 // LIVE TELEMETRY" className="pt-4" />
 
         </div>
       </section>
@@ -509,66 +526,77 @@ export async function createStudentEnrollment(req: Request, res: Response) {
           {/* Section Header */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <div className="lg:col-span-5 space-y-3">
-              <div className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#1E9E54] animate-pulse" />
-                <span>[02 // REAL-WORLD INTERNSHIP DYNAMICS]</span>
-              </div>
+              <LusionRevealBlock variant="left">
+                <div className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#1E9E54] animate-pulse" />
+                  <span>[02 // REAL-WORLD INTERNSHIP DYNAMICS]</span>
+                </div>
+              </LusionRevealBlock>
               
               <CinematicTextReveal
                 text="Not Just Classes."
                 tag="h2"
                 className="text-4xl sm:text-6xl font-black text-[#111111] leading-[0.95] tracking-[-0.04em] font-heading"
               />
-              <h2 className="text-4xl sm:text-6xl font-black text-gradient-green leading-[0.95] tracking-[-0.04em] font-heading">
-                A Working Software House.
-              </h2>
+              <CinematicTextReveal
+                text="A Working Software House."
+                tag="h2"
+                delay={0.12}
+                className="text-4xl sm:text-6xl font-black text-gradient-green leading-[0.95] tracking-[-0.04em] font-heading"
+              />
             </div>
 
             <div className="lg:col-span-7 space-y-6 lg:pl-6">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.8 }}
-                className="text-base sm:text-xl text-[#555555] font-light leading-relaxed"
-              >
-                Traditional training institutes teach outdated syntax on dummy calculator apps. At VGM Skill Hub, you are onboarded as an engineering intern inside an active IT product firm in Coimbatore. You write production pull requests, handle Git reviews, benchmark response times, and ship code directly to live clients.
-              </motion.p>
+              <LusionMaskLine delay={0.1}>
+                <p className="text-base sm:text-xl text-[#555555] font-light leading-relaxed">
+                  Traditional training institutes teach outdated syntax on dummy calculator apps. At VGM Skill Hub, you are onboarded as an engineering intern inside an active IT product firm in Coimbatore. You write production pull requests, handle Git reviews, benchmark response times, and ship code directly to live clients.
+                </p>
+              </LusionMaskLine>
 
-              <div className="flex flex-wrap items-center gap-4">
-                <Link to="/courses" className="lusion-cta-btn">
-                  <span className="cta-dot" />
-                  <span className="cta-text">Explore All 6 Internship Tracks</span>
-                  <span className="cta-arrow">
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                </Link>
+              <LusionRevealBlock variant="rise" delay={0.18} className="flex flex-wrap items-center gap-4">
+                <LusionMagnetic strength={8}>
+                  <Link to="/courses" className="lusion-cta-btn">
+                    <span className="cta-dot" />
+                    <span className="cta-text">Explore All 6 Internship Tracks</span>
+                    <span className="cta-arrow">
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </Link>
+                </LusionMagnetic>
 
-                <Link
-                  to="/student-portal"
-                  className="px-5 py-3 rounded-full bg-white hover:bg-slate-50 border border-black/10 text-xs font-mono font-bold uppercase tracking-wider text-[#111111] flex items-center gap-2 transition-all shadow-2xs"
-                >
-                  <Award className="w-4 h-4 text-[#1E9E54]" />
-                  <span>Verify Certificate &amp; Enrollment</span>
-                </Link>
-              </div>
+                <LusionMagnetic strength={7}>
+                  <Link
+                    to="/student-portal"
+                    className="px-5 py-3 rounded-full bg-white hover:bg-slate-50 border border-black/10 hover:border-[#1E9E54]/40 text-xs font-mono font-bold uppercase tracking-wider text-[#111111] flex items-center gap-2 transition-all shadow-2xs"
+                  >
+                    <Award className="w-4 h-4 text-[#1E9E54]" />
+                    <span>Verify Certificate &amp; Enrollment</span>
+                  </Link>
+                </LusionMagnetic>
+              </LusionRevealBlock>
             </div>
           </div>
 
           {/* Interactive Daily Internship Routine Simulator */}
-          <div className="rounded-[32px] border border-black/[0.08] bg-[#F8FAFC]/90 backdrop-blur-2xl p-6 sm:p-10 shadow-xs space-y-8">
+          <LusionRevealBlock variant="scale" className="rounded-[32px] border border-black/[0.08] bg-[#F8FAFC]/90 backdrop-blur-2xl p-6 sm:p-10 shadow-xs space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-black/[0.08]">
               <div>
-                <span className="text-xs font-mono font-bold uppercase text-[#1E9E54] tracking-widest block">
-                  A DAY IN THE LIFE OF AN INTERN
-                </span>
-                <h3 className="text-2xl font-black text-[#111111] font-heading mt-1">
-                  Daily Engineering Sprint Cadence
-                </h3>
+                <LusionMaskLine>
+                  <span className="text-xs font-mono font-bold uppercase text-[#1E9E54] tracking-widest block">
+                    A DAY IN THE LIFE OF AN INTERN
+                  </span>
+                </LusionMaskLine>
+                <CinematicTextReveal
+                  text="Daily Engineering Sprint Cadence"
+                  tag="h3"
+                  className="text-2xl font-black text-[#111111] font-heading mt-1"
+                />
               </div>
-              <p className="text-xs text-[#666666] font-mono max-w-sm">
-                Click any phase below to inspect the real developer routine practiced inside our developer pods.
-              </p>
+              <LusionMaskLine delay={0.1}>
+                <p className="text-xs text-[#666666] font-mono max-w-sm">
+                  Click any phase below to inspect the real developer routine practiced inside our developer pods.
+                </p>
+              </LusionMaskLine>
             </div>
 
             {/* Interactive Timeline Tabs */}
@@ -577,11 +605,17 @@ export async function createStudentEnrollment(req: Request, res: Response) {
                 const isSelected = activeRoutineIndex === idx;
                 const IconComponent = item.icon;
                 return (
-                  <button
+                  <motion.button
                     key={idx}
                     type="button"
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: false, amount: 0.2 }}
+                    transition={{ duration: 0.5, delay: idx * 0.06, ease: LUSION_EASE }}
+                    whileHover={{ y: -3, scale: 1.015 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setActiveRoutineIndex(idx)}
-                    className={`p-4 rounded-2xl text-left border transition-all cursor-pointer relative overflow-hidden ${
+                    className={`p-4 rounded-2xl text-left border transition-colors cursor-pointer relative overflow-hidden ${
                       isSelected
                         ? 'bg-white border-[#1E9E54] shadow-md ring-1 ring-[#1E9E54]/20'
                         : 'bg-white/60 border-black/[0.06] hover:bg-white hover:border-black/20'
@@ -592,7 +626,7 @@ export async function createStudentEnrollment(req: Request, res: Response) {
                         {item.time}
                       </span>
                       <IconComponent
-                        className={`w-4 h-4 ${isSelected ? 'text-[#1E9E54]' : 'text-slate-400'}`}
+                        className={`w-4 h-4 transition-transform duration-300 ${isSelected ? 'text-[#1E9E54] scale-110' : 'text-slate-400'}`}
                       />
                     </div>
                     <p className={`text-xs font-bold leading-snug ${isSelected ? 'text-[#111111]' : 'text-slate-600'}`}>
@@ -603,68 +637,76 @@ export async function createStudentEnrollment(req: Request, res: Response) {
                     }`}>
                       {item.phase}
                     </span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
 
             {/* Selected Phase Detail Showcase */}
-            <motion.div
-              key={activeRoutineIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35 }}
-              className="p-6 sm:p-8 rounded-2xl bg-white border border-black/[0.08] shadow-xs grid grid-cols-1 md:grid-cols-12 gap-6 items-center"
-            >
-              <div className="md:col-span-8 space-y-3">
-                <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-emerald-50 text-[#14723B] border border-emerald-200">
-                    {INTERNSHIP_ROUTINE[activeRoutineIndex].tag}
-                  </span>
-                  <span className="text-xs font-mono text-slate-400">
-                    Scheduled: {INTERNSHIP_ROUTINE[activeRoutineIndex].time} IST
-                  </span>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeRoutineIndex}
+                initial={{ opacity: 0, y: 14, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                transition={{ duration: 0.38, ease: LUSION_EASE }}
+                className="p-6 sm:p-8 rounded-2xl bg-white border border-black/[0.08] shadow-xs grid grid-cols-1 md:grid-cols-12 gap-6 items-center"
+              >
+                <div className="md:col-span-8 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <span className="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-emerald-50 text-[#14723B] border border-emerald-200">
+                      {INTERNSHIP_ROUTINE[activeRoutineIndex].tag}
+                    </span>
+                    <span className="text-xs font-mono text-slate-400">
+                      Scheduled: {INTERNSHIP_ROUTINE[activeRoutineIndex].time} IST
+                    </span>
+                  </div>
+                  <h4 className="text-2xl font-black font-heading text-[#111111]">
+                    {INTERNSHIP_ROUTINE[activeRoutineIndex].title}
+                  </h4>
+                  <p className="text-sm text-[#555555] leading-relaxed">
+                    {INTERNSHIP_ROUTINE[activeRoutineIndex].desc}
+                  </p>
                 </div>
-                <h4 className="text-2xl font-black font-heading text-[#111111]">
-                  {INTERNSHIP_ROUTINE[activeRoutineIndex].title}
-                </h4>
-                <p className="text-sm text-[#555555] leading-relaxed">
-                  {INTERNSHIP_ROUTINE[activeRoutineIndex].desc}
-                </p>
-              </div>
 
-              <div className="md:col-span-4 p-5 rounded-2xl bg-[#F8FAFC] border border-black/[0.06] space-y-2">
-                <span className="text-[10px] font-mono uppercase font-bold text-[#1E9E54] block tracking-wider">
-                  TICKET DELIVERABLE
-                </span>
-                <p className="text-xs font-bold font-mono text-[#111111] leading-relaxed">
-                  {INTERNSHIP_ROUTINE[activeRoutineIndex].deliverable}
-                </p>
-                <div className="pt-2 flex items-center gap-2 text-[11px] text-[#1E9E54] font-semibold">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Verified in Student Portal</span>
+                <div className="md:col-span-4 p-5 rounded-2xl bg-[#F8FAFC] border border-black/[0.06] space-y-2">
+                  <span className="text-[10px] font-mono uppercase font-bold text-[#1E9E54] block tracking-wider">
+                    TICKET DELIVERABLE
+                  </span>
+                  <p className="text-xs font-bold font-mono text-[#111111] leading-relaxed">
+                    {INTERNSHIP_ROUTINE[activeRoutineIndex].deliverable}
+                  </p>
+                  <div className="pt-2 flex items-center gap-2 text-[11px] text-[#1E9E54] font-semibold">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Verified in Student Portal</span>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </AnimatePresence>
 
-          </div>
+          </LusionRevealBlock>
 
         </div>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* 4. SECTION: PRODUCTION TRACKS SHOWCASE (#home-featured)      */}
+      {/*    (LUSION.CO FEATURED WORK SCROLL & KINETIC CARD ENGINE)   */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section id="home-featured" className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-12 bg-[#F8FAFC]/95 backdrop-blur-2xl border-y border-black/[0.08]">
-        <div className="max-w-7xl mx-auto space-y-16">
+      <section id="home-featured" className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-12 bg-[#F8FAFC]/95 backdrop-blur-2xl border-y border-black/[0.08] overflow-hidden">
+        <div className="max-w-7xl mx-auto space-y-14">
+
+          <LusionCrosshairRow count={5} label="03 // FEATURED ENGINEERING WORK" />
 
           {/* Section Header */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-black/[0.08]">
             <div className="space-y-3">
-              <div className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#1E9E54]" />
-                <span>[03 // VERIFIED CURRICULUM TRACKS]</span>
-              </div>
+              <LusionRevealBlock variant="left">
+                <div className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#1E9E54] animate-pulse" />
+                  <span>[03 // VERIFIED CURRICULUM TRACKS]</span>
+                </div>
+              </LusionRevealBlock>
               <CinematicTextReveal
                 text="The 2026 Engineering Tracks"
                 tag="h2"
@@ -672,178 +714,109 @@ export async function createStudentEnrollment(req: Request, res: Response) {
               />
             </div>
 
-            <p className="lg:max-w-md font-mono text-xs text-[#666666] uppercase tracking-widest leading-relaxed">
-              Every course is built around live client codebases, 1-on-1 code reviews, and verifiable experience letters for your resume.
-            </p>
+            <div className="lg:max-w-md space-y-1 font-mono text-xs text-[#666666] uppercase tracking-widest leading-relaxed">
+              <LusionMaskLine delay={0.05}>
+                <span>Every course is built around live client codebases,</span>
+              </LusionMaskLine>
+              <LusionMaskLine delay={0.12}>
+                <span>1-on-1 code reviews, and verifiable experience</span>
+              </LusionMaskLine>
+              <LusionMaskLine delay={0.18}>
+                <span>letters for your resume.</span>
+              </LusionMaskLine>
+            </div>
           </div>
 
-          {/* Filter Bar */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-2">
+          {/* Filter Bar with LayoutId Spring Indicator */}
+          <LusionRevealBlock variant="rise" className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-2">
             
             {/* Sort Switcher */}
             <div className="inline-flex items-center p-1 rounded-full border border-black/10 bg-white shadow-xs shrink-0">
-              {(['Featured', 'Popular', 'Recent'] as const).map((sort) => (
-                <button
-                  key={sort}
-                  type="button"
-                  onClick={() => setActiveSort(sort)}
-                  className={`px-4 py-1.5 text-xs font-mono uppercase tracking-wider rounded-full transition-all cursor-pointer ${
-                    activeSort === sort
-                      ? 'bg-[#111111] text-white font-bold shadow-xs'
-                      : 'text-[#666666] hover:text-[#111111]'
-                  }`}
-                >
-                  {sort}
-                </button>
-              ))}
+              {(['Featured', 'Popular', 'Recent'] as const).map((sort) => {
+                const isSortActive = activeSort === sort;
+                return (
+                  <button
+                    key={sort}
+                    type="button"
+                    onClick={() => setActiveSort(sort)}
+                    className={`relative px-4 py-1.5 text-xs font-mono uppercase tracking-wider rounded-full transition-colors cursor-pointer z-10 ${
+                      isSortActive ? 'text-white font-bold' : 'text-[#666666] hover:text-[#111111]'
+                    }`}
+                  >
+                    {isSortActive && (
+                      <motion.span
+                        layoutId="home-sort-pill"
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                        className="absolute inset-0 bg-[#111111] rounded-full -z-10 shadow-xs"
+                      />
+                    )}
+                    {sort}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Category Filter Chips */}
             <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1" style={{ scrollbarWidth: 'none' }}>
-              {['All', 'Mobile Development', 'Full-Stack Web', 'AI & Data Science', 'Cloud & DevOps', 'Cybersecurity', 'UI/UX Design'].map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setFeaturedCategory(cat)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-mono uppercase tracking-wider transition-all whitespace-nowrap cursor-pointer ${
-                    featuredCategory === cat
-                      ? 'bg-[#1E9E54] text-white font-bold shadow-xs'
-                      : 'bg-white border border-black/10 text-[#666666] hover:text-[#111111] hover:border-black/30'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* 2-Column Asymmetric Track Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16 items-start pt-6">
-            {filteredCourses.map((course, idx) => {
-              const isOffset = idx % 2 === 1;
-              return (
-                <motion.div
-                  key={course.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: false, amount: 0.15 }}
-                  transition={{ duration: 0.7, delay: idx * 0.08 }}
-                  className={`group relative ${isOffset ? 'md:mt-16 lg:mt-24' : ''}`}
-                >
-                  <div className="rounded-[28px] border border-black/[0.08] hover:border-emerald-500/40 p-6 sm:p-8 bg-white hover:shadow-[0_24px_60px_-15px_rgba(0,0,0,0.08)] transition-all flex flex-col justify-between">
-                    
-                    {/* Media Showcase */}
-                    <Link
-                      to={`/courses/${course.slug}`}
-                      className="block relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-[#EAEFF2] border border-black/5 mb-6 group-hover:border-[#1E9E54]/30 transition-all"
-                    >
-                      <img
-                        src={course.thumbnail || `/assets/courses/${course.slug}.svg`}
-                        alt={course.title}
-                        className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 ease-out"
-                        loading="lazy"
+              {['All', 'Mobile Development', 'Full-Stack Web', 'AI & Data Science', 'Cloud & DevOps', 'Cybersecurity', 'UI/UX Design'].map((cat) => {
+                const isCatActive = featuredCategory === cat;
+                return (
+                  <motion.button
+                    key={cat}
+                    type="button"
+                    whileHover={{ y: -2, scale: 1.03 }}
+                    whileTap={{ scale: 0.96 }}
+                    onClick={() => setFeaturedCategory(cat)}
+                    className={`relative px-4 py-1.5 rounded-full text-xs font-mono uppercase tracking-wider transition-colors whitespace-nowrap cursor-pointer ${
+                      isCatActive
+                        ? 'text-white font-bold shadow-xs'
+                        : 'bg-white border border-black/10 text-[#666666] hover:text-[#111111] hover:border-black/30'
+                    }`}
+                  >
+                    {isCatActive && (
+                      <motion.span
+                        layoutId="home-cat-pill"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                        className="absolute inset-0 bg-[#1E9E54] rounded-full -z-10"
                       />
+                    )}
+                    {cat}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </LusionRevealBlock>
 
-                      {/* Floating Badges */}
-                      <div className="absolute top-4 left-4 flex items-center gap-2">
-                        <span className="font-mono text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full bg-white/95 backdrop-blur-md border border-black/10 text-[#14723B]">
-                          {course.badge}
-                        </span>
-                      </div>
-
-                      <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md border border-black/10 font-mono text-xs font-bold text-[#D97706]">
-                        <Star className="w-3.5 h-3.5 fill-[#D97706] text-[#D97706]" />
-                        <span>{course.rating || 4.9}</span>
-                      </div>
-
-                      {/* Bottom Overlay Bar */}
-                      <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex items-center justify-between text-xs font-mono text-white">
-                        <span className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-[#43C170]" />
-                          {course.duration}
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <Award className="w-3.5 h-3.5 text-[#43C170]" />
-                          {course.liveProjectsCount || 3} Client Projects
-                        </span>
-                      </div>
-                    </Link>
-
-                    {/* Metadata Header */}
-                    <div className="font-mono text-xs text-[#1E9E54] uppercase tracking-wider font-bold mb-2">
-                      {course.category} • {course.curriculum?.length || 4} MODULES • LIVE REPO
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="text-2xl sm:text-3xl font-black text-[#111111] group-hover:text-[#1E9E54] transition-colors leading-tight font-heading mb-3">
-                      <Link to={`/courses/${course.slug}`}>
-                        {course.title}
-                      </Link>
-                    </h3>
-
-                    {/* Description */}
-                    <p className="text-xs sm:text-sm text-[#666666] line-clamp-2 mb-4 leading-relaxed font-light">
-                      {course.shortDescription}
-                    </p>
-
-                    {/* Tech Stack Chips */}
-                    <div className="flex flex-wrap gap-1.5 mb-6">
-                      {(course.tools || []).slice(0, 4).map((tool, tIdx) => (
-                        <span
-                          key={tIdx}
-                          className="px-2.5 py-0.5 rounded-md text-[11px] font-mono bg-slate-100 text-slate-700 border border-slate-200"
-                        >
-                          {tool}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Card Footer: Pricing & CTAs */}
-                    <div className="pt-4 border-t border-black/[0.06] flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] font-mono uppercase text-[#888888] block">Tuition Starts At</span>
-                        <span className="text-xl font-black text-[#111111] font-mono font-heading">
-                          {course.startingFeeFormatted || `₹${(course.startingFee || 5999).toLocaleString('en-IN')}`}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSyllabusCourseSlug(course.slug);
-                            setIsSyllabusModalOpen(true);
-                          }}
-                          className="px-3.5 py-2 rounded-full text-xs font-mono uppercase tracking-wider text-[#555555] hover:text-[#111111] border border-black/10 hover:border-black/30 transition-all bg-white cursor-pointer"
-                        >
-                          Syllabus
-                        </button>
-                        <Link
-                          to={`/enrol?course=${course.slug}`}
-                          className="px-4 py-2 rounded-full text-xs font-bold text-white bg-[#111111] hover:bg-[#1E9E54] transition-all flex items-center gap-1.5 shadow-xs"
-                        >
-                          <span>Enrol</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </Link>
-                      </div>
-                    </div>
-
-                  </div>
-                </motion.div>
-              );
-            })}
+          {/* 2-Column Asymmetric Lusion Featured Work Scroll Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20 items-start pt-6 pb-8">
+            {filteredCourses.map((course, idx) => (
+              <LusionFeaturedCard
+                key={course.id}
+                course={course}
+                index={idx}
+                isOffset={idx % 2 === 1}
+                onOpenSyllabus={(slug) => {
+                  setSyllabusCourseSlug(slug);
+                  setIsSyllabusModalOpen(true);
+                }}
+              />
+            ))}
           </div>
 
-          {/* Bottom All Tracks CTA */}
+          {/* Bottom All Tracks Magnetic Lusion CTA */}
           <div className="pt-8 text-center">
-            <Link to="/courses" className="lusion-cta-btn">
-              <span className="cta-dot" />
-              <span className="cta-text">Enter Interactive 3D Poster Shelf ({courses.length} Tracks)</span>
-              <span className="cta-arrow">
-                <ArrowRight className="w-4 h-4" />
-              </span>
-            </Link>
+            <LusionMagnetic strength={10}>
+              <Link to="/courses" className="lusion-cta-btn">
+                <span className="cta-dot" />
+                <span className="cta-text">Enter Interactive 3D Poster Shelf ({courses.length} Tracks)</span>
+                <span className="cta-arrow">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
+            </LusionMagnetic>
           </div>
+
+          <LusionCrosshairRow count={5} />
 
         </div>
       </section>
@@ -854,10 +827,12 @@ export async function createStudentEnrollment(req: Request, res: Response) {
       <section id="home-goal" className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto space-y-16">
 
-          <div className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#1E9E54]" />
-            <span>[04 // THE ENGINEERING MANIFESTO]</span>
-          </div>
+          <LusionRevealBlock variant="left">
+            <div className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#1E9E54] animate-pulse" />
+              <span>[04 // THE ENGINEERING MANIFESTO]</span>
+            </div>
+          </LusionRevealBlock>
 
           <CinematicTextReveal
             text="Where College Knowledge Becomes Production Mastery"
@@ -866,49 +841,45 @@ export async function createStudentEnrollment(req: Request, res: Response) {
           />
 
           {/* Comparison Table: Rote Classroom vs VGM Soft Tech Internship */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 0.8 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Outdated Traditional Approach */}
-            <div className="p-8 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500">
+            <LusionRevealBlock variant="left" className="p-8 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 block">
                 TRADITIONAL TRAINING INSTITUTES
               </span>
               <h4 className="text-xl font-bold font-heading text-slate-700">
                 Outdated Syllabi &amp; Dummy Exercises
               </h4>
               <ul className="space-y-3 text-sm text-slate-600 font-light">
-                <li className="flex items-start gap-2">
-                  <span className="text-red-500 font-bold shrink-0">✕</span>
-                  <span>Memorizing textbook theory without writing commercial software</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-red-500 font-bold shrink-0">✕</span>
-                  <span>Toy projects (to-do lists, calculators) that fail tech interviews</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-red-500 font-bold shrink-0">✕</span>
-                  <span>Zero code review; nobody inspects your architecture or Git commits</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-red-500 font-bold shrink-0">✕</span>
-                  <span>Generic participation paper with no industry validation</span>
-                </li>
+                {[
+                  'Memorizing textbook theory without writing commercial software',
+                  'Toy projects (to-do lists, calculators) that fail tech interviews',
+                  'Zero code review; nobody inspects your architecture or Git commits',
+                  'Generic participation paper with no industry validation',
+                ].map((pt, idx) => (
+                  <motion.li
+                    key={idx}
+                    initial={{ opacity: 0, x: -16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: false, amount: 0.2 }}
+                    transition={{ duration: 0.5, delay: idx * 0.08, ease: LUSION_EASE }}
+                    className="flex items-start gap-2"
+                  >
+                    <span className="text-red-500 font-bold shrink-0">✕</span>
+                    <span>{pt}</span>
+                  </motion.li>
+                ))}
               </ul>
-            </div>
+            </LusionRevealBlock>
 
             {/* VGM Soft Tech Software House Approach */}
-            <div className="p-8 rounded-3xl bg-white border-2 border-emerald-500/30 shadow-[0_20px_50px_-12px_rgba(30,158,84,0.12)] space-y-4 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+            <LusionRevealBlock variant="right" delay={0.08} className="p-8 rounded-3xl bg-white border-2 border-emerald-500/30 shadow-[0_20px_50px_-12px_rgba(30,158,84,0.12)] space-y-4 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none animate-orb" />
               <div className="flex items-center justify-between">
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#14723B]">
                   VGM SOFT TECH INTERNSHIP
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-50 text-[#1E9E54] border border-emerald-200">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-50 text-[#1E9E54] border border-emerald-200 animate-pulse">
                   Active Pods
                 </span>
               </div>
@@ -916,25 +887,27 @@ export async function createStudentEnrollment(req: Request, res: Response) {
                 Live Client Codebases &amp; Stamped Experience
               </h4>
               <ul className="space-y-3 text-sm text-[#444444] font-medium">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#1E9E54] shrink-0 mt-0.5" />
-                  <span>Pull Requests merged directly into production VGM client repositories</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#1E9E54] shrink-0 mt-0.5" />
-                  <span>Real LLM integrations: Gemini 1.5 streaming, vector search &amp; APIs</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#1E9E54] shrink-0 mt-0.5" />
-                  <span>1-on-1 code reviews with Senior Architects on every single sprint</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-[#1E9E54] shrink-0 mt-0.5" />
-                  <span>Official Stamped Relieving Experience Letter &amp; Verifiable Credential</span>
-                </li>
+                {[
+                  'Pull Requests merged directly into production VGM client repositories',
+                  'Real LLM integrations: Gemini 1.5 streaming, vector search & APIs',
+                  '1-on-1 code reviews with Senior Architects on every single sprint',
+                  'Official Stamped Relieving Experience Letter & Verifiable Credential',
+                ].map((pt, idx) => (
+                  <motion.li
+                    key={idx}
+                    initial={{ opacity: 0, x: 16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: false, amount: 0.2 }}
+                    transition={{ duration: 0.5, delay: 0.08 + idx * 0.08, ease: LUSION_EASE }}
+                    className="flex items-start gap-2"
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-[#1E9E54] shrink-0 mt-0.5" />
+                    <span>{pt}</span>
+                  </motion.li>
+                ))}
               </ul>
-            </div>
-          </motion.div>
+            </LusionRevealBlock>
+          </div>
 
         </div>
       </section>
@@ -1045,15 +1018,17 @@ export async function createStudentEnrollment(req: Request, res: Response) {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* 7. SECTION: INTERACTIVE IDE & SPRINT TEST SIMULATOR          */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-12">
+      <section className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-12 overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
           {/* Left Context */}
           <div className="lg:col-span-5 space-y-6">
-            <span className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#1E9E54]" />
-              <span>[06 // INTERACTIVE LAB WORKSTATION]</span>
-            </span>
+            <LusionRevealBlock variant="left">
+              <span className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#1E9E54] animate-pulse" />
+                <span>[06 // INTERACTIVE LAB WORKSTATION]</span>
+              </span>
+            </LusionRevealBlock>
 
             <CinematicTextReveal
               text="Write Production Code, Not Toy Scripts"
@@ -1061,51 +1036,62 @@ export async function createStudentEnrollment(req: Request, res: Response) {
               className="text-3xl sm:text-5xl font-black text-[#111111] tracking-tight font-heading leading-tight"
             />
 
-            <p className="text-sm sm:text-base text-[#555555] leading-relaxed font-light">
-              Explore the actual source code written inside our developer pods. Switch between Flutter AI streaming, Git agile sprint workflows, and backend API controllers — and click the live test runner to simulate a sprint validation.
-            </p>
+            <LusionMaskLine delay={0.1}>
+              <p className="text-sm sm:text-base text-[#555555] leading-relaxed font-light">
+                Explore the actual source code written inside our developer pods. Switch between Flutter AI streaming, Git agile sprint workflows, and backend API controllers — and click the live test runner to simulate a sprint validation.
+              </p>
+            </LusionMaskLine>
 
             <div className="space-y-3 font-mono text-xs text-[#444444]">
-              <div className="flex items-center gap-3">
-                <Check className="w-4 h-4 text-[#1E9E54]" />
-                <span>Pull Request Standards &amp; Mandatory Code Reviews</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-4 h-4 text-[#1E9E54]" />
-                <span>Google Gemini 1.5 Streaming &amp; OpenAI API Integrations</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <Check className="w-4 h-4 text-[#1E9E54]" />
-                <span>Live PostgreSQL &amp; Supabase Cloud Database Workflows</span>
-              </div>
+              {[
+                'Pull Request Standards & Mandatory Code Reviews',
+                'Google Gemini 1.5 Streaming & OpenAI API Integrations',
+                'Live PostgreSQL & Supabase Cloud Database Workflows',
+              ].map((line, i) => (
+                <motion.div
+                  key={line}
+                  initial={{ opacity: 0, x: -18 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: false, amount: 0.2 }}
+                  transition={{ duration: 0.5, delay: i * 0.08, ease: LUSION_EASE }}
+                  className="flex items-center gap-3"
+                >
+                  <Check className="w-4 h-4 text-[#1E9E54] shrink-0" />
+                  <span>{line}</span>
+                </motion.div>
+              ))}
             </div>
 
             <div className="pt-2 flex items-center gap-4">
-              <button
-                type="button"
-                onClick={handleRunSprintTests}
-                disabled={testState === 'running'}
-                className="px-6 py-3.5 rounded-full bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-sm cursor-pointer disabled:opacity-50"
-              >
-                <Play className="w-4 h-4 fill-white" />
-                <span>{testState === 'running' ? 'Running Automated Tests...' : '▶ Run Sprint Tests'}</span>
-              </button>
-
-              {testState !== 'idle' && (
+              <LusionMagnetic strength={8}>
                 <button
                   type="button"
-                  onClick={handleResetTest}
-                  className="p-3 rounded-full border border-slate-300 text-slate-600 hover:text-slate-900 transition-colors"
-                  title="Reset test output"
+                  onClick={handleRunSprintTests}
+                  disabled={testState === 'running'}
+                  className="px-6 py-3.5 rounded-full bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-sm cursor-pointer disabled:opacity-50"
                 >
-                  <RotateCcw className="w-4 h-4" />
+                  <Play className="w-4 h-4 fill-white" />
+                  <span>{testState === 'running' ? 'Running Automated Tests...' : '▶ Run Sprint Tests'}</span>
                 </button>
+              </LusionMagnetic>
+
+              {testState !== 'idle' && (
+                <LusionMagnetic strength={6}>
+                  <button
+                    type="button"
+                    onClick={handleResetTest}
+                    className="p-3 rounded-full border border-slate-300 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                    title="Reset test output"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                </LusionMagnetic>
               )}
             </div>
           </div>
 
           {/* Right Interactive Developer Studio IDE */}
-          <div className="lg:col-span-7">
+          <LusionRevealBlock variant="scale" className="lg:col-span-7">
             <div className="rounded-3xl border border-slate-800 bg-[#0F172A] text-white overflow-hidden shadow-2xl">
               
               {/* Window Header */}
@@ -1121,54 +1107,59 @@ export async function createStudentEnrollment(req: Request, res: Response) {
 
                 {/* Source File Tabs */}
                 <div className="flex gap-1.5 overflow-x-auto">
-                  <button
-                    type="button"
-                    onClick={() => setActiveCodeTab('flutter')}
-                    className={`px-3 py-1 text-xs rounded-lg font-mono transition-colors cursor-pointer ${
-                      activeCodeTab === 'flutter'
-                        ? 'bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    gemini_service.dart
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveCodeTab('git')}
-                    className={`px-3 py-1 text-xs rounded-lg font-mono transition-colors cursor-pointer ${
-                      activeCodeTab === 'git'
-                        ? 'bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    pr_workflow.sh
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveCodeTab('backend')}
-                    className={`px-3 py-1 text-xs rounded-lg font-mono transition-colors cursor-pointer ${
-                      activeCodeTab === 'backend'
-                        ? 'bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    enrollment.ts
-                  </button>
+                  {([
+                    { id: 'flutter', label: 'gemini_service.dart' },
+                    { id: 'git', label: 'pr_workflow.sh' },
+                    { id: 'backend', label: 'enrollment.ts' },
+                  ] as const).map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setActiveCodeTab(tab.id)}
+                      className={`relative px-3 py-1 text-xs rounded-lg font-mono transition-colors cursor-pointer ${
+                        activeCodeTab === tab.id
+                          ? 'text-emerald-400 font-bold'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {activeCodeTab === tab.id && (
+                        <motion.span
+                          layoutId="ide-tab-pill"
+                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                          className="absolute inset-0 bg-emerald-500/20 border border-emerald-500/30 rounded-lg"
+                        />
+                      )}
+                      <span className="relative z-10">{tab.label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
 
               {/* Code Display Area */}
-              <pre className="p-6 text-xs font-mono text-slate-200 overflow-x-auto leading-relaxed max-h-[340px]">
-                <code>
-                  {activeCodeTab === 'flutter' && flutterCode}
-                  {activeCodeTab === 'git' && gitCode}
-                  {activeCodeTab === 'backend' && backendCode}
-                </code>
-              </pre>
+              <AnimatePresence mode="wait">
+                <motion.pre
+                  key={activeCodeTab}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25, ease: LUSION_EASE }}
+                  className="p-6 text-xs font-mono text-slate-200 overflow-x-auto leading-relaxed max-h-[340px]"
+                >
+                  <code>
+                    {activeCodeTab === 'flutter' && flutterCode}
+                    {activeCodeTab === 'git' && gitCode}
+                    {activeCodeTab === 'backend' && backendCode}
+                  </code>
+                </motion.pre>
+              </AnimatePresence>
 
               {/* Terminal Test Runner Output Drawer */}
               {testLogs.length > 0 && (
-                <div className="p-5 bg-black/90 border-t border-slate-800 font-mono text-xs space-y-1.5 transition-all">
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="p-5 bg-black/90 border-t border-slate-800 font-mono text-xs space-y-1.5"
+                >
                   <div className="flex items-center justify-between text-slate-400 pb-2 border-b border-slate-800 text-[11px]">
                     <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
                       <Terminal className="w-3.5 h-3.5" />
@@ -1177,8 +1168,11 @@ export async function createStudentEnrollment(req: Request, res: Response) {
                     <span>Sprint Test Suite</span>
                   </div>
                   {testLogs.map((log, lIdx) => (
-                    <p
+                    <motion.p
                       key={lIdx}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.25 }}
                       className={`leading-tight ${
                         log.startsWith('✓')
                           ? 'text-emerald-400 font-semibold'
@@ -1188,13 +1182,13 @@ export async function createStudentEnrollment(req: Request, res: Response) {
                       }`}
                     >
                       {log}
-                    </p>
+                    </motion.p>
                   ))}
-                </div>
+                </motion.div>
               )}
 
             </div>
-          </div>
+          </LusionRevealBlock>
 
         </div>
       </section>
@@ -1202,24 +1196,28 @@ export async function createStudentEnrollment(req: Request, res: Response) {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* 8. SECTION: VERIFIABLE EXPERIENCE LETTER & CERTIFICATE       */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-12 bg-[#F8FAFC]/95 backdrop-blur-2xl border-y border-black/[0.08]">
+      <section className="relative z-10 py-24 sm:py-32 px-4 sm:px-8 lg:px-12 bg-[#F8FAFC]/95 backdrop-blur-2xl border-y border-black/[0.08] overflow-hidden">
         <div className="max-w-7xl mx-auto space-y-16">
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-black/[0.08]">
             <div className="space-y-2">
-              <span className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#1E9E54]" />
-                <span>[07 // VERIFIED ACADEMIC CREDENTIALS]</span>
-              </span>
+              <LusionRevealBlock variant="left">
+                <span className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#1E9E54] animate-pulse" />
+                  <span>[07 // VERIFIED ACADEMIC CREDENTIALS]</span>
+                </span>
+              </LusionRevealBlock>
               <CinematicTextReveal
                 text="Graduate with Verifiable Industry Proof"
                 tag="h2"
                 className="text-3xl sm:text-5xl font-black text-[#111111] tracking-tight font-heading"
               />
             </div>
-            <p className="text-xs sm:text-sm text-[#666666] font-mono max-w-sm uppercase">
-              Official VGM Soft Tech Experience Letters, ISO Stamped Certificates, and public verification links.
-            </p>
+            <LusionMaskLine delay={0.1}>
+              <p className="text-xs sm:text-sm text-[#666666] font-mono max-w-sm uppercase">
+                Official VGM Soft Tech Experience Letters, ISO Stamped Certificates, and public verification links.
+              </p>
+            </LusionMaskLine>
           </div>
 
           {/* Interactive Credential Inspector */}
@@ -1228,194 +1226,200 @@ export async function createStudentEnrollment(req: Request, res: Response) {
             {/* Left Controls */}
             <div className="lg:col-span-5 space-y-4">
               <div className="space-y-2">
-                <h3 className="text-2xl font-black text-[#111111] font-heading">
-                  Real Corporate Documents That Employers Trust
-                </h3>
-                <p className="text-sm text-[#555555] font-light leading-relaxed">
-                  Companies don't hire generic tutorial watchers. They hire verified developers with demonstrable production experience. Every student completing the Builder or Professional track receives physical and digital corporate credentials.
-                </p>
+                <CinematicTextReveal
+                  text="Real Corporate Documents That Employers Trust"
+                  tag="h3"
+                  className="text-2xl font-black text-[#111111] font-heading"
+                />
+                <LusionMaskLine delay={0.08}>
+                  <p className="text-sm text-[#555555] font-light leading-relaxed">
+                    Companies don't hire generic tutorial watchers. They hire verified developers with demonstrable production experience. Every student completing the Builder or Professional track receives physical and digital corporate credentials.
+                  </p>
+                </LusionMaskLine>
               </div>
 
-              <div className="space-y-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveDeliverableTab('letter')}
-                  className={`w-full p-4 rounded-2xl text-left border transition-all cursor-pointer ${
-                    activeDeliverableTab === 'letter'
-                      ? 'bg-white border-[#1E9E54] shadow-md ring-1 ring-[#1E9E54]/20'
-                      : 'bg-white/60 border-black/[0.06] hover:bg-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#111111]">
-                      1. Official Stamped Experience Letter
-                    </span>
-                    <Award className="w-4 h-4 text-[#1E9E54]" />
-                  </div>
-                  <p className="text-xs text-[#666666] mt-1 font-light">
-                    Issued on official VGM Soft Tech letterhead with CIN registration and Director of Academic Engineering seal.
-                  </p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveDeliverableTab('certificate')}
-                  className={`w-full p-4 rounded-2xl text-left border transition-all cursor-pointer ${
-                    activeDeliverableTab === 'certificate'
-                      ? 'bg-white border-[#1E9E54] shadow-md ring-1 ring-[#1E9E54]/20'
-                      : 'bg-white/60 border-black/[0.06] hover:bg-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#111111]">
-                      2. Verifiable Digital Certificate (QR Linked)
-                    </span>
-                    <ShieldCheck className="w-4 h-4 text-[#1E9E54]" />
-                  </div>
-                  <p className="text-xs text-[#666666] mt-1 font-light">
-                    Instant public verification at skillhub.vgmsofttech.com/student-portal with unique enrollment ID.
-                  </p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setActiveDeliverableTab('github')}
-                  className={`w-full p-4 rounded-2xl text-left border transition-all cursor-pointer ${
-                    activeDeliverableTab === 'github'
-                      ? 'bg-white border-[#1E9E54] shadow-md ring-1 ring-[#1E9E54]/20'
-                      : 'bg-white/60 border-black/[0.06] hover:bg-white'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#111111]">
-                      3. Live Client Project GitHub Contributions
-                    </span>
-                    <GitBranch className="w-4 h-4 text-[#1E9E54]" />
-                  </div>
-                  <p className="text-xs text-[#666666] mt-1 font-light">
-                    Merged pull requests and green commit heatmap that interviewers can inspect during technical interviews.
-                  </p>
-                </button>
+              <div className="space-y-2.5 pt-2">
+                {([
+                  {
+                    id: 'letter',
+                    title: '1. Official Stamped Experience Letter',
+                    desc: 'Issued on official VGM Soft Tech letterhead with CIN registration and Director of Academic Engineering seal.',
+                    icon: Award,
+                  },
+                  {
+                    id: 'certificate',
+                    title: '2. Verifiable Digital Certificate (QR Linked)',
+                    desc: 'Instant public verification at skillhub.vgmsofttech.com/student-portal with unique enrollment ID.',
+                    icon: ShieldCheck,
+                  },
+                  {
+                    id: 'github',
+                    title: '3. Live Client Project GitHub Contributions',
+                    desc: 'Merged pull requests and green commit heatmap that interviewers can inspect during technical interviews.',
+                    icon: GitBranch,
+                  },
+                ] as const).map((tab, idx) => {
+                  const Icon = tab.icon;
+                  const active = activeDeliverableTab === tab.id;
+                  return (
+                    <motion.button
+                      key={tab.id}
+                      type="button"
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: false, amount: 0.2 }}
+                      transition={{ duration: 0.5, delay: idx * 0.08, ease: LUSION_EASE }}
+                      whileHover={{ x: 4, scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      onClick={() => setActiveDeliverableTab(tab.id)}
+                      className={`w-full p-4 rounded-2xl text-left border transition-all cursor-pointer ${
+                        active
+                          ? 'bg-white border-[#1E9E54] shadow-md ring-1 ring-[#1E9E54]/20'
+                          : 'bg-white/60 border-black/[0.06] hover:bg-white hover:border-black/15'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#111111]">
+                          {tab.title}
+                        </span>
+                        <Icon className={`w-4 h-4 transition-transform duration-300 ${active ? 'text-[#1E9E54] scale-110' : 'text-slate-400'}`} />
+                      </div>
+                      <p className="text-xs text-[#666666] mt-1 font-light">
+                        {tab.desc}
+                      </p>
+                    </motion.button>
+                  );
+                })}
               </div>
 
               <div className="pt-2">
-                <Link
-                  to="/student-portal"
-                  className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#1E9E54] hover:text-[#14723B]"
-                >
-                  <span>Test Live Credential Verification Search</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+                <LusionMagnetic strength={6}>
+                  <Link
+                    to="/student-portal"
+                    className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#1E9E54] hover:text-[#14723B] group"
+                  >
+                    <span>Test Live Credential Verification Search</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </LusionMagnetic>
               </div>
             </div>
 
             {/* Right Document Visualizer */}
             <div className="lg:col-span-7">
-              <motion.div
-                key={activeDeliverableTab}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
-                className="p-8 rounded-3xl bg-white border border-black/[0.1] shadow-2xl relative overflow-hidden"
-              >
-                {/* Watermark Logo */}
-                <div className="absolute right-4 bottom-4 w-48 h-48 opacity-[0.03] pointer-events-none">
-                  <Shield className="w-full h-full text-black" />
-                </div>
-
-                {activeDeliverableTab === 'letter' && (
-                  <div className="space-y-6 text-[#111111]">
-                    <div className="flex items-center justify-between pb-4 border-b border-black/[0.08]">
-                      <div>
-                        <h4 className="font-heading font-black text-lg text-slate-900">
-                          VGM SOFT TECH PRIVATE LIMITED
-                        </h4>
-                        <p className="text-[10px] font-mono text-slate-500">
-                          CIN: U72900TZ2026PTC • Saibaba Colony, Coimbatore, Tamil Nadu
-                        </p>
-                      </div>
-                      <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-50 text-[#14723B] border border-emerald-200">
-                        OFFICIAL RELIEVING LETTER
-                      </span>
-                    </div>
-
-                    <div className="space-y-3 text-xs leading-relaxed text-slate-700">
-                      <p className="font-mono text-[11px] text-slate-500">REF: VGM/INT/2026/SDE-0842</p>
-                      <p className="font-bold text-slate-900">TO WHOMSOEVER IT MAY CONCERN</p>
-                      <p>
-                        This is to certify that <strong>Mathan Kumar</strong> has successfully completed an intensive 
-                        <strong> Software Engineering &amp; AI Mobile App Development Internship</strong> with VGM Soft Tech from 
-                        <strong> 1st September 2026 to 30th November 2026</strong>.
-                      </p>
-                      <p>
-                        During this tenure, the candidate demonstrated exemplary diligence, working on live client modules,
-                        submitting feature pull requests, and implementing streaming generative AI APIs under senior engineering supervision.
-                      </p>
-                    </div>
-
-                    <div className="pt-6 border-t border-black/[0.08] flex items-center justify-between text-xs">
-                      <div className="space-y-0.5">
-                        <p className="font-bold text-slate-900">Director of Academic Engineering</p>
-                        <p className="text-[10px] font-mono text-slate-500">VGM Soft Tech Academic Division</p>
-                      </div>
-                      <div className="w-16 h-16 rounded-xl border border-dashed border-emerald-500/40 bg-emerald-50/50 flex flex-col items-center justify-center text-center p-1">
-                        <span className="text-[9px] font-mono font-bold text-[#1E9E54]">SEAL</span>
-                        <span className="text-[8px] text-slate-400">ISO 9001</span>
-                      </div>
-                    </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeDeliverableTab}
+                  initial={{ opacity: 0, scale: 0.96, y: 14 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: -10 }}
+                  transition={{ duration: 0.42, ease: LUSION_EASE }}
+                  className="p-8 rounded-3xl bg-white border border-black/[0.1] shadow-2xl relative overflow-hidden"
+                >
+                  {/* Watermark Logo */}
+                  <div className="absolute right-4 bottom-4 w-48 h-48 opacity-[0.03] pointer-events-none">
+                    <Shield className="w-full h-full text-black" />
                   </div>
-                )}
 
-                {activeDeliverableTab === 'certificate' && (
-                  <div className="space-y-6 text-[#111111]">
-                    <div className="flex items-center justify-between pb-4 border-b border-black/[0.08]">
-                      <span className="text-xs font-mono font-bold uppercase text-[#1E9E54] tracking-widest">
-                        ACADEMIC CREDENTIAL
-                      </span>
-                      <span className="font-mono text-xs text-slate-400">VGM-2026-CERT-0107</span>
-                    </div>
-
-                    <div className="text-center py-4 space-y-2">
-                      <p className="text-xs font-mono uppercase text-slate-500 tracking-wider">THIS IS AWARDED TO</p>
-                      <h4 className="text-3xl font-black font-heading text-slate-900">Mathan Kumar</h4>
-                      <p className="text-xs text-slate-600 max-w-md mx-auto">
-                        For demonstrating outstanding distinction (Grade A+) in AI-Powered Mobile App Engineering &amp; Live Client Implementation.
-                      </p>
-                    </div>
-
-                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs font-mono">
-                      <span>Verification Link:</span>
-                      <span className="text-[#1E9E54] font-bold">skillhub.vgmsofttech.com/student-portal</span>
-                    </div>
-                  </div>
-                )}
-
-                {activeDeliverableTab === 'github' && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                      <div className="flex items-center gap-2">
-                        <GitBranch className="w-4 h-4 text-emerald-600" />
-                        <span className="text-xs font-mono font-bold text-slate-900">
-                          vgmsofttech/production-mobile-app
+                  {activeDeliverableTab === 'letter' && (
+                    <div className="space-y-6 text-[#111111]">
+                      <div className="flex items-center justify-between pb-4 border-b border-black/[0.08]">
+                        <div>
+                          <h4 className="font-heading font-black text-lg text-slate-900">
+                            VGM SOFT TECH PRIVATE LIMITED
+                          </h4>
+                          <p className="text-[10px] font-mono text-slate-500">
+                            CIN: U72900TZ2026PTC • Saibaba Colony, Coimbatore, Tamil Nadu
+                          </p>
+                        </div>
+                        <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-50 text-[#14723B] border border-emerald-200">
+                          OFFICIAL RELIEVING LETTER
                         </span>
                       </div>
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">
-                        Merged #42
-                      </span>
-                    </div>
 
-                    <div className="space-y-2 text-xs font-mono text-slate-700">
-                      <p className="text-slate-900 font-bold">PR Title: feat(ai): add streaming speech assistant with Gemini API</p>
-                      <p className="text-slate-500">Commits: 8 commits • 14 files changed (+482, -41)</p>
-                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
-                        <p className="text-[11px] text-emerald-700 font-semibold">✓ Senior Architect Code Review Approved</p>
-                        <p className="text-[10px] text-slate-500">"Clean separation of services, zero memory leaks, and passes end-to-end unit tests."</p>
+                      <div className="space-y-3 text-xs leading-relaxed text-slate-700">
+                        <p className="font-mono text-[11px] text-slate-500">REF: VGM/INT/2026/SDE-0842</p>
+                        <p className="font-bold text-slate-900">TO WHOMSOEVER IT MAY CONCERN</p>
+                        <p>
+                          This is to certify that <strong>Mathan Kumar</strong> has successfully completed an intensive 
+                          <strong> Software Engineering &amp; AI Mobile App Development Internship</strong> with VGM Soft Tech from 
+                          <strong> 1st September 2026 to 30th November 2026</strong>.
+                        </p>
+                        <p>
+                          During this tenure, the candidate demonstrated exemplary diligence, working on live client modules,
+                          submitting feature pull requests, and implementing streaming generative AI APIs under senior engineering supervision.
+                        </p>
+                      </div>
+
+                      <div className="pt-6 border-t border-black/[0.08] flex items-center justify-between text-xs">
+                        <div className="space-y-0.5">
+                          <p className="font-bold text-slate-900">Director of Academic Engineering</p>
+                          <p className="text-[10px] font-mono text-slate-500">VGM Soft Tech Academic Division</p>
+                        </div>
+                        <motion.div
+                          initial={{ rotate: -15, scale: 0.85 }}
+                          animate={{ rotate: 0, scale: 1 }}
+                          transition={{ duration: 0.5, ease: LUSION_EASE }}
+                          className="w-16 h-16 rounded-xl border border-dashed border-emerald-500/40 bg-emerald-50/50 flex flex-col items-center justify-center text-center p-1"
+                        >
+                          <span className="text-[9px] font-mono font-bold text-[#1E9E54]">SEAL</span>
+                          <span className="text-[8px] text-slate-400">ISO 9001</span>
+                        </motion.div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-              </motion.div>
+                  {activeDeliverableTab === 'certificate' && (
+                    <div className="space-y-6 text-[#111111]">
+                      <div className="flex items-center justify-between pb-4 border-b border-black/[0.08]">
+                        <span className="text-xs font-mono font-bold uppercase text-[#1E9E54] tracking-widest">
+                          ACADEMIC CREDENTIAL
+                        </span>
+                        <span className="font-mono text-xs text-slate-400">VGM-2026-CERT-0107</span>
+                      </div>
+
+                      <div className="text-center py-4 space-y-2">
+                        <p className="text-xs font-mono uppercase text-slate-500 tracking-wider">THIS IS AWARDED TO</p>
+                        <h4 className="text-3xl font-black font-heading text-slate-900">Mathan Kumar</h4>
+                        <p className="text-xs text-slate-600 max-w-md mx-auto">
+                          For demonstrating outstanding distinction (Grade A+) in AI-Powered Mobile App Engineering &amp; Live Client Implementation.
+                        </p>
+                      </div>
+
+                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs font-mono">
+                        <span>Verification Link:</span>
+                        <span className="text-[#1E9E54] font-bold">skillhub.vgmsofttech.com/student-portal</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeDeliverableTab === 'github' && (
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between pb-4 border-b border-slate-200">
+                        <div className="flex items-center gap-2">
+                          <GitBranch className="w-4 h-4 text-emerald-600" />
+                          <span className="text-xs font-mono font-bold text-slate-900">
+                            vgmsofttech/production-mobile-app
+                          </span>
+                        </div>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-800">
+                          Merged #42
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 text-xs font-mono text-slate-700">
+                        <p className="text-slate-900 font-bold">PR Title: feat(ai): add streaming speech assistant with Gemini API</p>
+                        <p className="text-slate-500">Commits: 8 commits • 14 files changed (+482, -41)</p>
+                        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+                          <p className="text-[11px] text-emerald-700 font-semibold">✓ Senior Architect Code Review Approved</p>
+                          <p className="text-[10px] text-slate-500">"Clean separation of services, zero memory leaks, and passes end-to-end unit tests."</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                </motion.div>
+              </AnimatePresence>
             </div>
 
           </div>
@@ -1569,60 +1573,71 @@ export async function createStudentEnrollment(req: Request, res: Response) {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* 11. SECTION: COIMBATORE CAMPUS SPOTLIGHT                     */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative z-10 py-16 px-4 sm:px-8 lg:px-12">
-        <div className="max-w-7xl mx-auto rounded-[32px] border border-black/[0.08] bg-[#F8FAFC]/95 backdrop-blur-2xl p-8 sm:p-12 overflow-hidden shadow-xs">
+      <section className="relative z-10 py-16 px-4 sm:px-8 lg:px-12 overflow-hidden">
+        <LusionRevealBlock variant="scale" className="max-w-7xl mx-auto rounded-[32px] border border-black/[0.08] bg-[#F8FAFC]/95 backdrop-blur-2xl p-8 sm:p-12 overflow-hidden shadow-xs">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
 
             <div className="lg:col-span-6 space-y-6">
-              <span className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#1E9E54]" />
-                <span>[10 // LIVE SOFTWARE LAB CAMPUS]</span>
-              </span>
+              <LusionRevealBlock variant="left">
+                <span className="font-mono text-xs text-[#1E9E54] uppercase tracking-[0.25em] font-bold flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#1E9E54] animate-pulse" />
+                  <span>[10 // LIVE SOFTWARE LAB CAMPUS]</span>
+                </span>
+              </LusionRevealBlock>
               <CinematicTextReveal
                 text="Train Inside an Active Engineering Hub in Coimbatore"
                 tag="h2"
                 className="text-3xl sm:text-5xl font-black text-[#111111] tracking-tight leading-tight font-heading"
               />
-              <p className="text-sm sm:text-base text-[#555555] leading-relaxed font-light">
-                Experience software development the way elite product teams work. Our Saibaba Colony campus houses dedicated development pods and direct mentorship with senior staff architects at <strong className="text-[#111111]">VGM Soft Tech</strong>.
-              </p>
+              <LusionMaskLine delay={0.1}>
+                <p className="text-sm sm:text-base text-[#555555] leading-relaxed font-light">
+                  Experience software development the way elite product teams work. Our Saibaba Colony campus houses dedicated development pods and direct mentorship with senior staff architects at <strong className="text-[#111111]">VGM Soft Tech</strong>.
+                </p>
+              </LusionMaskLine>
 
               <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-                <div className="p-3.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs">
-                  <span className="text-[#111111] font-bold block">Dedicated Dev Pods</span>
-                  <span className="text-[#777777] text-[10px]">Dual monitors &amp; gigabit network</span>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs">
-                  <span className="text-[#111111] font-bold block">Agile Standup Rooms</span>
-                  <span className="text-[#777777] text-[10px]">Weekly sprint audits &amp; demos</span>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs">
-                  <span className="text-[#111111] font-bold block">Hybrid Studio</span>
-                  <span className="text-[#777777] text-[10px]">Live remote session streaming</span>
-                </div>
-                <div className="p-3.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs">
-                  <span className="text-[#111111] font-bold block">Interview Pods</span>
-                  <span className="text-[#777777] text-[10px]">1-on-1 mock technical interviews</span>
-                </div>
+                {[
+                  { title: 'Dedicated Dev Pods', sub: 'Dual monitors & gigabit network' },
+                  { title: 'Agile Standup Rooms', sub: 'Weekly sprint audits & demos' },
+                  { title: 'Hybrid Studio', sub: 'Live remote session streaming' },
+                  { title: 'Interview Pods', sub: '1-on-1 mock technical interviews' },
+                ].map((tile, tIdx) => (
+                  <motion.div
+                    key={tile.title}
+                    initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: false, amount: 0.2 }}
+                    transition={{ duration: 0.5, delay: tIdx * 0.07, ease: LUSION_EASE }}
+                    whileHover={{ y: -3, borderColor: 'rgba(30,158,84,0.4)' }}
+                    className="p-3.5 rounded-xl bg-white border border-black/[0.06] shadow-2xs transition-colors"
+                  >
+                    <span className="text-[#111111] font-bold block">{tile.title}</span>
+                    <span className="text-[#777777] text-[10px]">{tile.sub}</span>
+                  </motion.div>
+                ))}
               </div>
 
-              <div className="pt-2 flex items-center gap-4">
-                <Link to="/about" className="lusion-cta-btn">
-                  <span className="cta-dot" />
-                  <span className="cta-text">Visit Coimbatore Campus</span>
-                  <span className="cta-arrow">
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                </Link>
-                <a
-                  href="https://maps.google.com/maps?q=Saibaba+Colony+Coimbatore+Tamil+Nadu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono text-xs text-[#555555] hover:text-[#111111] flex items-center gap-1.5 uppercase tracking-wider font-bold"
-                >
-                  <MapPin className="w-3.5 h-3.5 text-red-500" />
-                  <span>Google Maps</span>
-                </a>
+              <div className="pt-2 flex flex-wrap items-center gap-4">
+                <LusionMagnetic strength={8}>
+                  <Link to="/about" className="lusion-cta-btn">
+                    <span className="cta-dot" />
+                    <span className="cta-text">Visit Coimbatore Campus</span>
+                    <span className="cta-arrow">
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </Link>
+                </LusionMagnetic>
+                <LusionMagnetic strength={6}>
+                  <a
+                    href="https://maps.google.com/maps?q=Saibaba+Colony+Coimbatore+Tamil+Nadu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-xs text-[#555555] hover:text-[#111111] flex items-center gap-1.5 uppercase tracking-wider font-bold px-4 py-2 rounded-full border border-black/10 bg-white"
+                  >
+                    <MapPin className="w-3.5 h-3.5 text-red-500" />
+                    <span>Google Maps</span>
+                  </a>
+                </LusionMagnetic>
               </div>
             </div>
 
@@ -1635,7 +1650,7 @@ export async function createStudentEnrollment(req: Request, res: Response) {
             </div>
 
           </div>
-        </div>
+        </LusionRevealBlock>
       </section>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -1643,43 +1658,59 @@ export async function createStudentEnrollment(req: Request, res: Response) {
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section
         id="scroll-nav-section"
-        className="relative z-10 py-16 sm:py-24 px-4 sm:px-8 lg:px-12 bg-gradient-to-b from-white via-[#F8FAFC] to-[#F1F5F9] border-t border-black/[0.08] text-[#111111]"
+        className="relative z-10 py-16 sm:py-24 px-4 sm:px-8 lg:px-12 bg-gradient-to-b from-white via-[#F8FAFC] to-[#F1F5F9] border-t border-black/[0.08] text-[#111111] overflow-hidden"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-3xl bg-[#111111] text-white p-8 sm:p-14 relative overflow-hidden shadow-2xl">
+          <motion.div
+            initial={{ opacity: 0, y: 36, scale: 0.96 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 0.85, ease: LUSION_EASE }}
+            className="rounded-3xl bg-[#111111] text-white p-8 sm:p-14 relative overflow-hidden shadow-2xl"
+          >
             {/* Ambient emerald glow aura */}
-            <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 bg-[#1E9E54]/20 rounded-full blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 bg-[#43C170]/15 rounded-full blur-3xl" />
+            <div className="pointer-events-none absolute -top-24 -right-24 w-96 h-96 bg-[#1E9E54]/20 rounded-full blur-3xl animate-orb" />
+            <div className="pointer-events-none absolute -bottom-24 -left-24 w-96 h-96 bg-[#43C170]/15 rounded-full blur-3xl animate-orb" />
 
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="space-y-4 max-w-2xl">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#43C170] text-xs font-mono font-bold uppercase tracking-widest">
-                  <Sparkles className="w-3.5 h-3.5 text-[#43C170]" />
-                  <span>NEXT SPRINT COHORT: 15TH DECEMBER 2026</span>
-                </div>
-                <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-heading leading-tight">
-                  Ready to Build Production Software at VGM?
-                </h2>
-                <p className="text-sm sm:text-base text-white/70 font-light leading-relaxed">
-                  Join our hands-on engineering pods in Saibaba Colony, Coimbatore. Work on live client codebases, ship verified PRs, and graduate with an ISO 9001:2015 accredited experience letter.
-                </p>
+                <LusionRevealBlock variant="left">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#43C170] text-xs font-mono font-bold uppercase tracking-widest">
+                    <Sparkles className="w-3.5 h-3.5 text-[#43C170]" />
+                    <span>NEXT SPRINT COHORT: 15TH DECEMBER 2026</span>
+                  </div>
+                </LusionRevealBlock>
+                <CinematicTextReveal
+                  text="Ready to Build Production Software at VGM?"
+                  tag="h2"
+                  className="text-3xl sm:text-5xl font-black text-white tracking-tight font-heading leading-tight"
+                />
+                <LusionMaskLine delay={0.12}>
+                  <p className="text-sm sm:text-base text-white/70 font-light leading-relaxed">
+                    Join our hands-on engineering pods in Saibaba Colony, Coimbatore. Work on live client codebases, ship verified PRs, and graduate with an ISO 9001:2015 accredited experience letter.
+                  </p>
+                </LusionMaskLine>
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 shrink-0">
-                <Link
-                  to="/courses"
-                  className="px-6 py-4 bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 group"
-                >
-                  <span>Explore All 6 Tracks</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
-                  to="/enrol"
-                  className="px-6 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2"
-                >
-                  <span>Enrol in Next Cohort</span>
-                  <ArrowUpRight className="w-4 h-4 text-[#43C170]" />
-                </Link>
+                <LusionMagnetic strength={8}>
+                  <Link
+                    to="/courses"
+                    className="px-6 py-4 bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 group"
+                  >
+                    <span>Explore All 6 Tracks</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </LusionMagnetic>
+                <LusionMagnetic strength={8}>
+                  <Link
+                    to="/enrol"
+                    className="px-6 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 font-bold rounded-2xl text-xs sm:text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>Enrol in Next Cohort</span>
+                    <ArrowUpRight className="w-4 h-4 text-[#43C170]" />
+                  </Link>
+                </LusionMagnetic>
               </div>
             </div>
 
@@ -1699,7 +1730,7 @@ export async function createStudentEnrollment(req: Request, res: Response) {
               </div>
             </div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 

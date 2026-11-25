@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { PROGRAM_PLANS, BATCH_OPTIONS, PlanInfo } from '../config/programData.js';
-import { COURSES_CATALOG, getCourseBySlug, CourseItem } from '../config/coursesData.js';
+import { CourseItem } from '../config/coursesData.js';
+import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
+import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic } from '../components/LusionMotionPrimitives.js';
 import { 
   Check, 
   ArrowRight, 
@@ -116,10 +118,10 @@ export const EnrolPage: React.FC = () => {
       });
   }, [selectedCourseSlug]);
 
-  const selectedCourse: CourseItem = coursesList.find(c => c.slug === selectedCourseSlug) || coursesList[0] || COURSES_CATALOG[0];
+  const selectedCourse: CourseItem | null = coursesList.find(c => c.slug === selectedCourseSlug) || coursesList[0] || null;
 
   // Course-specific plans
-  const coursePlans = (selectedCourse.id === 'ai-mobile-app' || selectedCourse.slug === 'ai-mobile-app')
+  const coursePlans = (!selectedCourse || selectedCourse.id === 'ai-mobile-app' || selectedCourse.slug === 'ai-mobile-app')
     ? livePlans
     : (selectedCourse.plans || livePlans);
   const planKeys = Object.keys(coursePlans);
@@ -304,8 +306,8 @@ export const EnrolPage: React.FC = () => {
     try {
       // 1. Create order on backend (No assessment before payment)
       const orderPayload = {
-        courseId: selectedCourse.id,
-        courseTitle: selectedCourse.title,
+        courseId: selectedCourse?.id || selectedCourseSlug,
+        courseTitle: selectedCourse?.title || 'Engineering Internship Track',
         planId: selectedPlanId,
         planName: selectedPlan.name,
         fee: selectedPlan.fee,
@@ -466,12 +468,17 @@ export const EnrolPage: React.FC = () => {
         <p className="text-xs font-mono font-bold uppercase tracking-wider text-[#1E9E54]">
           FAST-TRACK ADMISSION · 2026 BATCH
         </p>
-        <h1 className="text-3xl sm:text-4xl font-heading font-black text-[#111111] mt-1 tracking-tight">
-          Internship Enrolment &amp; Fee Payment
-        </h1>
-        <p className="text-sm text-[#555555] mt-1 font-light">
-          Direct 3-step registration. Secure your seat in the 2026 cohort with instant online payment.
-        </p>
+        <CinematicTextReveal
+          text="Internship Enrolment & Fee Payment"
+          tag="h1"
+          className="text-3xl sm:text-4xl font-heading font-black text-[#111111] mt-1 tracking-tight"
+        />
+        <LusionMaskLine delay={0.1}>
+          <p className="text-sm text-[#555555] mt-1 font-light">
+            Direct 3-step registration. Secure your seat in the 2026 cohort with instant online payment.
+          </p>
+        </LusionMaskLine>
+        <LusionCrosshairRow count={4} className="pt-4" />
       </div>
 
       {/* Clean 3-Step Progress Bar */}
@@ -518,8 +525,8 @@ export const EnrolPage: React.FC = () => {
                 ))}
               </select>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-[#555555] pt-1 gap-1">
-                <span>{selectedCourse.headline}</span>
-                <Link to={`/courses/${selectedCourse.slug}`} className="text-[#1E9E54] font-semibold hover:underline shrink-0">
+                <span>{selectedCourse?.headline || 'Loading track curriculum...'}</span>
+                <Link to={`/courses/${selectedCourse?.slug || selectedCourseSlug}`} className="text-[#1E9E54] font-semibold hover:underline shrink-0">
                   View Full Syllabus &rarr;
                 </Link>
               </div>
@@ -908,18 +915,23 @@ export const EnrolPage: React.FC = () => {
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (validateStudentDetails()) {
-                    setCurrentStep(3);
-                  }
-                }}
-                className="px-8 py-3 bg-[#111111] hover:bg-[#1E9E54] text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(30,158,84,0.35)] cursor-pointer"
-              >
-                <span>Proceed to Review &amp; Pay</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              <LusionMagnetic strength={7}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (validateStudentDetails()) {
+                      setCurrentStep(3);
+                    }
+                  }}
+                  className="lusion-cta-btn"
+                >
+                  <span className="cta-dot" />
+                  <span className="cta-text">Proceed to Review &amp; Pay</span>
+                  <span className="cta-arrow">
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                </button>
+              </LusionMagnetic>
             </div>
           </motion.div>
         )}
@@ -962,7 +974,7 @@ export const EnrolPage: React.FC = () => {
                 <span className="font-mono font-bold uppercase text-[#1E9E54] tracking-wider block">
                   PROGRAM &amp; INTERNSHIP DETAILS
                 </span>
-                <p><strong className="text-[#555555]">Course:</strong> {selectedCourse.title}</p>
+                <p><strong className="text-[#555555]">Course:</strong> {selectedCourse?.title || selectedCourseSlug}</p>
                 <p><strong className="text-[#555555]">Selected Plan:</strong> {selectedPlan.name} ({selectedPlan.duration})</p>
                 <p><strong className="text-[#555555]">Batch:</strong> {selectedBatch.label}</p>
                 <p><strong className="text-[#555555]">Certificate:</strong> {selectedPlan.certificateType}</p>

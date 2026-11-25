@@ -5,6 +5,13 @@ import { COURSE_CATEGORIES, CourseItem } from '../config/coursesData.js';
 import { CurvedCourseShelf } from '../components/CurvedCourseShelf.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
+import {
+  LusionCrosshairRow,
+  LusionMaskLine,
+  LusionRevealBlock,
+  LusionMagnetic,
+  LUSION_EASE,
+} from '../components/LusionMotionPrimitives.js';
 import { 
   Search, 
   X, 
@@ -163,11 +170,14 @@ export const CoursesPage: React.FC = () => {
       </section>
 
       {/* 2. Filter & Search Bar */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 mb-12">
+      <LusionRevealBlock variant="rise" className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 mb-12">
         <div className="flex flex-col items-center gap-5">
           
           {/* Search Pill */}
-          <div className="relative w-full max-w-[540px] h-[52px] rounded-full bg-white text-[#111111] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1),0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)] focus-within:shadow-[inset_0_0_0_1px_rgba(0,0,0,0.35)] transition-all duration-200 flex items-center px-5 gap-3">
+          <motion.div
+            whileFocus={{ scale: 1.01 }}
+            className="relative w-full max-w-[540px] h-[52px] rounded-full bg-white text-[#111111] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.1),0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)] focus-within:shadow-[inset_0_0_0_1.5px_rgba(30,158,84,0.6),0_8px_24px_rgba(30,158,84,0.12)] transition-all duration-200 flex items-center px-5 gap-3"
+          >
             <Search className="w-4 h-4 text-[#888888] shrink-0" />
             <input
               type="text"
@@ -177,45 +187,62 @@ export const CoursesPage: React.FC = () => {
               className="w-full h-full bg-transparent border-0 outline-none text-[#111111] text-sm placeholder:text-[#888888]"
             />
             {searchQuery && (
-              <button
+              <motion.button
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
                 type="button"
                 onClick={() => setSearchQuery('')}
                 className="p-1 rounded-full text-[#888888] hover:text-[#111111] hover:bg-black/5 transition-colors cursor-pointer"
                 aria-label="Clear search"
               >
                 <X className="w-3.5 h-3.5" />
-              </button>
+              </motion.button>
             )}
-          </div>
+          </motion.div>
 
           {/* Chips */}
           <div className="w-full flex items-center justify-center">
             <div className="flex flex-wrap items-center justify-center gap-2 max-w-4xl">
-              {categoryFilters.map((cat) => {
+              {categoryFilters.map((cat, cIdx) => {
                 const isActive = selectedCategory === cat.name;
                 return (
-                  <button
+                  <motion.button
                     key={cat.name}
                     type="button"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: cIdx * 0.04, ease: LUSION_EASE }}
+                    whileHover={{ y: -2, scale: 1.04 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedCategory(cat.name)}
-                    className={`px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+                    className={`relative px-4 py-2 rounded-full text-xs font-medium transition-colors duration-200 flex items-center gap-1.5 whitespace-nowrap cursor-pointer z-10 ${
                       isActive
-                        ? 'bg-[#111111] text-white font-semibold shadow-sm scale-105'
+                        ? 'text-white font-semibold'
                         : 'bg-black/[0.04] text-[#555555] hover:text-[#111111] hover:bg-black/[0.08] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.06)]'
                     }`}
                   >
+                    {isActive && (
+                      <motion.span
+                        layoutId="courses-cat-active"
+                        transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                        className="absolute inset-0 bg-[#111111] rounded-full -z-10 shadow-sm"
+                      />
+                    )}
                     <span>{cat.name}</span>
                     <span className={`text-[10px] ${isActive ? 'text-white/70' : 'text-[#888888]'}`}>
                       ({cat.count})
                     </span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
           </div>
 
+          <LusionCrosshairRow count={5} label="3D EXHIBITION SHELF" className="pt-4" />
+
         </div>
-      </section>
+      </LusionRevealBlock>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       {/* 3. CURRICULUM CATALOGUE WITH LEON VASARI CURVED 3D SHELF     */}
@@ -448,22 +475,29 @@ export const CoursesPage: React.FC = () => {
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-4">
-                <a
-                  href="https://wa.me/919345615913?text=Hi%20VGM%20Skill%20Hub,%20I%20would%20like%20guidance%20on%20choosing%20the%20right%20course"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3 rounded-full bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-[0_4px_20px_rgba(30,158,84,0.3)] flex items-center gap-2 cursor-pointer"
-                >
-                  <span>WhatsApp Senior Counselor (+91 9345615913)</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </a>
+                <LusionMagnetic strength={8}>
+                  <a
+                    href="https://wa.me/919345615913?text=Hi%20VGM%20Skill%20Hub,%20I%20would%20like%20guidance%20on%20choosing%20the%20right%20course"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="lusion-cta-btn !bg-[#1E9E54]"
+                  >
+                    <span className="cta-dot !bg-white" />
+                    <span className="cta-text">WhatsApp Senior Counselor (+91 9345615913)</span>
+                    <span className="cta-arrow">
+                      <ArrowUpRight className="w-4 h-4" />
+                    </span>
+                  </a>
+                </LusionMagnetic>
 
-                <Link
-                  to="/about"
-                  className="px-6 py-3 rounded-full bg-white hover:bg-black/5 border border-black/10 text-[#111111] font-semibold text-xs uppercase tracking-wider transition-all"
-                >
-                  Campus Location &amp; Contact
-                </Link>
+                <LusionMagnetic strength={6}>
+                  <Link
+                    to="/about"
+                    className="px-6 py-3.5 rounded-full bg-white hover:bg-black/5 border border-black/10 text-[#111111] font-semibold text-xs uppercase tracking-wider transition-all inline-block"
+                  >
+                    Campus Location &amp; Contact
+                  </Link>
+                </LusionMagnetic>
               </div>
             </div>
 

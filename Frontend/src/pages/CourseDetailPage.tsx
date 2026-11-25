@@ -4,6 +4,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { getCourseBySlug, CourseItem } from '../config/coursesData.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
+import {
+  LusionCrosshairRow,
+  LusionMaskLine,
+  LusionRevealBlock,
+  LusionMagnetic,
+  LUSION_EASE,
+} from '../components/LusionMotionPrimitives.js';
 import { 
   Check, 
   ArrowRight, 
@@ -134,35 +141,45 @@ export const CourseDetailPage: React.FC = () => {
               {/* Highlights Bullet Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                 {course.highlights.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-2.5 text-sm text-[#444444]">
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.45, delay: 0.1 + idx * 0.05, ease: LUSION_EASE }}
+                    className="flex items-start gap-2.5 text-sm text-[#444444]"
+                  >
                     <Check className="w-4 h-4 text-[#1E9E54] shrink-0 mt-0.5" />
                     <span>{item}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
               {/* CTAs */}
               <div className="flex flex-wrap items-center gap-4 pt-4">
-                <Link
-                  to={`/enrol?course=${course.slug}`}
-                  className="lusion-cta-btn"
-                >
-                  <span className="cta-dot"></span>
-                  <span className="cta-text">Enrol in this Course</span>
-                  <span className="cta-arrow">
-                    <ArrowRight className="w-4 h-4" />
-                  </span>
-                </Link>
+                <LusionMagnetic strength={8}>
+                  <Link
+                    to={`/enrol?course=${course.slug}`}
+                    className="lusion-cta-btn"
+                  >
+                    <span className="cta-dot"></span>
+                    <span className="cta-text">Enrol in this Course</span>
+                    <span className="cta-arrow">
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </Link>
+                </LusionMagnetic>
 
-                <a
-                  href={`https://wa.me/919345615913?text=Hi%20VGM%20Skill%20Hub,%20I%20am%20interested%20in%20${encodeURIComponent(course.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-6 py-3.5 bg-[#F0F2F4] hover:bg-[#E8ECEF] border border-black/10 text-[#111111] font-semibold rounded-full transition-all text-xs uppercase tracking-wider flex items-center gap-2"
-                >
-                  <span>Chat with Mentor</span>
-                  <ExternalLink className="w-4 h-4 text-[#666666]" />
-                </a>
+                <LusionMagnetic strength={6}>
+                  <a
+                    href={`https://wa.me/919345615913?text=Hi%20VGM%20Skill%20Hub,%20I%20am%20interested%20in%20${encodeURIComponent(course.title)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-6 py-3.5 bg-[#F0F2F4] hover:bg-[#E8ECEF] border border-black/10 text-[#111111] font-semibold rounded-full transition-all text-xs uppercase tracking-wider flex items-center gap-2"
+                  >
+                    <span>Chat with Mentor</span>
+                    <ExternalLink className="w-4 h-4 text-[#666666]" />
+                  </a>
+                </LusionMagnetic>
               </div>
 
             </div>
@@ -266,14 +283,19 @@ export const CourseDetailPage: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-            {course.tools.map((tool) => (
-              <div
+            {course.tools.map((tool, tIdx) => (
+              <motion.div
                 key={tool}
+                initial={{ opacity: 0, y: 14, scale: 0.92 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.15 }}
+                transition={{ duration: 0.45, delay: tIdx * 0.03, ease: LUSION_EASE }}
+                whileHover={{ y: -4, scale: 1.05 }}
                 className="p-3 bg-white border border-black/5 rounded-xl text-center font-medium text-xs text-[#555555] flex flex-col items-center justify-center gap-1.5 hover:border-[#1E9E54]/50 hover:text-[#111111] transition-all shadow-2xs"
               >
                 <Terminal className="w-4 h-4 text-[#1E9E54]" />
                 <span className="truncate w-full font-mono">{tool}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -480,33 +502,52 @@ export const CourseDetailPage: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap gap-2 pt-2">
-                {course.careerRoles.map((role) => (
-                  <span
+                {course.careerRoles.map((role, rIdx) => (
+                  <motion.span
                     key={role}
+                    initial={{ opacity: 0, scale: 0.9, y: 8 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: false, amount: 0.2 }}
+                    transition={{ duration: 0.4, delay: rIdx * 0.05, ease: LUSION_EASE }}
+                    whileHover={{ y: -2, scale: 1.04 }}
                     className="px-3.5 py-1.5 bg-white border border-black/10 rounded-full text-xs sm:text-sm text-[#14723B] font-medium shadow-2xs font-mono"
                   >
                     {role}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </div>
 
             <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-              <div className="bg-white border border-black/5 rounded-2xl p-6 text-center shadow-xs">
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.55, ease: LUSION_EASE }}
+                whileHover={{ y: -4 }}
+                className="bg-white border border-black/5 rounded-2xl p-6 text-center shadow-xs"
+              >
                 <span className="text-xs text-[#777777] uppercase font-mono">Average Package</span>
                 <span className="text-2xl sm:text-3xl font-black text-[#1E9E54] block mt-1 font-mono">
                   {course.averagePackage}
                 </span>
                 <span className="text-[11px] text-[#888888] mt-1 block">Freshers &amp; Juniors</span>
-              </div>
+              </motion.div>
 
-              <div className="bg-white border border-black/5 rounded-2xl p-6 text-center shadow-xs">
+              <motion.div
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.55, delay: 0.08, ease: LUSION_EASE }}
+                whileHover={{ y: -4 }}
+                className="bg-white border border-black/5 rounded-2xl p-6 text-center shadow-xs"
+              >
                 <span className="text-xs text-[#777777] uppercase font-mono">Highest Package</span>
                 <span className="text-2xl sm:text-3xl font-black text-[#D97706] block mt-1 font-mono">
                   {course.highestPackage}
                 </span>
                 <span className="text-[11px] text-[#888888] mt-1 block">Top Performers</span>
-              </div>
+              </motion.div>
             </div>
 
           </div>
@@ -532,24 +573,36 @@ export const CourseDetailPage: React.FC = () => {
           {course.faqs.map((faq, idx) => {
             const isOpen = activeFaqIndex === idx;
             return (
-              <div
+              <motion.div
                 key={idx}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.15 }}
+                transition={{ duration: 0.45, delay: idx * 0.05, ease: LUSION_EASE }}
                 className={`rounded-2xl border border-black/5 overflow-hidden transition-all ${isOpen ? 'bg-[#F7F8FA]' : 'bg-white'}`}
               >
                 <button
                   type="button"
                   onClick={() => setActiveFaqIndex(isOpen ? null : idx)}
-                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-[#111111] text-sm sm:text-base hover:text-[#1E9E54] transition-colors"
+                  className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-[#111111] text-sm sm:text-base hover:text-[#1E9E54] transition-colors cursor-pointer"
                 >
                   <span>{faq.question}</span>
-                  <ChevronDown className={`w-4 h-4 text-[#777777] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 text-[#777777] transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 text-xs sm:text-sm text-[#666666] leading-relaxed border-t border-black/5 pt-3">
-                    {faq.answer}
-                  </div>
-                )}
-              </div>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: LUSION_EASE }}
+                      className="px-5 pb-5 text-xs sm:text-sm text-[#666666] leading-relaxed border-t border-black/5 pt-3 overflow-hidden"
+                    >
+                      {faq.answer}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             );
           })}
         </div>

@@ -1,7 +1,16 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { CONTACT_INFO } from '../config/programData.js';
 import { ShieldCheck, FileText, ArrowRight } from 'lucide-react';
+import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
+import {
+  LusionCrosshairRow,
+  LusionMaskLine,
+  LusionRevealBlock,
+  LusionMagnetic,
+  LUSION_EASE,
+} from '../components/LusionMotionPrimitives.js';
 
 export const PoliciesPage: React.FC = () => {
   const location = useLocation();
@@ -15,53 +24,61 @@ export const PoliciesPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 md:pt-44 pb-16 md:pb-24">
       
       {/* Header */}
-      <div className="border-b border-slate-200 pb-6 mb-8">
+      <LusionRevealBlock variant="rise" className="border-b border-slate-200 pb-6 mb-8">
         <p className="text-xs font-semibold uppercase tracking-wider text-[#1E9E54] font-heading">
-          LEGAL & COMPLIANCE
+          LEGAL &amp; COMPLIANCE
         </p>
-        <h1 className="text-3xl sm:text-4xl font-heading font-bold text-slate-900 mt-1">
-          Policies & Student Agreement
-        </h1>
-        <p className="text-sm text-slate-600 mt-1">
-          VGM Skill Hub (VGM Soft Tech, Coimbatore, India). Required disclosures for Razorpay payment compliance.
-        </p>
-      </div>
+        <CinematicTextReveal
+          text="Policies & Student Agreement"
+          tag="h1"
+          className="text-3xl sm:text-4xl font-heading font-bold text-slate-900 mt-1"
+        />
+        <LusionMaskLine delay={0.1}>
+          <p className="text-sm text-slate-600 mt-1">
+            VGM Skill Hub (VGM Soft Tech, Coimbatore, India). Required disclosures for Razorpay payment compliance.
+          </p>
+        </LusionMaskLine>
+        <LusionCrosshairRow count={4} className="pt-4" />
+      </LusionRevealBlock>
 
       {/* Tabs */}
       <div className="flex border-b border-slate-200 mb-8 overflow-x-auto gap-2">
-        <Link
-          to="/terms"
-          className={`px-4 py-2.5 text-xs font-heading font-bold uppercase tracking-wider whitespace-nowrap border-b-2 transition-colors ${
-            initialTab === 'terms'
-              ? 'border-[#1E9E54] text-[#1E9E54]'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          Terms and Conditions
-        </Link>
-        <Link
-          to="/privacy"
-          className={`px-4 py-2.5 text-xs font-heading font-bold uppercase tracking-wider whitespace-nowrap border-b-2 transition-colors ${
-            initialTab === 'privacy'
-              ? 'border-[#1E9E54] text-[#1E9E54]'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          Privacy Policy
-        </Link>
-        <Link
-          to="/refund"
-          className={`px-4 py-2.5 text-xs font-heading font-bold uppercase tracking-wider whitespace-nowrap border-b-2 transition-colors ${
-            initialTab === 'refund'
-              ? 'border-[#1E9E54] text-[#1E9E54]'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          Refund & Cancellation Policy
-        </Link>
+        {[
+          { to: '/terms', id: 'terms', label: 'Terms and Conditions' },
+          { to: '/privacy', id: 'privacy', label: 'Privacy Policy' },
+          { to: '/refund', id: 'refund', label: 'Refund & Cancellation Policy' },
+        ].map((tab) => {
+          const active = initialTab === tab.id;
+          return (
+            <Link
+              key={tab.id}
+              to={tab.to}
+              className={`relative px-4 py-2.5 text-xs font-heading font-bold uppercase tracking-wider whitespace-nowrap transition-colors ${
+                active ? 'text-[#1E9E54]' : 'text-slate-500 hover:text-slate-800'
+              }`}
+            >
+              <span>{tab.label}</span>
+              {active && (
+                <motion.span
+                  layoutId="policy-tab-underline"
+                  transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                  className="absolute inset-x-0 bottom-0 h-0.5 bg-[#1E9E54]"
+                />
+              )}
+            </Link>
+          );
+        })}
       </div>
 
       {/* Content for Terms */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={initialTab}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.35, ease: LUSION_EASE }}
+        >
       {initialTab === 'terms' && (
         <article className="prose prose-slate max-w-none text-xs sm:text-sm text-slate-700 space-y-5 leading-relaxed">
           <h2 className="text-xl font-heading font-bold text-slate-900">
@@ -168,15 +185,19 @@ export const PoliciesPage: React.FC = () => {
           </section>
         </article>
       )}
+        </motion.div>
+      </AnimatePresence>
 
       <div className="mt-12 pt-6 border-t border-slate-200 flex items-center justify-between">
-        <Link
-          to="/enrol"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E9E54] hover:underline"
-        >
-          <span>Return to Enrolment Form</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        <LusionMagnetic strength={6}>
+          <Link
+            to="/enrol"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1E9E54] hover:underline"
+          >
+            <span>Return to Enrolment Form</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </LusionMagnetic>
         <span className="text-xs text-slate-400">
           VGM Skill Hub · Coimbatore
         </span>

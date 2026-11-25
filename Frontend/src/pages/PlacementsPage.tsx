@@ -10,6 +10,13 @@ import {
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
 import { AnimatedCounter } from '../components/AnimatedCounter.js';
+import {
+  LusionCrosshairRow,
+  LusionMaskLine,
+  LusionRevealBlock,
+  LusionMagnetic,
+  LUSION_EASE,
+} from '../components/LusionMotionPrimitives.js';
 import { 
   Building2, 
   ArrowRight, 
@@ -58,9 +65,11 @@ export const PlacementsPage: React.FC = () => {
               className="text-4xl sm:text-6xl font-black text-[#111111] tracking-[-0.04em] leading-tight max-w-4xl mx-auto mt-4 font-heading"
             />
 
-            <p className="text-base sm:text-lg text-[#555555] max-w-2xl mx-auto leading-relaxed mt-4 font-light">
-              Our placement cell bridges the gap between academic graduation and high-growth IT firms. Learn inside an active software house, work on real production code, and interview directly with our 450+ hiring partner network.
-            </p>
+            <LusionMaskLine delay={0.12}>
+              <p className="text-base sm:text-lg text-[#555555] max-w-2xl mx-auto leading-relaxed mt-4 font-light">
+                Our placement cell bridges the gap between academic graduation and high-growth IT firms. Learn inside an active software house, work on real production code, and interview directly with our 450+ hiring partner network.
+              </p>
+            </LusionMaskLine>
           </motion.div>
 
           {/* Stats Bar with Animated Counter */}
@@ -79,6 +88,8 @@ export const PlacementsPage: React.FC = () => {
               </CinematicCard>
             ))}
           </div>
+
+          <LusionCrosshairRow count={5} label="CAREER ACCELERATION" className="pt-8" />
         </div>
       </section>
 
@@ -232,8 +243,13 @@ export const PlacementsPage: React.FC = () => {
           {/* Full Grid Directory */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pt-4 border-t border-black/5">
             {filteredPartners.map((partner, idx) => (
-              <div
+              <motion.div
                 key={idx}
+                initial={{ opacity: 0, y: 18, scale: 0.94 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: false, amount: 0.1 }}
+                transition={{ duration: 0.45, delay: (idx % 6) * 0.04, ease: LUSION_EASE }}
+                whileHover={{ y: -4, scale: 1.03 }}
                 className="p-4 bg-white border border-black/5 rounded-2xl flex flex-col items-center justify-center text-center space-y-2 hover:border-[#1E9E54]/40 transition-all group shadow-2xs"
               >
                 {partner.logo ? (
@@ -250,25 +266,31 @@ export const PlacementsPage: React.FC = () => {
                   </div>
                 )}
                 <span className="text-[10px] text-[#888888] font-mono uppercase tracking-wider">{partner.city}</span>
-              </div>
+              </motion.div>
             ))}
           </div>
 
           {/* Recruiter / Partner Callout */}
-          <div className="bg-white rounded-2xl p-6 border border-black/5 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
+          <LusionRevealBlock variant="scale" className="bg-white rounded-2xl p-6 border border-black/5 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
             <div className="space-y-1 text-center sm:text-left">
               <h3 className="text-base font-bold text-[#111111] font-heading">Are you a recruiter looking for pre-vetted junior engineers?</h3>
               <p className="text-xs sm:text-sm text-[#666666] font-light">
                 Hire candidates trained on production Git workflows, clean code principles, and live project deliverables with zero hiring fee.
               </p>
             </div>
-            <a
-              href="mailto:intern@vgmsofttech.com?subject=Recruiter%20Hiring%20Inquiry%20-%20VGM%20Skill%20Hub"
-              className="px-6 py-3 bg-[#111111] hover:bg-[#1E9E54] text-white font-bold rounded-full text-xs uppercase tracking-wider shrink-0 transition-all shadow-sm"
-            >
-              Hire From Us (Zero Placement Fee)
-            </a>
-          </div>
+            <LusionMagnetic strength={7}>
+              <a
+                href="mailto:intern@vgmsofttech.com?subject=Recruiter%20Hiring%20Inquiry%20-%20VGM%20Skill%20Hub"
+                className="lusion-cta-btn shrink-0"
+              >
+                <span className="cta-dot" />
+                <span className="cta-text">Hire From Us (Zero Placement Fee)</span>
+                <span className="cta-arrow">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </a>
+            </LusionMagnetic>
+          </LusionRevealBlock>
         </div>
       </motion.section>
 

@@ -4,6 +4,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { WEEKS_CURRICULUM, TOOLKIT_CATEGORIES, PROGRAM_PLANS } from '../config/programData.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
+import {
+  LusionCrosshairRow,
+  LusionMaskLine,
+  LusionRevealBlock,
+  LusionMagnetic,
+  LUSION_EASE,
+} from '../components/LusionMotionPrimitives.js';
 import { 
   CheckCircle2, 
   ArrowRight, 
@@ -20,8 +27,8 @@ import {
 const sectionAnim = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-  transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+  viewport: { once: false, amount: 0.12 },
+  transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
 };
 
 export const ProgrammePage: React.FC = () => {
@@ -55,28 +62,38 @@ export const ProgrammePage: React.FC = () => {
             className="text-4xl sm:text-6xl font-black text-[#111111] tracking-[-0.03em] leading-tight"
           />
 
-          <p className="text-base sm:text-lg text-[#555555] leading-relaxed font-light">
-            A comprehensive, project-driven progression from mobile app foundations to shipping AI-powered cross-platform apps on Google Play. Choose the 1-month Explorer, 2-month Builder, or 3-month Professional track.
-          </p>
+          <LusionMaskLine delay={0.1}>
+            <p className="text-base sm:text-lg text-[#555555] leading-relaxed font-light">
+              A comprehensive, project-driven progression from mobile app foundations to shipping AI-powered cross-platform apps on Google Play. Choose the 1-month Explorer, 2-month Builder, or 3-month Professional track.
+            </p>
+          </LusionMaskLine>
           
           <div className="flex flex-wrap items-center gap-4 pt-3">
-            <Link
-              to="/enrol"
-              className="px-8 py-3.5 bg-[#111111] hover:bg-[#1E9E54] text-white text-xs font-bold rounded-full transition-all inline-flex items-center gap-2 uppercase tracking-wider shadow-md hover:scale-105"
-            >
-              <span>Enrol in a Plan</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <a
-              href="/assets/aistudio/AI-Powered_Mobile_App_Development_Internship_26822b03.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3.5 bg-[#F0F2F4] hover:border-[#1E9E54]/50 border border-black/10 text-[#111111] text-xs font-semibold rounded-full transition-all inline-flex items-center gap-2 uppercase tracking-wider"
-            >
-              <FileText className="w-4 h-4 text-[#1E9E54]" />
-              <span>Download Official Brochure</span>
-            </a>
+            <LusionMagnetic strength={8}>
+              <Link
+                to="/enrol"
+                className="lusion-cta-btn"
+              >
+                <span className="cta-dot" />
+                <span className="cta-text">Enrol in a Plan</span>
+                <span className="cta-arrow">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
+            </LusionMagnetic>
+            <LusionMagnetic strength={6}>
+              <a
+                href="/assets/aistudio/AI-Powered_Mobile_App_Development_Internship_26822b03.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3.5 bg-[#F0F2F4] hover:border-[#1E9E54]/50 border border-black/10 text-[#111111] text-xs font-semibold rounded-full transition-all inline-flex items-center gap-2 uppercase tracking-wider"
+              >
+                <FileText className="w-4 h-4 text-[#1E9E54]" />
+                <span>Download Official Brochure</span>
+              </a>
+            </LusionMagnetic>
           </div>
+          <LusionCrosshairRow count={5} label="CURRICULUM ARCHITECTURE" className="pt-6" />
         </div>
       </motion.section>
 
@@ -205,20 +222,28 @@ export const ProgrammePage: React.FC = () => {
 
           {/* Filter tabs */}
           <div className="flex items-center gap-1 p-1 bg-[#F0F2F4] border border-black/10 rounded-full self-start sm:self-auto">
-            {(['All', 'Explorer', 'Builder', 'Professional'] as const).map((filter) => (
-              <button
-                key={filter}
-                type="button"
-                onClick={() => setSelectedPlanFilter(filter)}
-                className={`px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-full transition-all cursor-pointer ${
-                  selectedPlanFilter === filter
-                    ? 'bg-[#111111] text-white font-bold shadow-xs'
-                    : 'text-[#555555] hover:text-[#111111]'
-                }`}
-              >
-                {filter}
-              </button>
-            ))}
+            {(['All', 'Explorer', 'Builder', 'Professional'] as const).map((filter) => {
+              const active = selectedPlanFilter === filter;
+              return (
+                <button
+                  key={filter}
+                  type="button"
+                  onClick={() => setSelectedPlanFilter(filter)}
+                  className={`relative px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-full transition-colors cursor-pointer z-10 ${
+                    active ? 'text-white font-bold' : 'text-[#555555] hover:text-[#111111]'
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="prog-filter-pill"
+                      transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                      className="absolute inset-0 bg-[#111111] rounded-full -z-10 shadow-xs"
+                    />
+                  )}
+                  {filter}
+                </button>
+              );
+            })}
           </div>
         </div>
 

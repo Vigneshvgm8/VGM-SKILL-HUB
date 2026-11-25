@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { Logo } from './Logo.js';
 import { 
   Menu, 
@@ -126,16 +127,25 @@ export const Navbar: React.FC = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`relative px-3 py-1.5 rounded-full text-xs xl:text-[13px] font-semibold tracking-wide whitespace-nowrap flex items-center gap-1.5 transition-all duration-200 select-none ${
+                  className={`relative px-3 py-1.5 rounded-full text-xs xl:text-[13px] font-semibold tracking-wide whitespace-nowrap flex items-center gap-1.5 transition-colors duration-200 select-none ${
                     active
                       ? isHomeDarkHero
-                        ? 'text-white bg-white/15 shadow-xs font-bold'
-                        : 'text-[#111111] bg-black/5 shadow-xs font-bold'
+                        ? 'text-white font-bold'
+                        : 'text-[#111111] font-bold'
                       : isHomeDarkHero
                         ? 'text-[#CBD5E1] hover:text-white hover:bg-white/[0.08]'
                         : 'text-[#444444] hover:text-[#111111] hover:bg-black/[0.04]'
                   }`}
                 >
+                  {active && (
+                    <motion.span
+                      layoutId="nav-active-pill"
+                      transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                      className={`absolute inset-0 rounded-full -z-10 shadow-xs ${
+                        isHomeDarkHero ? 'bg-white/15' : 'bg-black/[0.06]'
+                      }`}
+                    />
+                  )}
                   <span className="whitespace-nowrap">{item.label}</span>
 
                   {/* Pulsing Live Dot */}
@@ -220,76 +230,90 @@ export const Navbar: React.FC = () => {
       {/* ───────────────────────────────────────────────────────────── */}
       {/* MOBILE FULL-SCREEN SLIDE-DOWN DRAWER                         */}
       {/* ───────────────────────────────────────────────────────────── */}
-      {mobileMenuOpen && (
-        <div className="max-w-7xl mx-auto mt-2 pointer-events-auto lg:hidden animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="rounded-3xl border border-white/15 bg-[#09090b]/98 backdrop-blur-3xl p-5 shadow-2xl text-white">
-            
-            {/* Status Header */}
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#43C170]">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#43C170] opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#43C170]"></span>
-                </span>
-                <span>Admissions Live — 2026 Batch</span>
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -12, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -12, scale: 0.98 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="max-w-7xl mx-auto mt-2 pointer-events-auto lg:hidden"
+          >
+            <div className="rounded-3xl border border-white/15 bg-[#09090b]/98 backdrop-blur-3xl p-5 shadow-2xl text-white">
+              
+              {/* Status Header */}
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/10">
+                <div className="flex items-center gap-2 text-xs font-mono text-[#43C170]">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#43C170] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#43C170]"></span>
+                  </span>
+                  <span>Admissions Live — 2026 Batch</span>
+                </div>
+                <span className="text-[10px] text-white/50 font-mono">Coimbatore</span>
               </div>
-              <span className="text-[10px] text-white/50 font-mono">Coimbatore</span>
+
+              {/* All Individual Page Links */}
+              <nav className="flex flex-col space-y-1">
+                {[
+                  { label: 'Home', path: '/' },
+                  { label: 'Courses', path: '/courses' },
+                  // { label: 'AI Mobile App', path: '/programme', badge: 'Live' },
+                  { label: 'Placements', path: '/placements', badge: '94.8%' },
+                  { label: 'Plans & Fees', path: '/plans' },
+                  { label: 'Student Portal', path: '/student-portal' },
+                  { label: 'Verify Credential', path: '/verify-certificate' },
+                  { label: 'About & Contact', path: '/about' },
+                ].map((item, idx) => {
+                  const active = isActive(item.path);
+                  return (
+                    <motion.div
+                      key={item.path}
+                      initial={{ opacity: 0, x: -12 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.25, delay: idx * 0.04 }}
+                    >
+                      <Link
+                        to={item.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-colors ${
+                          active
+                            ? 'bg-[#1E9E54] text-white shadow-xs'
+                            : 'text-[#CBD5E1] hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{item.label}</span>
+                          {item.badge && (
+                            <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded bg-white/20 text-white">
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                        <ArrowUpRight className="w-4 h-4 opacity-50" />
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </nav>
+
+              {/* Full-width Direct Enrol Button */}
+              <Link
+                to="/enrol"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-4 flex items-center justify-center gap-2 py-3.5 px-6 rounded-full text-sm font-bold text-white shadow-[0_4px_25px_rgba(30,158,84,0.5)] border-t border-white/40 hover:scale-[1.02] transition-transform"
+                style={{
+                  backgroundImage: 'linear-gradient(135deg, #14723B 0%, #1E9E54 50%, #43C170 100%)',
+                }}
+              >
+                <span>Apply for 2026 Batch Now</span>
+                <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
+              </Link>
+
             </div>
-
-            {/* All Individual Page Links */}
-            <nav className="flex flex-col space-y-1">
-              {[
-                { label: 'Home', path: '/' },
-                { label: 'Courses', path: '/courses' },
-                // { label: 'AI Mobile App', path: '/programme', badge: 'Live' },
-                { label: 'Placements', path: '/placements', badge: '94.8%' },
-                { label: 'Plans & Fees', path: '/plans' },
-                { label: 'Student Portal', path: '/student-portal' },
-                { label: 'Verify Credential', path: '/verify-certificate' },
-                { label: 'About & Contact', path: '/about' },
-              ].map((item) => {
-                const active = isActive(item.path);
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-colors ${
-                      active
-                        ? 'bg-[#1E9E54] text-white shadow-xs'
-                        : 'text-[#CBD5E1] hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <span>{item.label}</span>
-                      {item.badge && (
-                        <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider rounded bg-white/20 text-white">
-                          {item.badge}
-                        </span>
-                      )}
-                    </div>
-                    <ArrowUpRight className="w-4 h-4 opacity-50" />
-                  </Link>
-                );
-              })}
-            </nav>
-
-            {/* Full-width Direct Enrol Button */}
-            <Link
-              to="/enrol"
-              onClick={() => setMobileMenuOpen(false)}
-              className="mt-4 flex items-center justify-center gap-2 py-3.5 px-6 rounded-full text-sm font-bold text-white shadow-[0_4px_25px_rgba(30,158,84,0.5)] border-t border-white/40"
-              style={{
-                backgroundImage: 'linear-gradient(135deg, #14723B 0%, #1E9E54 50%, #43C170 100%)',
-              }}
-            >
-              <span>Apply for 2026 Batch Now</span>
-              <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
-            </Link>
-
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </header>
   );

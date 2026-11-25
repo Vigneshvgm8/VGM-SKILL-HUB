@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
+import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic, LUSION_EASE } from '../components/LusionMotionPrimitives.js';
 import { 
   GraduationCap, 
   BookOpen, 
@@ -346,12 +348,17 @@ export const StudentPortalPage: React.FC = () => {
               <ShieldCheck className="w-4 h-4" />
               <span>Official Student Credential &amp; Certificate Registry</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-heading font-black text-[#111111] tracking-tight">
-              Verify Certificate with Enrollment Number
-            </h1>
-            <p className="text-xs sm:text-sm text-[#555555] max-w-2xl mx-auto font-light leading-relaxed">
-              Every VGM Skill Hub student receives a unique lifetime <strong className="text-[#111111] font-semibold">Enrollment Number</strong> when registering. If you take multiple courses with the same Name, Email, and Mobile, all your courses and certificates remain unified under that same number.
-            </p>
+            <CinematicTextReveal
+              text="Verify Certificate with Enrollment Number"
+              tag="h1"
+              className="text-3xl sm:text-4xl font-heading font-black text-[#111111] tracking-tight justify-center"
+            />
+            <LusionMaskLine delay={0.1}>
+              <p className="text-xs sm:text-sm text-[#555555] max-w-2xl mx-auto font-light leading-relaxed">
+                Every VGM Skill Hub student receives a unique lifetime <strong className="text-[#111111] font-semibold">Enrollment Number</strong> when registering. If you take multiple courses with the same Name, Email, and Mobile, all your courses and certificates remain unified under that same number.
+              </p>
+            </LusionMaskLine>
+            <LusionCrosshairRow count={5} label="STUDENT CREDENTIAL HUB" className="pt-3" />
           </div>
 
           {/* Search Box */}
@@ -796,9 +803,11 @@ export const StudentPortalPage: React.FC = () => {
                 </div>
 
                 <div className="w-full bg-[#F0F2F4] border border-black/10 h-3 rounded-full overflow-hidden">
-                  <div
-                    className="bg-[#1E9E54] h-full rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(30,158,84,0.5)]"
-                    style={{ width: `${progressPercent}%` }}
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progressPercent}%` }}
+                    transition={{ duration: 0.75, ease: LUSION_EASE }}
+                    className="bg-[#1E9E54] h-full rounded-full shadow-[0_0_12px_rgba(30,158,84,0.5)]"
                   />
                 </div>
               </div>

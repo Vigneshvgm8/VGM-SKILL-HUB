@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
+import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic, LUSION_EASE } from '../components/LusionMotionPrimitives.js';
 import {
   ShieldCheck,
   Search,
@@ -123,12 +125,17 @@ export const VerifyCertificatePage: React.FC = () => {
             <ShieldCheck className="w-4 h-4" />
             <span>Official Credential Registry</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-heading font-black text-[#111111] tracking-tight">
-            Verify Student Certificate &amp; Credentials
-          </h1>
-          <p className="text-sm sm:text-base text-[#555555] max-w-xl mx-auto font-light">
-            Employers, universities, and verification agencies can authenticate VGM Skill Hub internship credentials directly from our tamper-evident registry.
-          </p>
+          <CinematicTextReveal
+            text="Verify Student Certificate & Credentials"
+            tag="h1"
+            className="text-3xl sm:text-4xl font-heading font-black text-[#111111] tracking-tight justify-center"
+          />
+          <LusionMaskLine delay={0.1}>
+            <p className="text-sm sm:text-base text-[#555555] max-w-xl mx-auto font-light">
+              Employers, universities, and verification agencies can authenticate VGM Skill Hub internship credentials directly from our tamper-evident registry.
+            </p>
+          </LusionMaskLine>
+          <LusionCrosshairRow count={4} label="TAMPER-EVIDENT LEDGER" className="pt-4" />
         </motion.div>
 
         {/* Search Bar */}

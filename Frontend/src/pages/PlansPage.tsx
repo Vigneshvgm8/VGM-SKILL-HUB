@@ -4,6 +4,13 @@ import { motion } from 'motion/react';
 import { PROGRAM_PLANS, CONTACT_INFO } from '../config/programData.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
+import {
+  LusionCrosshairRow,
+  LusionMaskLine,
+  LusionRevealBlock,
+  LusionMagnetic,
+  LUSION_EASE,
+} from '../components/LusionMotionPrimitives.js';
 import { 
   Check, 
   ArrowRight, 
@@ -327,7 +334,14 @@ export const PlansPage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-black/5 font-mono text-xs sm:text-sm">
               {comparisonFeatures.map((row, idx) => (
-                <tr key={idx} className="hover:bg-black/[0.015] transition-colors">
+                <motion.tr
+                  key={idx}
+                  initial={{ opacity: 0, x: -12 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: false, amount: 0.1 }}
+                  transition={{ duration: 0.4, delay: idx * 0.035, ease: LUSION_EASE }}
+                  className="hover:bg-black/[0.025] transition-colors"
+                >
                   <td className="p-4 sm:p-5 font-bold text-[#111111] font-body text-sm">
                     {row.name}
                   </td>
@@ -340,7 +354,7 @@ export const PlansPage: React.FC = () => {
                   <td className="p-4 sm:p-5 text-[#111111]">
                     {row.professional}
                   </td>
-                </tr>
+                </motion.tr>
               ))}
             </tbody>
           </table>

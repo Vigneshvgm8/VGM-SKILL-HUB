@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { CONTACT_INFO } from '../config/programData.js';
 import { motion } from 'motion/react';
+import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
+import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic, LUSION_EASE } from '../components/LusionMotionPrimitives.js';
 
 export const PaymentSuccessPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -69,44 +71,59 @@ export const PaymentSuccessPage: React.FC = () => {
           className="no-print space-y-6 mb-8"
         >
           <div className="p-6 bg-[#1E9E54]/10 border border-[#1E9E54]/20 rounded-2xl flex flex-col sm:flex-row items-center sm:items-start gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#1E9E54]/20 border border-[#1E9E54]/40 flex items-center justify-center text-[#1E9E54] shrink-0 shadow-[0_0_20px_rgba(30,158,84,0.3)]">
+            <motion.div
+              initial={{ scale: 0.4, rotate: -20 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 18 }}
+              className="w-14 h-14 rounded-full bg-[#1E9E54]/20 border border-[#1E9E54]/40 flex items-center justify-center text-[#1E9E54] shrink-0 shadow-[0_0_20px_rgba(30,158,84,0.3)]"
+            >
               <CheckCircle2 className="w-7 h-7" />
-            </div>
+            </motion.div>
             <div className="space-y-1 text-center sm:text-left">
-              <h1 className="text-2xl font-heading font-bold text-[#111111]">
-                Payment Received &amp; Enrolment Confirmed!
-              </h1>
-              <p className="text-sm text-[#555555] leading-relaxed">
-                Your admission to the <strong className="text-[#111111]">AI-Powered Mobile App Development Internship 2026</strong> is secured. An official confirmation email with your onboarding details has been sent to <strong className="text-[#1E9E54]">{enrolment?.student?.email || 'your email'}</strong>.
-              </p>
+              <CinematicTextReveal
+                text="Payment Received & Enrolment Confirmed!"
+                tag="h1"
+                className="text-2xl font-heading font-bold text-[#111111]"
+              />
+              <LusionMaskLine delay={0.1}>
+                <p className="text-sm text-[#555555] leading-relaxed">
+                  Your admission to the <strong className="text-[#111111]">AI-Powered Mobile App Development Internship 2026</strong> is secured. An official confirmation email with your onboarding details has been sent to <strong className="text-[#1E9E54]">{enrolment?.student?.email || 'your email'}</strong>.
+                </p>
+              </LusionMaskLine>
             </div>
           </div>
 
           {/* Action buttons */}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-3">
-              <Link
-                to={`/student-portal?enrolmentId=${enrolment?.enrollmentNumber || enrolment?.id || enrolmentId}`}
-                className="px-5 py-2.5 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(30,158,84,0.3)] flex items-center gap-2"
-              >
-                <span>Student Portal &amp; Certificates</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <button
-                type="button"
-                onClick={handlePrintReceipt}
-                className="px-5 py-2.5 bg-[#F0F2F4] hover:bg-[#E5E7EB] border border-black/10 text-[#111111] text-xs font-semibold rounded-xl transition-colors flex items-center gap-2"
-              >
-                <Printer className="w-4 h-4" />
-                <span>Print Receipt (PDF)</span>
-              </button>
-              <Link
-                to="/"
-                className="px-4 py-2.5 border border-black/10 text-[#555555] text-xs font-semibold rounded-xl hover:bg-[#F0F2F4] hover:text-[#111111] transition-colors flex items-center gap-1.5"
-              >
-                <Home className="w-3.5 h-3.5" />
-                <span>Home</span>
-              </Link>
+              <LusionMagnetic strength={7}>
+                <Link
+                  to={`/student-portal?enrolmentId=${enrolment?.enrollmentNumber || enrolment?.id || enrolmentId}`}
+                  className="px-5 py-2.5 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(30,158,84,0.3)] flex items-center gap-2"
+                >
+                  <span>Student Portal &amp; Certificates</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </LusionMagnetic>
+              <LusionMagnetic strength={6}>
+                <button
+                  type="button"
+                  onClick={handlePrintReceipt}
+                  className="px-5 py-2.5 bg-[#F0F2F4] hover:bg-[#E5E7EB] border border-black/10 text-[#111111] text-xs font-semibold rounded-xl transition-colors flex items-center gap-2 cursor-pointer"
+                >
+                  <Printer className="w-4 h-4" />
+                  <span>Print Receipt (PDF)</span>
+                </button>
+              </LusionMagnetic>
+              <LusionMagnetic strength={5}>
+                <Link
+                  to="/"
+                  className="px-4 py-2.5 border border-black/10 text-[#555555] text-xs font-semibold rounded-xl hover:bg-[#F0F2F4] hover:text-[#111111] transition-colors flex items-center gap-1.5"
+                >
+                  <Home className="w-3.5 h-3.5" />
+                  <span>Home</span>
+                </Link>
+              </LusionMagnetic>
             </div>
 
             <span className="text-xs text-[#777777]">

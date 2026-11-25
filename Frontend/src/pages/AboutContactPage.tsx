@@ -4,13 +4,14 @@ import { CONTACT_INFO } from '../config/programData.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
 import { CinematicImageExpand } from '../components/CinematicImageExpand.js';
+import { LusionCrosshairRow, LusionMaskLine, LusionMagnetic, LUSION_EASE } from '../components/LusionMotionPrimitives.js';
 import { Phone, Mail, MapPin, MessageCircle, Clock, Send, CheckCircle2, Sparkles } from 'lucide-react';
 
 const sectionAnim = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: false, amount: 0.15 },
-  transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+  viewport: { once: false, amount: 0.12 },
+  transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
 };
 
 export const AboutContactPage: React.FC = () => {
@@ -47,9 +48,12 @@ export const AboutContactPage: React.FC = () => {
             className="text-4xl sm:text-6xl font-black text-[#111111] tracking-[-0.03em] leading-tight"
           />
 
-          <p className="text-base sm:text-lg text-[#555555] leading-relaxed font-light">
-            The specialized software training and internship wing of <strong className="text-[#111111] font-semibold">VGM Soft Tech</strong>. Located in Saibaba Colony, Coimbatore, we mentor upcoming developers in production software engineering and modern AI tooling.
-          </p>
+          <LusionMaskLine delay={0.1}>
+            <p className="text-base sm:text-lg text-[#555555] leading-relaxed font-light">
+              The specialized software training and internship wing of <strong className="text-[#111111] font-semibold">VGM Soft Tech</strong>. Located in Saibaba Colony, Coimbatore, we mentor upcoming developers in production software engineering and modern AI tooling.
+            </p>
+          </LusionMaskLine>
+          <LusionCrosshairRow count={5} label="CAMPUS & CONTACT" className="pt-6" />
         </div>
       </motion.section>
 
@@ -252,13 +256,18 @@ export const AboutContactPage: React.FC = () => {
                       className="w-full px-4 py-3 bg-white border border-black/10 rounded-xl text-xs text-[#111111] placeholder:text-[#888888] focus:border-[#1E9E54] focus:outline-none transition-colors"
                     />
 
-                    <button
-                      type="submit"
-                      className="px-8 py-3.5 bg-[#111111] hover:bg-[#1E9E54] text-white text-xs font-bold rounded-full transition-all flex items-center gap-2 uppercase tracking-wider shadow-md hover:scale-105 cursor-pointer"
-                    >
-                      <Send className="w-3.5 h-3.5" />
-                      <span>Submit Inquiry</span>
-                    </button>
+                    <LusionMagnetic strength={8}>
+                      <button
+                        type="submit"
+                        className="lusion-cta-btn"
+                      >
+                        <span className="cta-dot" />
+                        <span className="cta-text flex items-center gap-2">
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Submit Inquiry</span>
+                        </span>
+                      </button>
+                    </LusionMagnetic>
                   </form>
                 )}
               </div>

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'motion/react';
 import { Navbar } from './components/Navbar.js';
 import { Footer } from './components/Footer.js';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp.js';
@@ -22,7 +23,6 @@ import { PaymentFailedPage } from './pages/PaymentFailedPage.js';
 import { AdminRedirectPage } from './pages/AdminRedirectPage.js';
 import { StudentPortalPage } from './pages/StudentPortalPage.js';
 
-// Auto-scroll to top on route navigation
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -38,6 +38,58 @@ function GlobalEffects() {
   return <CinematicCursor />;
 }
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <Routes location={location}>
+          <Route path="/" element={<HomePage />} />
+          
+          {/* Multi-Course Academy Routes */}
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:slug" element={<CourseDetailPage />} />
+          <Route path="/placements" element={<PlacementsPage />} />
+          <Route path="/verify-certificate" element={<VerifyCertificatePage />} />
+
+          {/* Flagship Mobile Internship & Details */}
+          <Route path="/programme" element={<ProgrammePage />} />
+          <Route path="/plans" element={<PlansPage />} />
+          <Route path="/enrol" element={<EnrolPage />} />
+          <Route path="/about" element={<AboutContactPage />} />
+          
+          {/* Required Razorpay Compliance Policy Pages */}
+          <Route path="/terms" element={<PoliciesPage />} />
+          <Route path="/privacy" element={<PoliciesPage />} />
+          <Route path="/refund" element={<PoliciesPage />} />
+          
+          {/* Payment Outcomes */}
+          <Route path="/payment/success" element={<PaymentSuccessPage />} />
+          <Route path="/payment/failed" element={<PaymentFailedPage />} />
+          
+          {/* Student Learning Portal */}
+          <Route path="/portal" element={<StudentPortalPage />} />
+          <Route path="/student" element={<StudentPortalPage />} />
+          <Route path="/student-portal" element={<StudentPortalPage />} />
+          
+          {/* Dedicated Staff Admin Web Portal */}
+          <Route path="/admin" element={<AdminRedirectPage />} />
+          
+          {/* Fallback */}
+          <Route path="*" element={<HomePage />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -50,41 +102,7 @@ export default function App() {
 
         {/* Main Content Area */}
         <main className="grow">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            
-            {/* Multi-Course Academy Routes */}
-            <Route path="/courses" element={<CoursesPage />} />
-            <Route path="/courses/:slug" element={<CourseDetailPage />} />
-            <Route path="/placements" element={<PlacementsPage />} />
-            <Route path="/verify-certificate" element={<VerifyCertificatePage />} />
-
-            {/* Flagship Mobile Internship & Details */}
-            <Route path="/programme" element={<ProgrammePage />} />
-            <Route path="/plans" element={<PlansPage />} />
-            <Route path="/enrol" element={<EnrolPage />} />
-            <Route path="/about" element={<AboutContactPage />} />
-            
-            {/* Required Razorpay Compliance Policy Pages */}
-            <Route path="/terms" element={<PoliciesPage />} />
-            <Route path="/privacy" element={<PoliciesPage />} />
-            <Route path="/refund" element={<PoliciesPage />} />
-            
-            {/* Payment Outcomes */}
-            <Route path="/payment/success" element={<PaymentSuccessPage />} />
-            <Route path="/payment/failed" element={<PaymentFailedPage />} />
-            
-            {/* Student Learning Portal */}
-            <Route path="/portal" element={<StudentPortalPage />} />
-            <Route path="/student" element={<StudentPortalPage />} />
-            <Route path="/student-portal" element={<StudentPortalPage />} />
-            
-            {/* Dedicated Staff Admin Web Portal */}
-            <Route path="/admin" element={<AdminRedirectPage />} />
-            
-            {/* Fallback */}
-            <Route path="*" element={<HomePage />} />
-          </Routes>
+          <AnimatedRoutes />
         </main>
 
         {/* Global Floating WhatsApp Contact Widget */}
