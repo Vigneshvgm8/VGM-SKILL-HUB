@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { COURSES_CATALOG, COURSE_CATEGORIES, CourseItem } from '../config/coursesData.js';
+import { COURSE_CATEGORIES, CourseItem } from '../config/coursesData.js';
 import { CurvedCourseShelf } from '../components/CurvedCourseShelf.js';
 import { CinematicTextReveal } from '../components/CinematicTextReveal.js';
 import { CinematicCard } from '../components/CinematicCard.js';
@@ -37,19 +37,20 @@ export const CoursesPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeModalCourse, setActiveModalCourse] = useState<CourseItem | null>(null);
 
-  // Fetch server courses from DB
+  // Fetch live courses from API — no static fallback
   useEffect(() => {
+    setIsLoading(true);
     fetch('/api/courses')
       .then(res => res.json())
       .then(data => {
-        if (data.courses && Array.isArray(data.courses) && data.courses.length > 0) {
+        if (data.courses && Array.isArray(data.courses)) {
           setCourses(data.courses);
         } else {
-          setCourses(COURSES_CATALOG);
+          setCourses([]);
         }
       })
       .catch(() => {
-        setCourses(COURSES_CATALOG);
+        setCourses([]);
       })
       .finally(() => {
         setIsLoading(false);

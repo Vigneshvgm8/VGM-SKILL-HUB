@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo } from './Logo.js';
 import { 
@@ -14,9 +14,22 @@ import {
   Lock
 } from 'lucide-react';
 import { CONTACT_INFO } from '../config/programData.js';
-import { COURSES_CATALOG } from '../config/coursesData.js';
+import { CourseItem } from '../config/coursesData.js';
 
 export const Footer: React.FC = () => {
+  const [courses, setCourses] = useState<CourseItem[]>([]);
+
+  useEffect(() => {
+    fetch('/api/courses')
+      .then(res => res.json())
+      .then(data => {
+        if (data.courses && Array.isArray(data.courses)) {
+          setCourses(data.courses);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <footer className="relative z-20 bg-[#F8FAFC] text-[#555555] pt-0 pb-24 sm:pb-16 border-t border-black/[0.08] font-body selection:bg-[#43C170]/30 selection:text-[#111111]">
       {/* Top Emerald Ambient Gradient Line */}
@@ -89,13 +102,13 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Col 2: Curriculum Tracks (All 6 Tracks) */}
+          {/* Col 2: Curriculum Tracks (Live from API) */}
           <div className="space-y-3.5">
             <h4 className="text-[#14723B] uppercase tracking-widest text-[11px] font-mono font-bold">
               CURRICULUM TRACKS
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm">
-              {COURSES_CATALOG.map((course) => (
+              {courses.length > 0 ? courses.map((course) => (
                 <li key={course.id}>
                   <Link 
                     to={`/courses/${course.slug}`} 
@@ -104,13 +117,19 @@ export const Footer: React.FC = () => {
                     {course.title}
                   </Link>
                 </li>
-              ))}
+              )) : (
+                <li>
+                  <Link to="/courses" className="text-[#666666] hover:text-[#111111] transition-colors">
+                    View All Courses
+                  </Link>
+                </li>
+              )}
               <li className="pt-1.5">
                 <Link 
                   to="/courses" 
                   className="text-[#1E9E54] hover:text-[#14723B] font-bold inline-flex items-center gap-1 text-xs uppercase tracking-wider group"
                 >
-                  <span>View All 6 Tracks</span>
+                  <span>View All {courses.length > 0 ? `${courses.length} ` : ''}Tracks</span>
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </li>

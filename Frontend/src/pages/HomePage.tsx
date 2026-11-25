@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { COURSES_CATALOG, CourseItem } from '../config/coursesData.js';
+import { CourseItem } from '../config/coursesData.js';
 import { PLACEMENT_STATS, HIRING_PARTNERS, ALUMNI_STORIES } from '../config/placementsData.js';
 import { SyllabusDownloadModal } from '../components/SyllabusDownloadModal.js';
 import { CinematicBackground } from '../components/CinematicBackground.js';
@@ -92,7 +92,7 @@ const INTERNSHIP_ROUTINE = [
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [courses, setCourses] = useState<CourseItem[]>(COURSES_CATALOG);
+  const [courses, setCourses] = useState<CourseItem[]>([]);
   const [activeCodeTab, setActiveCodeTab] = useState<'flutter' | 'git' | 'backend'>('flutter');
   const [activeRoutineIndex, setActiveRoutineIndex] = useState<number>(0);
   const [activeDeliverableTab, setActiveDeliverableTab] = useState<'letter' | 'certificate' | 'github'>('letter');
