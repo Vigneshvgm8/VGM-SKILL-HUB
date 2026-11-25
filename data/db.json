@@ -1,6 +1,51 @@
 {
-  "counter": 12,
-  "enrolments": [],
+  "counter": 13,
+  "enrolments": [
+    {
+      "enrolmentType": "internship",
+      "courseId": "ai-mobile-app",
+      "courseTitle": "AI Mobile App",
+      "planId": "builder",
+      "planName": "Builder",
+      "batchId": "nov-2026-batch-1",
+      "batchLabel": "Nov 2026 Batch",
+      "student": {
+        "fullName": "Test Student",
+        "email": "test@example.com",
+        "mobile": "9876543210",
+        "dob": "",
+        "city": "Coimbatore",
+        "college": "PSG Tech",
+        "degreeStream": "BE CSE",
+        "yearOfStudy": "3rd Year",
+        "languages": [
+          "Dart"
+        ],
+        "referralSource": "Direct"
+      },
+      "assessment": {
+        "score": 0,
+        "total": 5,
+        "answers": {},
+        "completedAt": "2026-11-25T13:28:15.849Z"
+      },
+      "pricing": {
+        "baseAmount": 1800,
+        "discountAmount": 0,
+        "couponCode": null,
+        "finalAmount": 1800,
+        "currency": "INR"
+      },
+      "payment": {
+        "status": "pending",
+        "orderId": "order_U4QOGA1TsvtC76"
+      },
+      "id": "VGM-2026-0013",
+      "enrollmentNumber": "VGM-2026-0013",
+      "createdAt": "2026-11-25T13:28:15.852Z",
+      "updatedAt": "2026-11-25T13:28:16.149Z"
+    }
+  ],
   "coupons": [],
   "processedWebhooks": [],
   "courses": [

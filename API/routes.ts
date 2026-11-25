@@ -237,39 +237,47 @@ apiRouter.post('/create-order', apiRateLimiter, validateBody(createOrderSchema),
       }
     });
 
-    // Create Razorpay order
-    const rzpOrder = await RazorpayService.createOrder({
-      amountPaise: amountInPaise,
-      currency: 'INR',
-      receipt: pendingEnrolment.id,
-      notes: {
-        enrolmentId: pendingEnrolment.id,
-        courseId: pendingEnrolment.courseId || 'ai-mobile-app',
-        courseTitle: pendingEnrolment.courseTitle || 'AI-Powered Mobile App',
-        studentName: pendingEnrolment.student.fullName,
-        studentEmail: pendingEnrolment.student.email,
-        plan: resolvedPlanName
-      }
-    });
+    // Create Razorpay order (or fallback to staff collection order ID if gateway fails)
+    let rzpOrderId = `order_staff_${Date.now()}`;
+    let isSimulated = false;
+    try {
+      const rzpOrder = await RazorpayService.createOrder({
+        amountPaise: amountInPaise,
+        currency: 'INR',
+        receipt: pendingEnrolment.id,
+        notes: {
+          enrolmentId: pendingEnrolment.id,
+          courseId: pendingEnrolment.courseId || 'ai-mobile-app',
+          courseTitle: pendingEnrolment.courseTitle || 'AI-Powered Mobile App',
+          studentName: pendingEnrolment.student.fullName,
+          studentEmail: pendingEnrolment.student.email,
+          plan: resolvedPlanName
+        }
+      });
+      rzpOrderId = rzpOrder.id;
+      isSimulated = !!rzpOrder.isSimulated;
+    } catch (rzpErr: any) {
+      console.warn('Razorpay order creation skipped/failed, proceeding with staff collection order:', rzpErr?.message);
+    }
 
     // Update pending enrolment with orderId
     DB.updateEnrolment(pendingEnrolment.id, {
       payment: {
         status: 'pending',
-        orderId: rzpOrder.id
+        orderId: rzpOrderId
       }
     });
 
     return res.json({
       success: true,
-      orderId: rzpOrder.id,
+      orderId: rzpOrderId,
       enrolmentId: pendingEnrolment.id,
       enrollmentNumber: pendingEnrolment.enrollmentNumber,
       amount: finalAmount,
       amountPaise: amountInPaise,
       currency: 'INR',
       keyId: RazorpayService.getKeyId(),
-      isSimulated: rzpOrder.isSimulated,
+      isSimulated: isSimulated,
       planName: resolvedPlanName,
       courseTitle: pendingEnrolment.courseTitle,
       student: {

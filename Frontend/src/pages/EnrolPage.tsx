@@ -339,88 +339,13 @@ export const EnrolPage: React.FC = () => {
       }
 
       const orderData = await res.json();
-      const RazorpayConstructor = (window as any).Razorpay;
+      const enrId = orderData.enrollmentNumber || orderData.enrolmentId;
 
-      // In production mode, disallow test simulator modal
-      if (import.meta.env.PROD && (orderData.isSimulated || orderData.keyId === 'rzp_test_placeholder_key')) {
-        throw new Error('Payment gateway is currently connecting to live Razorpay. Please contact admissions at contact@vgmsofttech.com or retry shortly.');
-      }
-
-      if (!RazorpayConstructor && import.meta.env.PROD) {
-        throw new Error('Razorpay secure checkout failed to load. Please disable ad-blockers or check your internet connection.');
-      }
-
-      if (!RazorpayConstructor || orderData.isSimulated || orderData.keyId === 'rzp_test_placeholder_key') {
-        // Show seamless test payment simulator modal in local development
-        setSimulatedOrderModal({
-          orderId: orderData.orderId,
-          enrolmentId: orderData.enrolmentId,
-          amount: orderData.amount,
-          studentName: studentData.fullName,
-          keyId: orderData.keyId
-        });
-        setIsProcessingPayment(false);
-        return;
-      }
-
-      // Configure official Razorpay Checkout
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amountPaise,
-        currency: 'INR',
-        name: 'VGM Skill Hub',
-        description: `${orderData.planName} - 2026`,
-        image: '/assets/logo.png',
-        order_id: orderData.orderId,
-        prefill: {
-          name: studentData.fullName,
-          email: studentData.email,
-          contact: studentData.mobile
-        },
-        notes: {
-          enrolmentId: orderData.enrolmentId,
-          plan: orderData.planName
-        },
-        theme: {
-          color: '#43C170'
-        },
-        handler: async function (response: any) {
-          try {
-            const verifyRes = await fetch(getApiUrl('/api/verify-payment'), {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                enrolmentId: orderData.enrolmentId
-              })
-            });
-
-            const verifyData = await verifyRes.json();
-            if (verifyData.success) {
-              navigate(`/payment/success?enrolmentId=${orderData.enrolmentId}`);
-            } else {
-              navigate(`/payment/failed?enrolmentId=${orderData.enrolmentId}&reason=${encodeURIComponent(verifyData.error || 'Signature check failed')}`);
-            }
-          } catch (e: any) {
-            navigate(`/payment/failed?enrolmentId=${orderData.enrolmentId}&reason=VerificationNetworkError`);
-          }
-        },
-        modal: {
-          ondismiss: function () {
-            setIsProcessingPayment(false);
-            navigate(`/payment/failed?enrolmentId=${orderData.enrolmentId}&reason=UserDismissed`);
-          }
-        }
-      };
-
-      const rzpInstance = new RazorpayConstructor(options);
-      rzpInstance.on('payment.failed', function (failResp: any) {
-        setIsProcessingPayment(false);
-        navigate(`/payment/failed?enrolmentId=${orderData.enrolmentId}&reason=${encodeURIComponent(failResp.error.description || 'Payment failed')}`);
-      });
-      rzpInstance.open();
+      // Staff Collection flow: application registered successfully into database
+      // Navigate directly to confirmation page showing Enrolment Number and staff collection instructions
+      setIsProcessingPayment(false);
+      navigate(`/payment/success?enrolmentId=${encodeURIComponent(enrId)}&staff_collection=true`);
+      return;
     } catch (err: any) {
       console.error('Payment checkout error:', err);
       setPaymentError(err.message || 'Error communicating with payment gateway.');
@@ -1008,7 +933,7 @@ export const EnrolPage: React.FC = () => {
               <hr className="border-[#1E9E54]/20" />
               <div className="flex justify-between items-baseline pt-1">
                 <div>
-                  <span className="font-heading text-base font-black text-[#111111] block">Total Payable Now</span>
+                  <span className="font-heading text-base font-black text-[#111111] block">Total Program Fee</span>
                   <span className="text-[11px] text-[#555555]">Includes all taxes, mentorship, materials, live repo access and certificate</span>
                 </div>
                 <span className="font-heading text-3xl font-black text-[#1E9E54] tabular-nums">
@@ -1097,30 +1022,30 @@ export const EnrolPage: React.FC = () => {
                   type="button"
                   onClick={handleRazorpayPayment}
                   disabled={isProcessingPayment}
-                  className="w-full sm:w-auto px-8 py-3.5 bg-[#1E9E54] hover:bg-[#14723B] text-black font-bold rounded-xl shadow-[0_0_25px_rgba(30,158,84,0.4)] transition-all flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
+                  className="w-full sm:w-auto px-8 py-3.5 bg-[#1E9E54] hover:bg-[#14723B] text-white font-bold rounded-xl shadow-[0_0_25px_rgba(30,158,84,0.4)] transition-all flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
                 >
                   {isProcessingPayment ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Connecting to Razorpay...</span>
+                      <span>Registering Application...</span>
                     </>
                   ) : (
                     <>
-                      <Lock className="w-4 h-4" />
-                      <span>Pay ₹{finalPrice.toLocaleString('en-IN')} Securely with Razorpay</span>
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span>Submit Application &amp; Register</span>
                     </>
                   )}
                 </button>
               )}
             </div>
 
-            <div className="flex items-center justify-center gap-4 text-xs font-mono text-[#999999] pt-2">
-              <span className="flex items-center gap-1">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-xs font-mono text-[#666666] pt-2 text-center">
+              <span className="flex items-center gap-1.5 text-[#14723B] font-semibold">
                 <ShieldCheck className="w-4 h-4 text-[#1E9E54]" />
-                <span>Razorpay 256-bit SSL Encryption</span>
+                <span>Payment will be collected directly by company staff via call</span>
               </span>
-              <span>·</span>
-              <span>UPI / Netbanking / Cards / Wallets</span>
+              <span className="hidden sm:inline">·</span>
+              <span>Official Enrolment Number assigned instantly</span>
             </div>
           </motion.div>
         )}

@@ -223,97 +223,14 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
         throw new Error(orderData.error || 'Failed to initialize course purchase.');
       }
 
-      const RazorpayConstructor = (window as any).Razorpay;
+      const enrId = orderData.enrollmentNumber || orderData.enrolmentId;
 
-      // In production, reject simulated flow
-      if (import.meta.env.PROD && (orderData.isSimulated || orderData.keyId === 'rzp_test_placeholder_key')) {
-        throw new Error('Payment gateway is currently configuring live credentials. Please reach out to admissions at contact@vgmsofttech.com');
-      }
-
-      if (!RazorpayConstructor && import.meta.env.PROD) {
-        throw new Error('Razorpay secure checkout failed to load. Please verify your connection.');
-      }
-
-      // If Razorpay SDK is present, open standard checkout
-      if (RazorpayConstructor) {
-        const options = {
-          key: orderData.keyId,
-          amount: orderData.amountPaise,
-          currency: 'INR',
-          name: 'VGM Skill Hub',
-          description: `${course.title} — ${activeTier.name}`,
-          image: '/assets/logo.png',
-          order_id: orderData.orderId,
-          prefill: {
-            name: fullName,
-            email: email,
-            contact: mobile
-          },
-          notes: {
-            enrolmentId: orderData.enrolmentId,
-            courseId: course.id,
-            plan: activeTier.name,
-            enrolmentType: 'course'
-          },
-          theme: { color: '#1E9E54' },
-          handler: async (response: any) => {
-            try {
-              const verifyRes = await fetch(getApiUrl('/api/verify-payment'), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature,
-                  enrolmentId: orderData.enrolmentId
-                })
-              });
-              const verifyData = await verifyRes.json();
-              if (verifyRes.ok && verifyData.success) {
-                onClose();
-                navigate(`/payment/success?enrolmentId=${orderData.enrolmentId}`);
-              } else {
-                onClose();
-                navigate(`/payment/failed?enrolmentId=${orderData.enrolmentId}&reason=VerificationError`);
-              }
-            } catch {
-              onClose();
-              navigate(`/payment/failed?enrolmentId=${orderData.enrolmentId}&reason=NetworkError`);
-            }
-          },
-          modal: {
-            ondismiss: () => {
-              setIsSubmitting(false);
-            }
-          }
-        };
-
-        const rzp = new RazorpayConstructor(options);
-        rzp.open();
-        setIsSubmitting(false);
-        return;
-      }
-
-      // Development fallback if offline / test simulator
-      if (!import.meta.env.PROD) {
-        const verifyRes = await fetch(getApiUrl('/api/verify-payment'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            razorpay_order_id: orderData.orderId,
-            razorpay_payment_id: `pay_sim_${Date.now()}`,
-            razorpay_signature: 'test_dev_sig',
-            enrolmentId: orderData.enrolmentId
-          })
-        });
-        const vData = await verifyRes.json();
-        if (vData.success) {
-          onClose();
-          navigate(`/payment/success?enrolmentId=${orderData.enrolmentId}`);
-        } else {
-          throw new Error('Simulation confirmation failed');
-        }
-      }
+      // Staff Collection flow: application registered successfully into database
+      // Navigate directly to confirmation page showing Enrolment Number and staff collection instructions
+      setIsSubmitting(false);
+      onClose();
+      navigate(`/payment/success?enrolmentId=${encodeURIComponent(enrId)}&staff_collection=true`);
+      return;
     } catch (err: any) {
       setErrorMessage(err.message || 'Payment processing error');
       setIsSubmitting(false);
@@ -628,21 +545,25 @@ export const CoursePurchaseModal: React.FC<CoursePurchaseModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 py-3 bg-[#111111] hover:bg-[#1E9E54] text-white text-xs font-mono font-bold uppercase tracking-wider rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-3 bg-[#1E9E54] hover:bg-[#14723B] text-white text-xs font-mono font-bold uppercase tracking-wider rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Initiating Razorpay...</span>
+                      <span>Registering Application...</span>
                     </>
                   ) : (
                     <>
-                      <CreditCard className="w-4 h-4" />
-                      <span>Pay ₹{finalFee.toLocaleString('en-IN')} &amp; Enrol</span>
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Submit Application (₹{finalFee.toLocaleString('en-IN')})</span>
                     </>
                   )}
                 </button>
               </div>
+
+              <p className="text-[11px] text-center text-[#666666] pt-1 font-mono">
+                📞 Fee payment will be collected directly by company staff via call.
+              </p>
             </form>
           )}
         </div>
