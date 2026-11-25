@@ -20,11 +20,11 @@ import {
   Lock
 } from 'lucide-react';
 import { CONTACT_INFO } from '../config/programData.js';
-import { CourseItem } from '../config/coursesData.js';
+import { CourseItem, COURSES_CATALOG } from '../config/coursesData.js';
 import { getApiUrl } from '../config/api.js';
 
 export const Footer: React.FC = () => {
-  const [courses, setCourses] = useState<CourseItem[]>([]);
+  const [courses, setCourses] = useState<CourseItem[]>(() => COURSES_CATALOG);
 
   useEffect(() => {
     fetch(getApiUrl('/api/courses'))
