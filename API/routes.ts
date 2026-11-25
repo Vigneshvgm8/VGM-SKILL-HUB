@@ -437,7 +437,15 @@ apiRouter.get('/admin/stats', requireAdmin, (_req, res) => {
 });
 
 // 10. GET /api/admin/enrolments (with search and filters)
-apiRouter.get('/admin/enrolments', requireAdmin, (req, res) => {
+apiRouter.get('/admin/enrolments', requireAdmin, async (req, res) => {
+  if (SupabaseService.isAvailable()) {
+    try {
+      const remote = await SupabaseService.getEnrolments();
+      if (Array.isArray(remote)) {
+        DB.setEnrolments(remote);
+      }
+    } catch (e) {}
+  }
   const { search, plan, status, batch, course } = req.query;
   let list = DB.getEnrolments();
 
@@ -537,11 +545,19 @@ apiRouter.get('/admin/export-csv', requireAdmin, (_req, res) => {
 });
 
 // 12. Coupon Management Routes
-apiRouter.get('/admin/coupons', requireAdmin, (_req, res) => {
+apiRouter.get('/admin/coupons', requireAdmin, async (_req, res) => {
+  if (SupabaseService.isAvailable()) {
+    try {
+      const remote = await SupabaseService.getCoupons();
+      if (Array.isArray(remote)) {
+        DB.setCoupons(remote);
+      }
+    } catch (e) {}
+  }
   res.json({ coupons: DB.getCoupons() });
 });
 
-apiRouter.post('/admin/coupons', requireAdmin, validateBody(couponCreateSchema), (req, res) => {
+apiRouter.post('/admin/coupons', requireAdmin, validateBody(couponCreateSchema), async (req, res) => {
   const { code, discountType, discountValue, expiresAt, usageLimit, description } = req.body;
 
   const existing = DB.getCouponByCode(code);
@@ -549,7 +565,7 @@ apiRouter.post('/admin/coupons', requireAdmin, validateBody(couponCreateSchema),
     return res.status(400).json({ error: 'A coupon with this code already exists' });
   }
 
-  const newCoupon = DB.createCoupon({
+  const newCoupon = await DB.createCoupon({
     code: code.trim().toUpperCase(),
     discountType: discountType || 'percentage',
     discountValue: Number(discountValue),
@@ -562,16 +578,16 @@ apiRouter.post('/admin/coupons', requireAdmin, validateBody(couponCreateSchema),
   res.json({ success: true, coupon: newCoupon });
 });
 
-apiRouter.patch('/admin/coupons/:id', requireAdmin, validateBody(couponUpdateSchema), (req, res) => {
-  const updated = DB.updateCoupon(req.params.id, req.body);
+apiRouter.patch('/admin/coupons/:id', requireAdmin, validateBody(couponUpdateSchema), async (req, res) => {
+  const updated = await DB.updateCoupon(req.params.id, req.body);
   if (!updated) {
     return res.status(404).json({ error: 'Coupon not found' });
   }
   res.json({ success: true, coupon: updated });
 });
 
-apiRouter.delete('/admin/coupons/:id', requireAdmin, (req, res) => {
-  const success = DB.deleteCoupon(req.params.id);
+apiRouter.delete('/admin/coupons/:id', requireAdmin, async (req, res) => {
+  const success = await DB.deleteCoupon(req.params.id);
   if (!success) {
     return res.status(404).json({ error: 'Coupon not found' });
   }
@@ -579,7 +595,15 @@ apiRouter.delete('/admin/coupons/:id', requireAdmin, (req, res) => {
 });
 
 // 13. Dynamic Course Management Routes
-apiRouter.get('/courses', publicRateLimiter, (_req, res) => {
+apiRouter.get('/courses', publicRateLimiter, async (_req, res) => {
+  if (SupabaseService.isAvailable()) {
+    try {
+      const remoteCourses = await SupabaseService.getCourses();
+      if (Array.isArray(remoteCourses)) {
+        DB.setCourses(remoteCourses);
+      }
+    } catch (e) {}
+  }
   res.json({ courses: DB.getCourses() });
 });
 
@@ -612,9 +636,9 @@ apiRouter.put('/admin/courses/:id', requireAdmin, (req, res) => {
   }
 });
 
-apiRouter.delete('/admin/courses/:id', requireAdmin, (req, res) => {
+apiRouter.delete('/admin/courses/:id', requireAdmin, async (req, res) => {
   try {
-    const success = DB.deleteCourse(req.params.id);
+    const success = await DB.deleteCourse(req.params.id);
     if (!success) {
       return res.status(404).json({ error: 'Course not found' });
     }
@@ -757,6 +781,19 @@ apiRouter.patch('/admin/enrolments/:id/status', requireAdmin, validateBody(enrol
   res.json({ success: true, enrolment: updated });
 });
 
+// Enrolment Deletion Route (Admin - Permanent)
+apiRouter.delete('/admin/enrolments/:id', requireAdmin, async (req, res) => {
+  try {
+    const success = await DB.deleteEnrolment(req.params.id);
+    if (!success) {
+      return res.status(404).json({ error: 'Enrolment not found.' });
+    }
+    res.json({ success: true, message: 'Enrolment permanently deleted.' });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Error deleting enrolment.' });
+  }
+});
+
 // 17. Certificate Routes (Public Verification + Admin Management)
 apiRouter.get('/certificates/:id', publicRateLimiter, async (req, res) => {
   const query = req.params.id;
@@ -789,7 +826,15 @@ apiRouter.get('/certificates/:id', publicRateLimiter, async (req, res) => {
   });
 });
 
-apiRouter.get('/admin/certificates', requireAdmin, (req, res) => {
+apiRouter.get('/admin/certificates', requireAdmin, async (req, res) => {
+  if (SupabaseService.isAvailable()) {
+    try {
+      const remote = await SupabaseService.getCertificates();
+      if (Array.isArray(remote)) {
+        DB.setCertificates(remote);
+      }
+    } catch (e) {}
+  }
   const { search } = req.query;
   let list = DB.getCertificates();
   if (search && typeof search === 'string') {
@@ -826,9 +871,9 @@ apiRouter.patch('/admin/certificates/:id', requireAdmin, validateBody(certificat
   }
 });
 
-apiRouter.delete('/admin/certificates/:id', requireAdmin, (req, res) => {
+apiRouter.delete('/admin/certificates/:id', requireAdmin, async (req, res) => {
   try {
-    const success = DB.deleteCertificate(req.params.id);
+    const success = await DB.deleteCertificate(req.params.id);
     if (!success) {
       return res.status(404).json({ error: 'Certificate not found' });
     }

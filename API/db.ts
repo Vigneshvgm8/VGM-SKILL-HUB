@@ -418,30 +418,32 @@ if (isSupabaseConfigured) {
       if (ping.connected) {
         console.log(`[SUPABASE] Verified connection in ${ping.latencyMs}ms. Syncing local cache with remote PostgreSQL...`);
         const remoteCourses = await SupabaseService.getCourses();
-        const existingSlugs = new Set((remoteCourses || []).map((c: any) => c.slug?.toLowerCase()));
-        const missingCourses = INITIAL_COURSES.filter(c => !existingSlugs.has(c.slug.toLowerCase()));
 
-        if (missingCourses.length > 0) {
-          console.log(`[SUPABASE] Seeding ${missingCourses.length} missing initial courses into Supabase...`);
-          await SupabaseService.upsertCourses(missingCourses);
+        // STRICT SINGLE SOURCE OF TRUTH:
+        // Only seed initial courses if BOTH remote Supabase and local cache are completely virgin/empty!
+        if ((!remoteCourses || remoteCourses.length === 0) && (!db.courses || db.courses.length === 0)) {
+          console.log('[SUPABASE] Virgin empty database detected. Seeding initial courses into Supabase...');
+          await SupabaseService.upsertCourses(INITIAL_COURSES);
           const allCourses = await SupabaseService.getCourses();
-          db.courses = allCourses.length > 0 ? allCourses : INITIAL_COURSES;
+          db.courses = allCourses.length > 0 ? allCourses : [...INITIAL_COURSES];
         } else {
-          db.courses = remoteCourses.length > 0 ? remoteCourses : [...INITIAL_COURSES];
+          // Supabase is the single source of truth: mirror remoteCourses exactly (never re-seed deleted courses!)
+          console.log(`[SUPABASE] Loaded ${remoteCourses.length} active courses from Supabase.`);
+          db.courses = remoteCourses;
         }
 
         const remoteEnrolments = await SupabaseService.getEnrolments();
-        if (remoteEnrolments.length > 0) {
+        if (Array.isArray(remoteEnrolments)) {
           db.enrolments = remoteEnrolments;
         }
 
         const remoteCoupons = await SupabaseService.getCoupons();
-        if (remoteCoupons.length > 0) {
+        if (Array.isArray(remoteCoupons)) {
           db.coupons = remoteCoupons;
         }
 
         const remoteCertificates = await SupabaseService.getCertificates();
-        if (remoteCertificates.length > 0) {
+        if (Array.isArray(remoteCertificates)) {
           db.certificates = remoteCertificates;
         }
         saveDB();
@@ -623,6 +625,23 @@ export const DB = {
     return db.enrolments[idx];
   },
 
+  async deleteEnrolment(id: string): Promise<boolean> {
+    if (!db.enrolments) return false;
+    const clean = id.trim();
+    const initLen = db.enrolments.length;
+    db.enrolments = db.enrolments.filter(e => e.id !== clean);
+    if (db.enrolments.length !== initLen) {
+      saveDB();
+      if (SupabaseService.isAvailable()) {
+        await SupabaseService.deleteEnrolment(clean).catch(e =>
+          console.error('[SUPABASE ASYNC ERROR] deleteEnrolment:', e?.message || e)
+        );
+      }
+      return true;
+    }
+    return false;
+  },
+
   getCoupons(): Coupon[] {
     return [...db.coupons];
   },
@@ -632,7 +651,7 @@ export const DB = {
     return db.coupons.find(c => c.code.toUpperCase() === normalized);
   },
 
-  createCoupon(couponData: Omit<Coupon, 'id' | 'timesUsed'>): Coupon {
+  async createCoupon(couponData: Omit<Coupon, 'id' | 'timesUsed'>): Promise<Coupon> {
     const id = `c-${Date.now()}`;
     const newCoupon: Coupon = {
       ...couponData,
@@ -642,10 +661,15 @@ export const DB = {
     };
     db.coupons.push(newCoupon);
     saveDB();
+    if (SupabaseService.isAvailable()) {
+      await SupabaseService.createCoupon(newCoupon).catch(e =>
+        console.error('[SUPABASE ASYNC ERROR] createCoupon:', e?.message || e)
+      );
+    }
     return newCoupon;
   },
 
-  updateCoupon(id: string, updates: Partial<Coupon>): Coupon | null {
+  async updateCoupon(id: string, updates: Partial<Coupon>): Promise<Coupon | null> {
     const idx = db.coupons.findIndex(c => c.id === id || c.code.toUpperCase() === id.toUpperCase());
     if (idx === -1) return null;
 
@@ -654,14 +678,24 @@ export const DB = {
       ...updates
     };
     saveDB();
+    if (SupabaseService.isAvailable()) {
+      await SupabaseService.updateCoupon(db.coupons[idx].id, updates).catch(e =>
+        console.error('[SUPABASE ASYNC ERROR] updateCoupon:', e?.message || e)
+      );
+    }
     return db.coupons[idx];
   },
 
-  deleteCoupon(id: string): boolean {
+  async deleteCoupon(id: string): Promise<boolean> {
     const initialLen = db.coupons.length;
     db.coupons = db.coupons.filter(c => c.id !== id && c.code.toUpperCase() !== id.toUpperCase());
     if (db.coupons.length !== initialLen) {
       saveDB();
+      if (SupabaseService.isAvailable()) {
+        await SupabaseService.deleteCoupon(id).catch(e =>
+          console.error('[SUPABASE ASYNC ERROR] deleteCoupon:', e?.message || e)
+        );
+      }
       return true;
     }
     return false;
@@ -693,6 +727,45 @@ export const DB = {
   // --- Dynamic Course Management ---
   getCourses(): CourseItem[] {
     return [...(db.courses || [])];
+  },
+
+  setCourses(courses: CourseItem[]): void {
+    db.courses = courses;
+    saveDB();
+  },
+
+  setEnrolments(enrolments: Enrolment[]): void {
+    db.enrolments = enrolments;
+    saveDB();
+  },
+
+  setCoupons(coupons: Coupon[]): void {
+    db.coupons = coupons;
+    saveDB();
+  },
+
+  setCertificates(certificates: Certificate[]): void {
+    db.certificates = certificates;
+    saveDB();
+  },
+
+  async syncFromSupabase(): Promise<void> {
+    if (!SupabaseService.isAvailable()) return;
+    try {
+      const [remoteCourses, remoteEnrolments, remoteCoupons, remoteCertificates] = await Promise.all([
+        SupabaseService.getCourses(),
+        SupabaseService.getEnrolments(),
+        SupabaseService.getCoupons(),
+        SupabaseService.getCertificates()
+      ]);
+      if (Array.isArray(remoteCourses)) db.courses = remoteCourses;
+      if (Array.isArray(remoteEnrolments)) db.enrolments = remoteEnrolments;
+      if (Array.isArray(remoteCoupons)) db.coupons = remoteCoupons;
+      if (Array.isArray(remoteCertificates)) db.certificates = remoteCertificates;
+      saveDB();
+    } catch (err) {
+      console.error('[SUPABASE SYNC ERROR]', err);
+    }
   },
 
   getCourseBySlug(slugOrId: string): CourseItem | undefined {
@@ -790,7 +863,7 @@ export const DB = {
     return db.courses[idx];
   },
 
-  deleteCourse(idOrSlug: string): boolean {
+  async deleteCourse(idOrSlug: string): Promise<boolean> {
     if (!db.courses) return false;
     const q = idOrSlug.trim().toLowerCase();
     const initLen = db.courses.length;
@@ -798,7 +871,7 @@ export const DB = {
     if (db.courses.length !== initLen) {
       saveDB();
       if (SupabaseService.isAvailable()) {
-        SupabaseService.deleteCourse(idOrSlug).catch(e =>
+        await SupabaseService.deleteCourse(idOrSlug).catch(e =>
           console.error('[SUPABASE ASYNC ERROR] deleteCourse:', e?.message || e)
         );
       }
@@ -1027,6 +1100,11 @@ export const DB = {
 
     db.certificates.push(newCert);
     saveDB();
+    if (SupabaseService.isAvailable()) {
+      SupabaseService.upsertCertificates([newCert]).catch(e =>
+        console.error('[SUPABASE ASYNC ERROR] createCertificate:', e?.message || e)
+      );
+    }
     return newCert;
   },
 
@@ -1042,16 +1120,26 @@ export const DB = {
       updatedAt: new Date().toISOString()
     };
     saveDB();
+    if (SupabaseService.isAvailable()) {
+      SupabaseService.upsertCertificates([db.certificates[idx]]).catch(e =>
+        console.error('[SUPABASE ASYNC ERROR] updateCertificate:', e?.message || e)
+      );
+    }
     return db.certificates[idx];
   },
 
-  deleteCertificate(id: string): boolean {
+  async deleteCertificate(id: string): Promise<boolean> {
     if (!db.certificates) return false;
     const clean = id.trim().toUpperCase();
     const initLen = db.certificates.length;
     db.certificates = db.certificates.filter(c => c.id.toUpperCase() !== clean);
     if (db.certificates.length !== initLen) {
       saveDB();
+      if (SupabaseService.isAvailable()) {
+        await SupabaseService.deleteCertificate(id).catch(e =>
+          console.error('[SUPABASE ASYNC ERROR] deleteCertificate:', e?.message || e)
+        );
+      }
       return true;
     }
     return false;

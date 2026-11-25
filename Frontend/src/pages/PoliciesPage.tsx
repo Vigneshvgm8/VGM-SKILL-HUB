@@ -12,7 +12,7 @@ export const PoliciesPage: React.FC = () => {
   if (location.pathname.includes('/refund')) initialTab = 'refund';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-24">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 md:pt-44 pb-16 md:pb-24">
       
       {/* Header */}
       <div className="border-b border-slate-200 pb-6 mb-8">

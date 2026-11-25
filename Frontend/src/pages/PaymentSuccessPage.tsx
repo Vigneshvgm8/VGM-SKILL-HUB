@@ -51,7 +51,7 @@ export const PaymentSuccessPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center pt-28 sm:pt-32 pb-16">
+      <div className="min-h-screen bg-[#FFFFFF] flex items-center justify-center pt-36 sm:pt-40 md:pt-44 pb-16">
         <p className="text-sm text-[#555555]">Retrieving official enrolment record...</p>
       </div>
     );

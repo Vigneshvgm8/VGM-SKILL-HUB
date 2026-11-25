@@ -343,6 +343,24 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleDeleteEnrolment = async (enrolmentId: string) => {
+    if (!token || !window.confirm(`Are you sure you want to permanently delete enrolment ${enrolmentId}? This action cannot be undone.`)) return;
+
+    try {
+      const res = await fetch(`/api/admin/enrolments/${enrolmentId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        fetchDashboardData();
+      } else {
+        alert('Failed to delete enrolment record.');
+      }
+    } catch (err) {
+      alert('Network error deleting enrolment record.');
+    }
+  };
+
   const handleDeleteCourse = async (courseId: string) => {
     if (!token || !window.confirm('Are you sure you want to delete this course from the database?')) return;
 
@@ -1320,14 +1338,22 @@ export const AdminDashboard: React.FC = () => {
                             <option value="failed">Failed</option>
                           </select>
                         </td>
-                        <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                        <td className="py-3.5 px-4 text-right whitespace-nowrap space-x-1">
                           <button
                             type="button"
                             onClick={() => setSelectedEnrolment(e)}
-                            className="p-1.5 hover:bg-slate-100 rounded text-slate-600 hover:text-slate-900"
+                            className="p-1.5 hover:bg-slate-100 rounded text-slate-600 hover:text-slate-900 transition-colors"
                             title="View student dossier"
                           >
                             <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteEnrolment(e.id)}
+                            className="p-1.5 hover:bg-red-50 rounded text-slate-400 hover:text-red-600 transition-colors"
+                            title="Permanently delete enrolment"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         </td>
                       </tr>

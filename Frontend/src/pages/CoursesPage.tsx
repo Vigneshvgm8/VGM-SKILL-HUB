@@ -31,21 +31,29 @@ const DOMAIN_CODES: Record<string, string> = {
 
 export const CoursesPage: React.FC = () => {
   const navigate = useNavigate();
-  const [courses, setCourses] = useState<CourseItem[]>(COURSES_CATALOG);
+  const [courses, setCourses] = useState<CourseItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('All Tracks');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeModalCourse, setActiveModalCourse] = useState<CourseItem | null>(null);
 
-  // Fetch server courses if updated in DB
+  // Fetch server courses from DB
   useEffect(() => {
     fetch('/api/courses')
       .then(res => res.json())
       .then(data => {
         if (data.courses && Array.isArray(data.courses) && data.courses.length > 0) {
           setCourses(data.courses);
+        } else {
+          setCourses(COURSES_CATALOG);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        setCourses(COURSES_CATALOG);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   // Filtered courses
@@ -132,7 +140,7 @@ export const CoursesPage: React.FC = () => {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="mt-6 text-base sm:text-lg text-[#555555] max-w-2xl mx-auto font-light leading-relaxed"
         >
-          Six production-grade engineering curricula engineered as collectible exhibition posters. Built for developers who shape tomorrow.
+          {courses.length} production-grade engineering {courses.length === 1 ? 'curriculum' : 'curricula'} engineered as collectible exhibition posters. Built for developers who shape tomorrow.
         </motion.p>
 
         {/* Meta Information Strip */}
@@ -142,7 +150,7 @@ export const CoursesPage: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="mt-6 flex flex-wrap items-center justify-center gap-6 text-[11px] font-mono text-[#777777] uppercase tracking-widest"
         >
-          <span>06 ORIGINAL TRACKS</span>
+          <span>{String(courses.length).padStart(2, '0')} ORIGINAL {courses.length === 1 ? 'TRACK' : 'TRACKS'}</span>
           <span className="text-black/20">·</span>
           <span>400+ HOURS PRACTICAL</span>
           <span className="text-black/20">·</span>
@@ -212,7 +220,7 @@ export const CoursesPage: React.FC = () => {
       {/* 3. CURRICULUM CATALOGUE WITH LEON VASARI CURVED 3D SHELF     */}
       {/*    (100% UNTOUCHED AS EXPLICITLY REQUESTED BY USER)          */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section className="relative z-10 w-full mb-20 scroll-mt-32" id="curriculum-catalogue">
+      <section className="relative z-10 w-full mb-20 scroll-mt-44" id="curriculum-catalogue">
         
         {/* Results Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

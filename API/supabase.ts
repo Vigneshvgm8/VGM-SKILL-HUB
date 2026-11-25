@@ -144,6 +144,30 @@ export const SupabaseService = {
     return data ? formatEnrolmentFromDb(data) : null;
   },
 
+  async deleteEnrolment(id: string): Promise<boolean> {
+    if (!supabaseClient) return false;
+    const clean = id.trim();
+    try {
+      await supabaseClient
+        .from('project_submissions')
+        .delete()
+        .eq('enrolment_id', clean);
+    } catch (e) {
+      // ignore
+    }
+
+    const { error } = await supabaseClient
+      .from('enrolments')
+      .delete()
+      .eq('id', clean);
+
+    if (error) {
+      console.error('[SUPABASE ERROR] deleteEnrolment:', error.message);
+      return false;
+    }
+    return true;
+  },
+
   // 2. Project Submissions
   async submitProject(enrolmentId: string, project: { githubUrl: string; liveUrl?: string; notes?: string }): Promise<any> {
     if (!supabaseClient) return null;
@@ -264,6 +288,72 @@ export const SupabaseService = {
         .update({ times_used: coupon.timesUsed + 1 })
         .eq('id', coupon.id);
     }
+  },
+
+  async deleteCoupon(idOrCode: string): Promise<boolean> {
+    if (!supabaseClient) return false;
+    const clean = idOrCode.trim();
+    const { error } = await supabaseClient
+      .from('coupons')
+      .delete()
+      .or(`id.eq.${clean},code.eq.${clean.toUpperCase()}`);
+
+    if (error) {
+      console.error('[SUPABASE ERROR] deleteCoupon:', error.message);
+      return false;
+    }
+    return true;
+  },
+
+  async createCoupon(coupon: any): Promise<any> {
+    if (!supabaseClient) return null;
+    const { data, error } = await supabaseClient
+      .from('coupons')
+      .insert({
+        id: coupon.id,
+        code: coupon.code,
+        discount_type: coupon.discountType,
+        discount_value: coupon.discountValue,
+        expires_at: coupon.expiresAt,
+        usage_limit: coupon.usageLimit,
+        times_used: coupon.timesUsed || 0,
+        is_active: coupon.isActive !== false,
+        description: coupon.description || ''
+      })
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('[SUPABASE ERROR] createCoupon:', error.message);
+      return null;
+    }
+    return data ? formatCouponFromDb(data) : null;
+  },
+
+  async updateCoupon(id: string, updates: any): Promise<any | null> {
+    if (!supabaseClient) return null;
+    const payload: Record<string, any> = {};
+    if (updates.code) payload.code = updates.code;
+    if (updates.discountType) payload.discount_type = updates.discountType;
+    if (updates.discountValue !== undefined) payload.discount_value = updates.discountValue;
+    if (updates.expiresAt) payload.expires_at = updates.expiresAt;
+    if (updates.usageLimit !== undefined) payload.usage_limit = updates.usageLimit;
+    if (updates.timesUsed !== undefined) payload.times_used = updates.timesUsed;
+    if (updates.isActive !== undefined) payload.is_active = updates.isActive;
+    if (updates.description !== undefined) payload.description = updates.description;
+
+    const { data, error } = await supabaseClient
+      .from('coupons')
+      .update(payload)
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error('[SUPABASE ERROR] updateCoupon:', error.message);
+      return null;
+    }
+    return data ? formatCouponFromDb(data) : null;
   },
 
   // 5. Webhooks Idempotency

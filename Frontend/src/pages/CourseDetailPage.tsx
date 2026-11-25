@@ -45,7 +45,7 @@ export const CourseDetailPage: React.FC = () => {
 
   if (loading && !course) {
     return (
-      <div className="min-h-screen bg-[#FFFFFF] pt-36 sm:pt-40 pb-24 px-4 max-w-3xl mx-auto text-center space-y-4">
+      <div className="min-h-screen bg-[#FFFFFF] pt-36 sm:pt-40 md:pt-44 pb-24 px-4 max-w-3xl mx-auto text-center space-y-4">
         <div className="w-10 h-10 border-4 border-[#1E9E54] border-t-transparent rounded-full animate-spin mx-auto" />
         <p className="text-[#666666] text-sm">Loading course details...</p>
       </div>

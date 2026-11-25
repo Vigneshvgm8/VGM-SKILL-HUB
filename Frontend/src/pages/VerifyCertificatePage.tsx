@@ -109,7 +109,7 @@ export const VerifyCertificatePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] pt-28 sm:pt-32 md:pt-36 pb-16 md:pb-20 font-body">
+    <div className="min-h-screen bg-[#FFFFFF] pt-36 sm:pt-40 md:pt-44 pb-16 md:pb-20 font-body">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
         {/* Header */}

@@ -68,7 +68,7 @@ export const PlansPage: React.FC = () => {
       {/* 1. Header Section */}
       <motion.section
         {...sectionAnim}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-4xl"
+        className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
       >
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#1E9E54]/10 border border-[#1E9E54]/30 text-[#14723B] text-xs font-mono font-bold uppercase tracking-[0.2em] mb-5">
           <Sparkles className="w-3.5 h-3.5 text-[#1E9E54]" />
