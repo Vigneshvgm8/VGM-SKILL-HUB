@@ -24,9 +24,11 @@ if (!fs.existsSync(adminDistDir)) {
   process.exit(1);
 }
 
-// 1. Ensure .htaccess is explicitly copied into both dist/ and dist-admin/
+// 1. Ensure .htaccess and _redirects are explicitly copied into both dist/ and dist-admin/
 const frontendHtaccess = path.join(rootDir, 'Frontend/public/.htaccess');
 const adminHtaccess = path.join(rootDir, 'Adminweb/public/.htaccess');
+const frontendRedirects = path.join(rootDir, 'Frontend/public/_redirects');
+const adminRedirects = path.join(rootDir, 'Adminweb/public/_redirects');
 
 if (fs.existsSync(frontendHtaccess)) {
   fs.copyFileSync(frontendHtaccess, path.join(distDir, '.htaccess'));
@@ -36,6 +38,17 @@ if (fs.existsSync(frontendHtaccess)) {
 if (fs.existsSync(adminHtaccess)) {
   fs.copyFileSync(adminHtaccess, path.join(adminDistDir, '.htaccess'));
   console.log('[PACKAGE] Verified .htaccess in dist-admin/');
+}
+
+// Copy _redirects for Netlify SPA routing
+if (fs.existsSync(frontendRedirects)) {
+  fs.copyFileSync(frontendRedirects, path.join(distDir, '_redirects'));
+  console.log('[PACKAGE] Verified _redirects in dist/ (Netlify SPA routing)');
+}
+
+if (fs.existsSync(adminRedirects)) {
+  fs.copyFileSync(adminRedirects, path.join(adminDistDir, '_redirects'));
+  console.log('[PACKAGE] Verified _redirects in dist-admin/ (Netlify SPA routing)');
 }
 
 const isWindows = process.platform === 'win32';
